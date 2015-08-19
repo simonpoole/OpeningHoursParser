@@ -1,83 +1,91 @@
 /**
- * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */options{  JDK_VERSION = "1.5";  static = true;
-  LOOKAHEAD= 10;
+ * Parser for OpenStreetMap opening_hours values
+ * See http://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
+ *
+ * @author Simon Poole
+ *
+ * Copyright (c) 2015 Simon Poole
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies
+ * or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */options{  JDK_VERSION = "1.5";  static = false;
+  LOOKAHEAD= 5;
+  IGNORE_CASE = true;
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK=2;
   OTHER_AMBIGUITY_CHECK=2;
   DEBUG_PARSER = true;
   DEBUG_LOOKAHEAD = true;
-  DEBUG_TOKEN_MANAGER = true;}PARSER_BEGIN(EG1)
+  DEBUG_TOKEN_MANAGER = true;
+  UNICODE_INPUT = true;}PARSER_BEGIN(OpeningHoursParser)
 import java.util.ArrayList;
 import java.util.Collections;
 import java.io.ByteArrayInputStream;
 
-public class EG1{  public static void main(String args []) throws ParseException  {
+public class OpeningHoursParser{  public static void main(String args []) throws ParseException  {
     // String str = "1 02:00; 2014 Mar Th[1] ; 2014 Jan 25 03:00;";
     
    //  String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/45 ; 12-16 closed  ; Mo, We 12:01-13:02 ; Apr-Sep Tu-Th,Fr 10:01-13:03, Dec 13:03-21:01 ; week 01-22 10:11-14:14 ; 2014 Jan 2 03:00;";
     // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; 12-16 closed \"ein test\" ; Mo, We 12:01-13:02 ; Apr-Sep 10:01-13:03, Dec 13:03-21:01";
-    String str = "closed \"ein test\" ;";
+    // String str = "closed \"ein test\" ;";
+    // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; closed \"ein test\"";
+    // String str = "Mo[1-4,5] 4:01-13:02";
+    // String str = "PH +1 day 00:00-04:00 off";
+    String str = "Nov 16 12:00-17:00";
+    // String str = "May 1: off";
+    // String str = "Mo, We 12:01-13:02";
      
-    EG1 parser = new EG1(new ByteArrayInputStream(str.getBytes()));
+    OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(str.getBytes()));
     ArrayList<Rule> rules = parser.rules();
     for (Rule rl:rules)
 	{
 	  System.out.println(rl.toString());
-	}  }}PARSER_END(EG1)SKIP :{  "\r"| "\n"}TOKEN : {  < COMMA : "," >| < SEMICOLON : ";" >
+	}  }}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"
+| " "
+| "\t"}TOKEN : {  < COMMA : "," >| < SEMICOLON : ";" >
 | < COLON : ":" >
 | < PLUS : "+" >
 | < HYPHEN : "-" >
 | < SLASH : "/" >}
 
-SKIP:
+TOKEN:
 {
-  <  DOUBLEQUOTE : "\""> : COMMENT_STATE
+  <QUOTE:"\""> : COMMENT_STATE
 }
 
-<  COMMENT_STATE > TOKEN:
+<COMMENT_STATE> TOKEN:
 {
-  < ENDQUOTE : < DOUBLEQUOTE >>  : DEFAULT
-}
-<  COMMENT_STATE > MORE:
-{
-  < EVERYTHINGEXCEPTDOUBLEQOUTES: ~["\""] >
+  <ENDQUOTE:<QUOTE>> : DEFAULT
+| <CHAR:~["\"","\\"]>
 }
 
-
-TOKEN :{
-  < HOUR : < DIGIT > | "0" < DIGIT > | "1" < DIGIT > | "2" ["0" - "4" ] >
-| < EXTENDEDHOUR : < HOUR > | "2" ["5"-"9"] |  "3" < DIGIT > | "4" ["0" - "8" ]  >
+// parse all numbers as number and do the range checking in syntactic lookahead
+TOKEN:
+{
+ < NUMBER :  ( < DIGIT > )+ >
 }
+
+//
 
 TOKEN :
 {
   < MINUTES : < COLON > [ "0"-"5" ] < DIGIT > > }
 
 TOKEN :
-{  <  ONE2FIVE : [ "1"-"5" ] >
-}
-
-TOKEN :
-{
- < YEAR : ( "19" < DIGIT >< DIGIT > ) | ( "2" < DIGIT >< DIGIT >< DIGIT > ) > }
-
-TOKEN :
-{ < DAYNUM : ( ["0"-"2"] <DIGIT > ) |  "3" ["0"-"1"] >
-}
-
-TOKEN :
-{  <  WEEKNUM : ( ["0"-"4"] <DIGIT > ) |  "5" ["0"-"4"] >
-}
-
-TOKEN:
-{
- < NUMBER : ( < DIGIT > )+ >
-}
-
-TOKEN :
 {< DIGIT : [ "0"-"9" ] >
-}
+}
 TOKEN :
 {<  WS : [ " ","\t" ] >} 
 
@@ -93,6 +101,7 @@ TOKEN :
 TOKEN :
 {
   < WEEKDAY :  "Mo"|"Tu"|"We"|"Th"|"Fr"|"Sa"|"Su">
+| < WEEKDAY3 :  "Mon"|"Tue"|"Wed"|"Thu"|"Fri"|"Sat"|"Sun">
 | < MONTH: "Jan"|"Feb"|"Mar"|"Apr"|"May"|"Jun"|"Jul"|"Aug"|"Sep"|"Oct"|"Nov"|"Dec" >
 | < HOLIDAYS : "SH"|"PH" >
 | < EVENTS : "sunrise"|"sunset"|"dawn"|"dusk" >
@@ -101,17 +110,75 @@ TOKEN :
 
 TOKEN :
 {  < MODIFIER : "open"|"closed"|"off"|"unknown" >
-}
-String comment() :
+}
+/**
+ * match a number between 1 and 5
+ */
+Token one2five() :
 {
- 	Token r = null;
+  Token n = null;
 }
 {
-  r = < ENDQUOTE >
+	LOOKAHEAD({getToken(1).kind == NUMBER  && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 5})
+    n = < NUMBER >
+    {
+		return n;
+    }
+}
+
+/**
+ * match a positive number larger than 1
+ */
+Token number() :
+{	Token n = null;
+}
+{	LOOKAHEAD({getToken(1).kind == NUMBER  && Integer.parseInt(getToken(1).image) >= 1})
+	n = < NUMBER >
+    {
+		return n;
+    }
+}
+
+/**
+ * Match a comment.
+ */
+String comment() :
+{
+  StringBuilder builder = new StringBuilder();
+}
+{
+  <QUOTE> ( getChar(builder) )* <ENDQUOTE>
   {
-    System.out.println(">"+r.image+"< ");
-    return r.image;
+    return builder.toString();
   }
+}
+
+/**
+ * Match char inside quoted string.
+ */
+void getChar(StringBuilder builder):
+{
+  Token t;
+}
+{
+  ( t = <CHAR>  )
+  {
+    if (t.image.length() < 2)
+    {
+      // CHAR
+      builder.append(t.image.charAt(0));
+    }
+  }
+}
+
+
+Token hours() :
+{	Token h = null;
+}
+{	LOOKAHEAD({getToken(1).kind == NUMBER  && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 24})
+    h = < NUMBER >
+    {		return h;
+    }
 }
 
 int time() :
@@ -121,7 +188,8 @@ int time() :
   int result = 0;
 }
 {
-  h = < HOUR >
+  (    h = hours()
+  ) 
   ( m = < MINUTES >  {
     result = Integer.parseInt(m.image.substring(1));  }
   )?
@@ -139,7 +207,8 @@ int extendedtime() :
   int result = 0;
 }
 {
-  (      h = < EXTENDEDHOUR > | h = < HOUR >
+  (
+    LOOKAHEAD({getToken(1).kind == NUMBER  && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48})    h = < NUMBER >
   )
   ( m = < MINUTES >
     {
@@ -179,11 +248,14 @@ int interval() :
   Token hours = null;
   int interval = 0;
 }
-{   <SLASH > ( ( ( minutes = < HOUR > | minutes = < EXTENDEDHOUR > | minutes = < NUMBER > )
+{   <SLASH > ( ( (
+        minutes = number() )
       {
 	    interval = Integer.parseInt(minutes.image);
       }
-    ) | (hours = < HOUR > minutes = < MINUTES > 
+    ) | (
+      hours = hours()
+      minutes = < MINUTES > 
       {
 	    interval = Integer.parseInt(hours.image)*60 + Integer.parseInt(minutes.image.substring(1));
 	  }
@@ -235,25 +307,40 @@ TimeSpan timespan() :
 
 ArrayList<TimeSpan> time_selector() :
 {
-  TimeSpan ts,ts1;
-  ArrayList<TimeSpan> result = new ArrayList<TimeSpan>();  }
-{  ts = timespan()  ( (< WS >)* < COMMA > (< WS >)* ts1 = timespan()  	{
-    	result.add(0,ts1);  	}
-  )*
-  {   
-    result.add(ts);
-    Collections.reverse(result);
-    return result;  }
+  	TimeSpan ts,ts1;
+  	ArrayList<TimeSpan> result = new ArrayList<TimeSpan>();  }
+{    (      	ts = timespan()
+      	( < COMMA > ts1 = timespan()  			{
+    			result.add(0,ts1);  			}
+  		)*
+  	)
+  	{   
+    	result.add(ts);
+    	Collections.reverse(result);
+    	return result;  	}
 }
 
 String weekday() :
 {
-  Token w = null;}
-{ w = < WEEKDAY >
- {   return w.image;
- }
+	Token w = null;}
+{ 	( 	  	w = < WEEKDAY >
+ 		{   			return w.image;
+ 		}
+ 	) |
+ 	(
+ 	  	w = < WEEKDAY3 >
+ 		{
+   			return w.image.substring(0,1);
+ 		}
+ 	)
 }
 
+
+
+// Mo-
+// Mo-Fr
+// Mo[1]
+// Mo[1,3,5]
 WeekDayRange weekday_range() :
 {	String startDay = null;
 	String endDay = null;
@@ -261,18 +348,25 @@ WeekDayRange weekday_range() :
 	Nth nth1 = null;
 	WeekDayRange wdr = new WeekDayRange();
 }
-{  startDay = weekday() (( < HYPHEN > ( endDay = weekday() )  {
-    wdr.endDay = endDay;  }
-  )? | ( "[" nth = nth()  ( ( < WS >)* < COMMA > (< WS >)* nth1 = nth()    {
-      wdr.nth.add(nth);    }
-  )*  {
-    wdr.nth.add(nth);
-    Collections.reverse(wdr.nth);  }
-  "]" )?
-  )
-  {	wdr.startDay = startDay;
-	return wdr;
-  }
+{  	startDay = weekday()
+  	(  
+  	  	(
+    		( < HYPHEN >  endDay = weekday()   				{
+    				wdr.endDay = endDay;  				}
+  			)
+  		) | ( 
+  			( "[" nth = nth()
+  				( < COMMA > nth1 = nth()    				{
+      					wdr.nths.add(nth1);    				}
+  				)*  				{
+    				wdr.nths.add(nth);
+    				Collections.reverse(wdr.nths);  				}
+  			"]" )
+  		)
+  	)?
+ 	{		wdr.startDay = startDay;
+		return wdr;
+  	}
 }
 
 Nth nth() :{
@@ -280,9 +374,11 @@ Nth nth() :{
   Token t1 = null;
   Token t2 = null;}
 {
-  ( t1= < ONE2FIVE >    {
+  (
+    t1 = one2five()    {
       n.startNth = Integer.parseInt(t1.image);    }
-  )? ( < HYPHEN > t2 = < ONE2FIVE >
+  )? ( < HYPHEN >	
+  	t2 = one2five()
     {
       n.endNth = Integer.parseInt(t2.image);    }
   )?	{		return n;
@@ -295,16 +391,17 @@ ArrayList<WeekDayRange> weekday_selector() :
   ArrayList<WeekDayRange> result = new ArrayList<WeekDayRange>();  
 }
 {
-  wdr = weekday_range()  ( (< WS >)* < COMMA > (< WS >)* wdr1 = weekday_range()
-  	{
-    	result.add(0,wdr1);
+  	wdr = weekday_range()
+  		( < COMMA > wdr1 = weekday_range()
+  			{
+    			result.add(0,wdr1);
+  			}
+  		)*
+  	{   
+    	result.add(wdr);
+    	Collections.reverse(result);
+    	return result;
   	}
-  )*
-  {   
-    result.add(wdr);
-    Collections.reverse(result);
-    return result;
-  }
 }
 
 Holiday holiday() :
@@ -314,13 +411,14 @@ Holiday holiday() :
   Holiday result = new Holiday();
 }
 {
-  h = < HOLIDAYS > ( ( m = < HYPHEN > | < PLUS > ) n = < NUMBER > ( < WS > )? "day" ("s")?    {
+  h = < HOLIDAYS > ( ( ( m = < HYPHEN > | < PLUS > )
+   	n = number() ) "day" ("s")?    {
       result.offset = Integer.parseInt(n.image);
       if (m!= null) {		result.offset = result.offset*-1;
       }             }
   )?
   {
-    result.type = Holiday.Type.valueOf(h.image);
+    result.type = Holiday.Type.valueOf(h.image.toUpperCase()); // the enum values are in upper case
     return result;  }
 }
 
@@ -331,7 +429,7 @@ ArrayList<Holiday> holiday_sequence() :
   ArrayList<Holiday> result = new ArrayList<Holiday>();  
 }
 {
-  h = holiday() ( (< WS >)* < COMMA > (< WS >)* h1 = holiday()
+  h = holiday() ( < COMMA > h1 = holiday()
   	{
     	result.add(0,h1);
   	}
@@ -362,27 +460,22 @@ MonthDayRange monthday_range() :
 	DateWithOffset endDate = null;
 	Token plus = null;
 }
-{
-  (    (       (
- 		startDate = datewithoffset() ( plus = < PLUS > )?
- 		{
- 		  mdr.startDate = startDate;
- 		  startDate.openEnded = plus != null; 		}        
-      )
-    )
-    (  
-      (< WS >)*< HYPHEN >(< WS >)*
-      (
-        endDate = datewithoffset()
- 		{
- 		  mdr.endDate = endDate;
- 		}        
-      )
+{     
+ 	startDate = datewithoffset() ( plus = < PLUS > )?
+ 	{
+ 		mdr.startDate = startDate;
+ 		startDate.openEnded = plus != null; 	}          
+    (< HYPHEN >
+      	(
+        	endDate = datewithoffset()
+ 			{
+ 		  		mdr.endDate = endDate;
+ 			}        
+      	)
     )? 
-  )
-  {
-	return mdr;
-  }
+  	{
+		return mdr;
+  	}
 }
 
 int daynum() :
@@ -390,7 +483,9 @@ int daynum() :
 	Token n = null;
 }
 {
-  (n = < HOUR > | n = < DAYNUM > )
+  (
+    LOOKAHEAD({getToken(1).kind == NUMBER  && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 31})
+    n = < NUMBER > )
   {
 	return Integer.parseInt(n.image);
   } 
@@ -408,13 +503,16 @@ DateWithOffset datewithoffset() :{
   Token num = null;
   Token wd = null;}
 {
-  ( y = < YEAR > (< WS >)+    {		dwo.year = Integer.parseInt(y.image);
+  (
+	LOOKAHEAD({getToken(1).kind == NUMBER  && Integer.parseInt(getToken(1).image) >= 1900 && Integer.parseInt(getToken(1).image) <= 3000})
+    y = < NUMBER >     {		dwo.year = Integer.parseInt(y.image);
     }
   )?
 
   (
-    ( m = < MONTH > { dwo.month = m.image; } )    | ( ( ( ( m = < MONTH > (< WS >)+ { dwo.month = m.image; })? ( dwo.day = daynum() ) )
-      | ( m = < MONTH > (< WS >)+ d = < WEEKDAY >"[" ( h = < HYPHEN > )? n = < ONE2FIVE >"]" 
+    ( m = < MONTH > { dwo.month = m.image; } )    | ( ( ( ( m = < MONTH >  { dwo.month = m.image; })? (dwo.day = daynum() ) )
+      | ( m = < MONTH >  d = < WEEKDAY >"[" ( h = < HYPHEN > )?
+		n = one2five() "]" 
            {
              dwo.month = m.image;
              dwo.weekDay = d.image;
@@ -432,10 +530,12 @@ DateWithOffset datewithoffset() :{
              dwo.weekDayOffsetPositive = minus == null;
              dwo.weekDayOffset = wd.image;           }        )?
        (
-          ( minus = < HYPHEN > | < PLUS > )  num = < NUMBER >
+          ( minus = < HYPHEN > | < PLUS > )  (
+            num = number()
             {
               dwo.dayOffset = Integer.parseInt(num.image) * (minus != null ? -1 : 1);
-            } 
+            }
+          )
         )?
      )
   )
@@ -448,22 +548,25 @@ ArrayList<MonthDayRange> monthday_selector() :
   ArrayList<MonthDayRange> result = new ArrayList<MonthDayRange>();  
 }
 {
-  mdr = monthday_range()  ( (< WS >)* < COMMA > (< WS >)* mdr1 = monthday_range()
-  	{
-    	result.add(0,mdr1);
+  	mdr = monthday_range()
+  	( < COMMA > mdr1 = monthday_range()
+  		{
+    		result.add(0,mdr1);
+  		}
+  	)*
+  	{   
+    	result.add(mdr);
+    	Collections.reverse(result);
+    	return result;
   	}
-  )*
-  {   
-    result.add(mdr);
-    Collections.reverse(result);
-    return result;
-  }
 }
 
 int weeknum() :{	Token n = null;
 }
 {
-  (n = < HOUR > | n = < EXTENDEDHOUR > | n = <  WEEKNUM >)
+  (
+	LOOKAHEAD({getToken(1).kind == NUMBER  && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 54})
+    n = < NUMBER >)
   {	return Integer.parseInt(n.image);
   } }
 
@@ -483,28 +586,31 @@ ArrayList<WeekRange> week_selector() :
   WeekRange wr,wr1;
   ArrayList<WeekRange> result = new ArrayList<WeekRange>();  
 }
-{    "week" (< WS >)+ wr = week_range()  ( (< WS >)* < COMMA > (< WS >)* wr1 = week_range()
-  	{
-    	result.add(0,wr1);
+{    "week"  wr = week_range()
+    	(  < COMMA > wr1 = week_range()
+  			{
+    			result.add(0,wr1);
+  			}
+  	)* 
+  	{   
+    	result.add(wr);
+    	Collections.reverse(result);
+    	return result;
   	}
-  )* 
-  {   
-    result.add(wr);
-    Collections.reverse(result);
-    return result;
-  }
 }
 
 RuleModifier rule_modifier() :{
   	RuleModifier rm = new RuleModifier();	Token m = null;
 	String c = null;
 }
-{  ( m = < MODIFIER >	{	  rm.modifier = m.image;	}  )? ( c= comment()	{
-	  rm.comment = c;	}
-  )?
-  {
-	return rm;  }
-}
+{  	( m = < MODIFIER > 		{	  		rm.modifier = m.image;		}
+    )?
+    (  c= comment()		{
+	  		rm.comment = c;		}
+  	)?
+  	{
+		return rm;  	}
+}
 Rule rule() :{
   	Rule r = null;
   	ArrayList<WeekRange> ws = null;
@@ -514,12 +620,13 @@ Rule rule() :{
 	RuleModifier rm = null;
 	
 }
-{	( ( < WS > )* ws = week_selector()  ) ?
-	//( ( < WS > )* ms = monthday_selector()  ) ?
-	( ( < WS > )* hs = holiday_sequence()  ) ?
-	( ( ( < WS > )+ | (< COMMA >) )? ds = weekday_selector()  ) ?
-	( (< WS >)*  ts = time_selector() )?
-	( (< WS >)* rm = rule_modifier() )
+{	( ws = week_selector()  ) ?
+	( ms = monthday_selector()  ) ?
+    ( (comment() < COLON >) | < COLON > ) ?	  
+	( hs = holiday_sequence()  | ( hs = holiday_sequence() (< COMMA >)?  ds = weekday_selector())) ?
+	( ds = weekday_selector()  ) ?
+	( ts = time_selector() )?
+	( rm = rule_modifier() )
 	{
 	  	r = new Rule();
 	  	r.weeks = ws;
@@ -528,7 +635,7 @@ Rule rule() :{
 	  	r.days = ds;
 	  	r.times = ts;
 	  	r.modifier = rm;		return r;
-	}}
+	}}
 ArrayList<Rule> rules() :
 {
   ArrayList<Rule> result = new ArrayList<Rule>();
@@ -536,11 +643,11 @@ Rule rule() :{
   Rule r1 = null;
 }
 {
-  r = rule()  ( (< WS >)* ( < COMMA > | < SEMICOLON > | < FALLBACKSEPERATOR > | < EOF > ) (< WS >)* r1 = rule() 
+  r = rule()    ( ( < COMMA > | < SEMICOLON > | < FALLBACKSEPERATOR >  )  r1 = rule() 
    {
     	result.add(0,r1);
   	}
-  )*
+  )*  < EOF >
   {
 	result.add(r);
 	Collections.reverse(result);
