@@ -23,6 +23,7 @@ public class Test {
 	{
 		int successful = 0;
 		int errors = 0;
+		int lexical = 0;
 		try
 		{ 
 
@@ -40,18 +41,28 @@ public class Test {
 					successful++;
 				}
 				catch (ParseException pex) {
-					System.out.println("Parser exception for " + line + " " + pex.toString());
+					if (pex.toString().contains("Lexical")) {
+						lexical++;
+					} else {
+						System.out.println("Parser exception for " + line + " " + pex.toString());
+					}
 					// pex.printStackTrace();
+					
 					errors++;
 				}
 				catch (NumberFormatException nfx) {
 					System.out.println("Parser exception for " + line + " " + nfx.toString());
 					// pex.printStackTrace();
+					lexical++;
 					errors++;
 				}
 				catch (Error err) {
-					System.out.println("Parser err for " + line + " " + err.toString());
-					// err.printStackTrace();
+					if (err.toString().contains("Lexical")) {
+						lexical++;
+					} else {
+						System.out.println("Parser err for " + line + " " + err.toString());
+						// err.printStackTrace();
+					}
 					errors++;
 				}
 			}
@@ -62,7 +73,7 @@ public class Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Successful " + successful + " errors " + errors);
+		System.out.println("Successful " + successful + " errors " + errors + " of which " + lexical + " are lexical errors");
   	}
 	
 }

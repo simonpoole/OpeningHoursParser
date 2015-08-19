@@ -25,6 +25,7 @@ class Rule {
 	boolean fallBack = false;
 	boolean replace = true;
 	
+	String comment = null;
 	// week list
     ArrayList<WeekRange> weeks = null;
 	// month day list
@@ -44,6 +45,9 @@ class Rule {
 
 	public String toString() {
 		StringBuffer b = new StringBuffer();
+		if (comment != null) {
+			b.append(comment + ": ");
+		}
 		if (weeks != null) {
 			b.append("week ");
 			for (WeekRange wr:weeks) {
