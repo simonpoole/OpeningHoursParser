@@ -22,7 +22,7 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */options{  JDK_VERSION = "1.5";  static = false;  LOOKAHEAD= 5;  IGNORE_CASE = true;  FORCE_LA_CHECK = true;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 2;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  UNICODE_INPUT = true;}PARSER_BEGIN(OpeningHoursParser)import java.util.ArrayList;import java.util.Collections;import java.io.ByteArrayInputStream;public class OpeningHoursParser{  public static void main(String args []) throws ParseException  {
     // test strings for running with debugging    // String str = "1 02:00; 2014 Mar Th[1] ; 2014 Jan 25 03:00;";
-    // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/45 ; 12-16 closed  ; Mo, We 12:01-13:02 ; Apr-Sep Tu-Th,Fr 10:01-13:03, Dec 13:03-21:01 ; week 01-22 10:11-14:14 ; 2014 Jan 2 03:00;";
+    String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/45 ; 12-16 closed  ; Mo, We 12:01-13:02 ; Apr-Sep Tu-Th,Fr 10:01-13:03, Dec 13:03-21:01 ; week 01-22 10:11-14:14 ; 2014 Jan 2 03:00;";
     // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; 12-16 closed \"ein test\" ; Mo, We 12:01-13:02 ; Apr-Sep 10:01-13:03, Dec 13:03-21:01";
     // String str = "closed \"ein test\" ;";
     // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; closed \"ein test\"";
@@ -36,7 +36,7 @@
     // String str = "Mar-Oct We 15:00-21:00, Th 18:00-21:00";
     // String str = "We-Mo 08:00-24:00; \"Periodo invernale\": We-Mo 09:00-24:00; Tu closed";
     // String str = "We-Sa 10:00-22:00;";
-    String str = "10:00-22:00;";
+    // String str = "10:00-22:00;";
     // String str = "2002-2010/2 We-Sa 10:00-22:00;";
     
     OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(str.getBytes()));    ArrayList < Rule > rules = parser.rules();    for (Rule rl : rules)    {      System.out.println(rl.toString());    }  }}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : "-" >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
@@ -50,7 +50,14 @@ TOKEN :{  < MINUTES : < COLON > [ "0"-"5" ] < DIGIT >>}TOKEN :{  < DIGIT 
  */String comment() :{  StringBuilder builder = new StringBuilder();}{  < QUOTE >  (    getChar(builder)  )*  < ENDQUOTE >  {    return builder.toString();  }}/**
  * Match char inside quoted string.
  */void getChar(StringBuilder builder) :{  Token t;}{  (t = < CHAR >)  {    if (t.image.length() < 2)    {      // CHAR
-      builder.append(t.image.charAt(0));    }  }}Token hours() :{  Token h = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 24 })  h = < NUMBER >  {    return h;  }}int time() :{  Token h = null;  Token m = null;  int result = 0;}{  (    h = hours()  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?  {    result = result + Integer.parseInt(h.image) * 60;    return result;  }}
+      builder.append(t.image.charAt(0));    }  }}
+/**
+ * returns a number if between 0 and 24
+ * uses semantic lookahead
+ */Token hours() :{  Token h = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 24 })  h = < NUMBER >  {    return h;  }}
+/**
+ * returns the total number of minutes for a time of the form hh:00 or just hh 
+ */int time() :{  Token h = null;  Token m = null;  int result = 0;}{  (    h = hours()  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?  {    result = result + Integer.parseInt(h.image) * 60;    return result;  }}
 
 /**
  * time that requires minutes as per spec
@@ -76,7 +83,10 @@ int strict_time() :
     result = result + Integer.parseInt(h.image) * 60;
     return result;
   }
-}int extendedtime() :{  Token h = null;  Token m = null;  int result = 0;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48 })    h = < NUMBER >  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?  {    result = result + Integer.parseInt(h.image) * 60;    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.event = event.image;    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.event = event.image;      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token minutes = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        minutes = number()      )      {        interval = Integer.parseInt(minutes.image);      }    )  |    (      hours = hours() minutes = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(minutes.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;  VariableTime startVT = null;  VariableTime endVT = null;  TimeSpan ts = new TimeSpan();  int inter = 0;}{  (    (      start = time()      {        ts.start = start;      }    | startVT = variabletime()      {        ts.startEvent = startVT;      }    )    (      startplus = < PLUS >    |      (        < HYPHEN >        (          end = extendedtime()          {            ts.end = end;          }        | endVT = variabletime()          {            ts.endEvent = endVT;          }        )        (          endplus = < PLUS >        |          (            inter = interval()            {              ts.interval = inter;            }          )        )?      )    )?    {      ts.openEnded = startplus != null || endplus != null;      return ts;    }  )| (< ALWAYS >  {    ts.twentyfourseven = true;    return ts;  }  )}ArrayList < TimeSpan > time_selector() :{  TimeSpan ts, ts1;  ArrayList < TimeSpan > result = new ArrayList < TimeSpan > ();}{  (    ts = timespan()    (      < COMMA > ts1 = timespan()      {        result.add(0, ts1);      }    )*  )  {    result.add(ts);    Collections.reverse(result);    return result;  }}String weekday() :{  Token w = null;}{  (w = < WEEKDAY >  {    return w.image;  }  )|  (    w = < WEEKDAY3 >    {      return w.image.substring(0, 1);    }  )}// Mo-
+}
+/**
+ * returns the total number of minutes for a time of the form hh:00 or just hh with hh up to 48 
+ */int extendedtime() :{  Token h = null;  Token m = null;  int result = 0;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48 })    h = < NUMBER >  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?  {    result = result + Integer.parseInt(h.image) * 60;    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.event = event.image;    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.event = event.image;      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token minutes = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        minutes = number()      )      {        interval = Integer.parseInt(minutes.image);      }    )  |    (      hours = hours() minutes = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(minutes.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;  VariableTime startVT = null;  VariableTime endVT = null;  TimeSpan ts = new TimeSpan();  int inter = 0;}{  (    (      start = time()      {        ts.start = start;      }    | startVT = variabletime()      {        ts.startEvent = startVT;      }    )    (      startplus = < PLUS >    |      (        < HYPHEN >        (          end = extendedtime()          {            ts.end = end;          }        | endVT = variabletime()          {            ts.endEvent = endVT;          }        )        (          endplus = < PLUS >        |          (            inter = interval()            {              ts.interval = inter;            }          )        )?      )    )?    {      ts.openEnded = startplus != null || endplus != null;      return ts;    }  )| (< ALWAYS >  {    ts.twentyfourseven = true;    return ts;  }  )}ArrayList < TimeSpan > time_selector() :{  TimeSpan ts, ts1;  ArrayList < TimeSpan > result = new ArrayList < TimeSpan > ();}{  (    ts = timespan()    (      < COMMA > ts1 = timespan()      {        result.add(0, ts1);      }    )*  )  {    result.add(ts);    Collections.reverse(result);    return result;  }}String weekday() :{  Token w = null;}{  (w = < WEEKDAY >  {    return w.image;  }  )|  (    w = < WEEKDAY3 >    {      return w.image.substring(0, 1);    }  )}// Mo-
 // Mo-Fr
 // Mo[1]
 // Mo[1,3,5]
@@ -156,4 +166,26 @@ ArrayList < YearRange > year_selector() :
   < COLON >
   )?  (    ts = time_selector()  )?  (    rm = rule_modifier()  )  {    r = new Rule();
     r.comment = comment;
-    r.years = ys;    r.weeks = ws;    r.monthdays = ms;    r.holidays = hs;    r.days = ds;    r.times = ts;    r.modifier = rm;    return r;  }}ArrayList < Rule > rules() :{  ArrayList < Rule > result = new ArrayList < Rule > ();  Rule r = null;  Rule r1 = null;}{  r = rule()  (    (      < COMMA >    | < SEMICOLON >    | < FALLBACKSEPERATOR >    )    r1 = rule()    {      result.add(0, r1);    }  )*  < EOF >  {    result.add(r);    Collections.reverse(result);    return result;  }}
+    r.years = ys;    r.weeks = ws;    r.monthdays = ms;    r.holidays = hs;    r.days = ds;    r.times = ts;    r.modifier = rm;    return r;  }}ArrayList < Rule > rules() :{  ArrayList < Rule > result = new ArrayList < Rule > ();  Rule r = null;  Rule r1 = null;}{  r = rule()  (    (      < COMMA >
+      (
+        r1 = rule()
+    	{
+    	  r1.replace = false;
+      	  result.add(0, r1);
+    	}      )    | < SEMICOLON >
+      (
+        r1 = rule()
+    	{
+    	  r1.replace = true;
+      	  result.add(0, r1);
+    	}
+      )    | < FALLBACKSEPERATOR >
+      (
+        r1 = rule()
+    	{
+    	  r1.replace = false;
+    	  r1.fallBack = true;
+      	  result.add(0, r1);
+    	}
+      )    )  )*  < EOF >  {
+    r.replace = true;    result.add(r);    Collections.reverse(result);    return result;  }}
