@@ -35,7 +35,9 @@
     // String str = "We 16:00-20:00; Mar-Oct We 15:00-21:00, Th 18:00-21:00";
     // String str = "Mar-Oct We 15:00-21:00, Th 18:00-21:00";
     // String str = "We-Mo 08:00-24:00; \"Periodo invernale\": We-Mo 09:00-24:00; Tu closed";
-    String str = "We-Sa 10:00-22:00;";
+    // String str = "We-Sa 10:00-22:00;";
+    String str = "10:00-22:00;";
+    // String str = "2002-2010/2 We-Sa 10:00-22:00;";
     
     OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(str.getBytes()));    ArrayList < Rule > rules = parser.rules();    for (Rule rl : rules)    {      System.out.println(rl.toString());    }  }}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : "-" >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
 TOKEN :{  < NUMBER : (< DIGIT >)+ >}//
@@ -79,20 +81,79 @@ int strict_time() :
 // Mo[1]
 // Mo[1,3,5]
 WeekDayRange weekday_range() :{  String startDay = null;  String endDay = null;  Nth nth = null;  Nth nth1 = null;  WeekDayRange wdr = new WeekDayRange();}{  startDay = weekday()  (    (      (        < HYPHEN > endDay = weekday()        {          wdr.endDay = endDay;        }      )    )  |    (      (        "[" nth = nth()        (          < COMMA > nth1 = nth()          {            wdr.nths.add(nth1);          }        )*        {          wdr.nths.add(nth);          Collections.reverse(wdr.nths);        }        "]"      )    )  )?  {    wdr.startDay = startDay;    return wdr;  }}Nth nth() :{  Nth n = new Nth();  Token t1 = null;  Token t2 = null;}{  (    t1 = one2five()    {      n.startNth = Integer.parseInt(t1.image);    }  )?  (    < HYPHEN > t2 = one2five()    {      n.endNth = Integer.parseInt(t2.image);    }  )?  {    return n;  }}ArrayList < WeekDayRange > weekday_selector() :{  WeekDayRange wdr, wdr1;  ArrayList < WeekDayRange > result = new ArrayList < WeekDayRange > ();}{  wdr = weekday_range()  (    < COMMA > wdr1 = weekday_range()    {      result.add(0, wdr1);    }  )*  {    result.add(wdr);    Collections.reverse(result);    return result;  }}Holiday holiday() :{  Token h = null;  Token n = null;  Token m = null;  Holiday result = new Holiday();}{  h = < HOLIDAYS >  (    (      (        m = < HYPHEN >      | < PLUS >      )      n = number()    )    "day" ("s")?    {      result.offset = Integer.parseInt(n.image);      if (m != null)      {        result.offset = result.offset * - 1;      }    }  )?  {    result.type = Holiday.Type.valueOf(h.image.toUpperCase()); // the enum values are in upper case
-    return result;  }}ArrayList < Holiday > holiday_sequence() :{  Holiday h = null;  Holiday h1 = null;  ArrayList < Holiday > result = new ArrayList < Holiday > ();}{  h = holiday()  (    < COMMA > h1 = holiday()    {      result.add(0, h1);    }  )*  {    result.add(h);    Collections.reverse(result);    return result;  }}String month() :{  Token m = null;}{  m = < MONTH >  {    return m.image;  }}MonthDayRange monthday_range() :{  Token nth = null;  Token year = null;  Token n = null;  String startMonth = null;  String endMonth = null;  MonthDayRange mdr = new MonthDayRange();  DateWithOffset startDate = null;  DateWithOffset endDate = null;  Token plus = null;}{  startDate = datewithoffset() (plus = < PLUS >)?  {    mdr.startDate = startDate;    startDate.openEnded = plus != null;  }  (    < HYPHEN >    (      endDate = datewithoffset()      {        mdr.endDate = endDate;      }    )  )?  {    return mdr;  }}int daynum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 31 })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}DateWithOffset datewithoffset() :{  DateWithOffset dwo = new DateWithOffset();  Token y = null;  Token m = null;  Token d = null;  Token h = null;  Token n = null;  Token v = null;  Token minus = null;  Token num = null;  Token wd = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1900 && Integer.parseInt(getToken(1).image) <= 3000 })    y = < NUMBER >    {      dwo.year = Integer.parseInt(y.image);    }  )?  (
-    LOOKAHEAD(((< MONTH >)? daynum()) | (< VARDATE >), {getToken(3).kind != MINUTES  }) // don't parse this if we actually have a time as 2nd token    (      (        (
+    return result;  }}ArrayList < Holiday > holiday_sequence() :{  Holiday h = null;  Holiday h1 = null;  ArrayList < Holiday > result = new ArrayList < Holiday > ();}{  h = holiday()  (    < COMMA > h1 = holiday()    {      result.add(0, h1);    }  )*  {    result.add(h);    Collections.reverse(result);    return result;  }}String month() :{  Token m = null;}{  m = < MONTH >  {    return m.image;  }}MonthDayRange monthday_range() :{  Token nth = null;  Token year = null;  Token n = null;  String startMonth = null;  String endMonth = null;  MonthDayRange mdr = new MonthDayRange();  DateWithOffset startDate = null;  DateWithOffset endDate = null;  Token plus = null;}{  startDate = datewithoffset() (plus = < PLUS >)?  {    mdr.startDate = startDate;    startDate.openEnded = plus != null;  }  (    < HYPHEN >    (      endDate = datewithoffset()      {        mdr.endDate = endDate;      }    )  )?  {    return mdr;  }}int daynum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 31 })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}
+
+int year() :
+{
+  Token n = null;
+}
+{
+  (
+    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1900})
+    n = < NUMBER >
+  )
+  {
+    return Integer.parseInt(n.image);
+  }
+}DateWithOffset datewithoffset() :{  DateWithOffset dwo = new DateWithOffset();  int y = 0;  Token m = null;  Token d = null;  Token h = null;  Token n = null;  Token v = null;  Token minus = null;  Token num = null;  Token wd = null;}{
+    (    y = year()    {      dwo.year = y;    }  )?  (
+    LOOKAHEAD(((< MONTH >)? daynum()) | (< VARDATE >), {getToken(2).kind != MINUTES && getToken(3).kind != MINUTES }) // don't parse this if we actually have a time as 2nd token    (      (        (
                     (m = < MONTH >          {            dwo.month = m.image;          }          )?          (            dwo.day = daynum()          )        )      |
 // this doesn't seem to be in the spec any more//        (//          m = < MONTH > d = < WEEKDAY > "[" (h = < HYPHEN >)? n = one2five() "]"//          {//            dwo.month = m.image;//            dwo.weekDay = d.image;//            dwo.nth = Integer.parseInt(n.image);//            if (h != null)//            {//              dwo.nth = dwo.nth * - 1;//            }//          }//        )//      |         (          v = < VARDATE >          {            dwo.varDate = v.image;          }        )      )      (        (          minus = < HYPHEN >        | < PLUS >        )        wd = < WEEKDAY >        {          dwo.weekDayOffsetPositive = minus == null;          dwo.weekDayOffset = wd.image;        }      )?      (        (          minus = < HYPHEN >        | < PLUS >        )        (          num = number()          {            dwo.dayOffset = Integer.parseInt(num.image) * (minus != null ? - 1 : 1);          }        )      )?    )
-  |     (m = < MONTH >    {      dwo.month = m.image;    }    )  )  {    return dwo;  }}ArrayList < MonthDayRange > monthday_selector() :{  MonthDayRange mdr, mdr1;  ArrayList < MonthDayRange > result = new ArrayList < MonthDayRange > ();}{  mdr = monthday_range()  (    < COMMA > mdr1 = monthday_range()    {      result.add(0, mdr1);    }  )*  {    result.add(mdr);    Collections.reverse(result);    return result;  }}int weeknum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 54 })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}WeekRange week_range() :{  WeekRange wr = new WeekRange();  Token w = null;  Token w1 = null;  Token i = null;}{  wr.startWeek = weeknum()  (    < HYPHEN > wr.endWeek = weeknum()    (      wr.interval = interval()    )?  )?  {    return wr;  }}ArrayList < WeekRange > week_selector() :{  WeekRange wr, wr1;  ArrayList < WeekRange > result = new ArrayList < WeekRange > ();}{  "week" wr = week_range()  (    < COMMA > wr1 = week_range()    {      result.add(0, wr1);    }  )*  {    result.add(wr);    Collections.reverse(result);    return result;  }}RuleModifier rule_modifier() :{  RuleModifier rm = new RuleModifier();  Token m = null;  String c = null;}{  (m = < MODIFIER >  {    rm.modifier = m.image;  }  )?  (    c = comment()    {      rm.comment = c;    }  )?  {    return rm;  }}Rule rule() :{  Rule r = null;
-  String comment = null;  ArrayList < WeekRange > ws = null;  ArrayList < MonthDayRange > ms = null;  ArrayList < Holiday > hs = null;  ArrayList < WeekDayRange > ds = null;  ArrayList < TimeSpan > ts = null;  RuleModifier rm = null;}{  (
+  |     (m = < MONTH >    {      dwo.month = m.image;    }    )  )  {    return dwo;  }}ArrayList < MonthDayRange > monthday_selector() :{  MonthDayRange mdr, mdr1;  ArrayList < MonthDayRange > result = new ArrayList < MonthDayRange > ();}{  mdr = monthday_range()  (    < COMMA > mdr1 = monthday_range()    {      result.add(0, mdr1);    }  )*  {    result.add(mdr);    Collections.reverse(result);    return result;  }}int weeknum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 54 })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}WeekRange week_range() :{  WeekRange wr = new WeekRange();  Token w = null;  Token w1 = null;}{  wr.startWeek = weeknum()  (    < HYPHEN > wr.endWeek = weeknum()    (      wr.interval = interval()    )?  )?  {    return wr;  }}ArrayList < WeekRange > week_selector() :{  WeekRange wr, wr1;  ArrayList < WeekRange > result = new ArrayList < WeekRange > ();}{  "week" wr = week_range()  (    < COMMA > wr1 = week_range()    {      result.add(0, wr1);    }  )*  {    result.add(wr);    Collections.reverse(result);    return result;  }}
+
+YearRange year_range() :
+{
+  YearRange yr = new YearRange();
+  Token y = null;
+  Token y1 = null;
+}
+{
+  yr.startYear = year()
+  (
+    < HYPHEN > yr.endYear = year()
+    (
+      yr.interval = interval()
+    )?
+  )?
+  {
+    return yr;
+  }
+}
+
+
+ArrayList < YearRange > year_selector() :
+{
+  YearRange yr, yr1;
+  ArrayList < YearRange > result = new ArrayList < YearRange > ();
+}
+{
+  LOOKAHEAD({getToken(2).kind != MONTH  && getToken(2).kind != VARDATE})    
+  yr = year_range()
+  (
+    < COMMA > yr1 = year_range()
+    {
+      result.add(0, yr1);
+    }
+  )*
+  {
+    result.add(yr);
+    Collections.reverse(result);
+    return result;
+  }
+}RuleModifier rule_modifier() :{  RuleModifier rm = new RuleModifier();  Token m = null;  String c = null;}{  (m = < MODIFIER >  {    rm.modifier = m.image;  }  )?  (    c = comment()    {      rm.comment = c;    }  )?  {    return rm;  }}Rule rule() :{  Rule r = null;
+  String comment = null;
+  ArrayList < YearRange > ys = null;  ArrayList < WeekRange > ws = null;  ArrayList < MonthDayRange > ms = null;  ArrayList < Holiday > hs = null;  ArrayList < WeekDayRange > ds = null;  ArrayList < TimeSpan > ts = null;  RuleModifier rm = null;}{  (
     LOOKAHEAD(comment() < COLON >)
     (
       comment = comment()
     )
-  |     (      (        ws = week_selector()      )?      (        ms = monthday_selector()      )?    )  )
+  |     (
+      (        ys = year_selector()      )?        (        ws = week_selector()      )?      (        ms = monthday_selector()      )?    )  )
   (  < COLON >  )?  (    hs = holiday_sequence()  |    (      hs = holiday_sequence() (< COMMA >)? ds = weekday_selector()    )  )?  (    ds = weekday_selector()  )?
   // spec is not clear on this, however ":" is used in real life here a lot
   (
   < COLON >
   )?  (    ts = time_selector()  )?  (    rm = rule_modifier()  )  {    r = new Rule();
-    r.comment = comment;    r.weeks = ws;    r.monthdays = ms;    r.holidays = hs;    r.days = ds;    r.times = ts;    r.modifier = rm;    return r;  }}ArrayList < Rule > rules() :{  ArrayList < Rule > result = new ArrayList < Rule > ();  Rule r = null;  Rule r1 = null;}{  r = rule()  (    (      < COMMA >    | < SEMICOLON >    | < FALLBACKSEPERATOR >    )    r1 = rule()    {      result.add(0, r1);    }  )*  < EOF >  {    result.add(r);    Collections.reverse(result);    return result;  }}
+    r.comment = comment;
+    r.years = ys;    r.weeks = ws;    r.monthdays = ms;    r.holidays = hs;    r.days = ds;    r.times = ts;    r.modifier = rm;    return r;  }}ArrayList < Rule > rules() :{  ArrayList < Rule > result = new ArrayList < Rule > ();  Rule r = null;  Rule r1 = null;}{  r = rule()  (    (      < COMMA >    | < SEMICOLON >    | < FALLBACKSEPERATOR >    )    r1 = rule()    {      result.add(0, r1);    }  )*  < EOF >  {    result.add(r);    Collections.reverse(result);    return result;  }}

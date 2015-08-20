@@ -26,6 +26,8 @@ class Rule {
 	boolean replace = true;
 	
 	String comment = null;
+	// year range list
+    ArrayList<YearRange> years = null;
 	// week list
     ArrayList<WeekRange> weeks = null;
 	// month day list
@@ -47,6 +49,16 @@ class Rule {
 		StringBuffer b = new StringBuffer();
 		if (comment != null) {
 			b.append(comment + ": ");
+		}	
+		if (years != null) {
+			for (YearRange yr:years) {
+				b.append(yr.toString());
+				if (years.get(years.size()-1)!=yr) {
+					b.append(",");
+				} else {
+					b.append(" ");
+				}
+			}
 		}
 		if (weeks != null) {
 			b.append("week ");
