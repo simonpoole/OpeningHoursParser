@@ -1,549 +1,0 @@
-/**
- * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */options{  JDK_VERSION = "1.5";  static = true;
-  LOOKAHEAD= 10;
-  FORCE_LA_CHECK = true;
-  CHOICE_AMBIGUITY_CHECK=2;
-  OTHER_AMBIGUITY_CHECK=2;
-  DEBUG_PARSER = true;
-  DEBUG_LOOKAHEAD = true;
-  DEBUG_TOKEN_MANAGER = true;}PARSER_BEGIN(EG1)
-import java.util.ArrayList;
-import java.util.Collections;
-import java.io.ByteArrayInputStream;
-
-public class EG1{  public static void main(String args []) throws ParseException  {
-    // String str = "1 02:00; 2014 Mar Th[1] ; 2014 Jan 25 03:00;";
-    
-   //  String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/45 ; 12-16 closed  ; Mo, We 12:01-13:02 ; Apr-Sep Tu-Th,Fr 10:01-13:03, Dec 13:03-21:01 ; week 01-22 10:11-14:14 ; 2014 Jan 2 03:00;";
-    // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; 12-16 closed \"ein test\" ; Mo, We 12:01-13:02 ; Apr-Sep 10:01-13:03, Dec 13:03-21:01";
-    String str = "closed \"ein test\" ;";
-     
-    EG1 parser = new EG1(new ByteArrayInputStream(str.getBytes()));
-    ArrayList<Rule> rules = parser.rules();
-    for (Rule rl:rules)
-	{
-	  System.out.println(rl.toString());
-	}  }}PARSER_END(EG1)SKIP :{  "\r"| "\n"}TOKEN : {  < COMMA : "," >| < SEMICOLON : ";" >
-| < COLON : ":" >
-| < PLUS : "+" >
-| < HYPHEN : "-" >
-| < SLASH : "/" >}
-
-SKIP:
-{
-  <  DOUBLEQUOTE : "\""> : COMMENT_STATE
-}
-
-<  COMMENT_STATE > TOKEN:
-{
-  < ENDQUOTE : < DOUBLEQUOTE >>  : DEFAULT
-}
-<  COMMENT_STATE > MORE:
-{
-  < EVERYTHINGEXCEPTDOUBLEQOUTES: ~["\""] >
-}
-
-
-TOKEN :{
-  < HOUR : < DIGIT > | "0" < DIGIT > | "1" < DIGIT > | "2" ["0" - "4" ] >
-| < EXTENDEDHOUR : < HOUR > | "2" ["5"-"9"] |  "3" < DIGIT > | "4" ["0" - "8" ]  >
-}
-
-TOKEN :
-{
-  < MINUTES : < COLON > [ "0"-"5" ] < DIGIT > > }
-
-TOKEN :
-{  <  ONE2FIVE : [ "1"-"5" ] >
-}
-
-TOKEN :
-{
- < YEAR : ( "19" < DIGIT >< DIGIT > ) | ( "2" < DIGIT >< DIGIT >< DIGIT > ) > }
-
-TOKEN :
-{ < DAYNUM : ( ["0"-"2"] <DIGIT > ) |  "3" ["0"-"1"] >
-}
-
-TOKEN :
-{  <  WEEKNUM : ( ["0"-"4"] <DIGIT > ) |  "5" ["0"-"4"] >
-}
-
-TOKEN:
-{
- < NUMBER : ( < DIGIT > )+ >
-}
-
-TOKEN :
-{< DIGIT : [ "0"-"9" ] >
-}
-TOKEN :
-{<  WS : [ " ","\t" ] >} 
-
-TOKEN :
-{<  FALLBACKSEPERATOR : "||" >
-}
-
-TOKEN :
-{
-<  ALWAYS : "24/7" >
-}
-
-TOKEN :
-{
-  < WEEKDAY :  "Mo"|"Tu"|"We"|"Th"|"Fr"|"Sa"|"Su">
-| < MONTH: "Jan"|"Feb"|"Mar"|"Apr"|"May"|"Jun"|"Jul"|"Aug"|"Sep"|"Oct"|"Nov"|"Dec" >
-| < HOLIDAYS : "SH"|"PH" >
-| < EVENTS : "sunrise"|"sunset"|"dawn"|"dusk" >
-| < VARDATE : "easter" >
-}
-
-TOKEN :
-{  < MODIFIER : "open"|"closed"|"off"|"unknown" >
-}
-String comment() :
-{
- 	Token r = null;
-}
-{
-  r = < ENDQUOTE >
-  {
-    System.out.println(">"+r.image+"< ");
-    return r.image;
-  }
-}
-
-int time() :
-{
-  Token h = null;
-  Token m = null;
-  int result = 0;
-}
-{
-  h = < HOUR >
-  ( m = < MINUTES >  {
-    result = Integer.parseInt(m.image.substring(1));  }
-  )?
- 
-  {
-    result = result + Integer.parseInt(h.image) * 60;
- 	return result;
-  }
-}
-
-int extendedtime() :
-{
-  Token h = null;
-  Token m = null;
-  int result = 0;
-}
-{
-  (      h = < EXTENDEDHOUR > | h = < HOUR >
-  )
-  ( m = < MINUTES >
-    {
-      result = Integer.parseInt(m.image.substring(1));
-    }
-  )?
- 
-  {
-    result = result + Integer.parseInt(h.image) * 60; 
- 	return result;
-  }
-}
-
-VariableTime variabletime() :
-{	Token event = null;
-	Token sign = null;
-	int offset = 0;
-	VariableTime vt = new VariableTime();
-}
-{  (    event = < EVENTS >
-    {
-	  vt.event =  event.image;
-	  return vt;
-    }
-  ) | (
-    "("  event = < EVENTS > ( sign = < PLUS > | sign = < HYPHEN > )  offset = time() ")"  	{
-  	  vt.event =  event.image;
-  	  vt.offset = (sign.image.equals("-") ? -1 : 1) * offset;
-     }
-  )
-  {	return vt;
-  }
-}
-
-int interval() :
-{  Token minutes = null;
-  Token hours = null;
-  int interval = 0;
-}
-{   <SLASH > ( ( ( minutes = < HOUR > | minutes = < EXTENDEDHOUR > | minutes = < NUMBER > )
-      {
-	    interval = Integer.parseInt(minutes.image);
-      }
-    ) | (hours = < HOUR > minutes = < MINUTES > 
-      {
-	    interval = Integer.parseInt(hours.image)*60 + Integer.parseInt(minutes.image.substring(1));
-	  }
-	)
-  )
-  {	
-	return interval;
-  }
-}
-
-TimeSpan timespan() :
-{
-  int start = 0;
-  int end = -1;
-  Token startplus = null;
-  Token endplus = null;
-  VariableTime startVT = null;
-  VariableTime endVT = null;
-  TimeSpan ts =new TimeSpan();
-  int inter = 0;}
-{  (    ( start = time()
-	{		ts.start = start;
-	}
-    | startVT = variabletime()
-    {		ts.startEvent = startVT;
-    }
-    )
-    ( startplus = < PLUS >
-    | ( < HYPHEN > ( end = extendedtime()      {
-        ts.end = end;	  }
-      | endVT = variabletime()      {
-        ts.endEvent = endVT;      }
-      )
-      ( endplus = < PLUS > |  (inter = interval()      {
-        ts.interval = inter;      }
-      ) )? )
-    )?
-    {   
-	  ts.openEnded = startplus != null || endplus != null; 
-      return ts;
-    }
-  ) | (
-    < ALWAYS >
-    {		ts.twentyfourseven = true;
-		return ts;
-    }
-  ) 
-}
-
-ArrayList<TimeSpan> time_selector() :
-{
-  TimeSpan ts,ts1;
-  ArrayList<TimeSpan> result = new ArrayList<TimeSpan>();  }
-{  ts = timespan()  ( (< WS >)* < COMMA > (< WS >)* ts1 = timespan()  	{
-    	result.add(0,ts1);  	}
-  )*
-  {   
-    result.add(ts);
-    Collections.reverse(result);
-    return result;  }
-}
-
-String weekday() :
-{
-  Token w = null;}
-{ w = < WEEKDAY >
- {   return w.image;
- }
-}
-
-WeekDayRange weekday_range() :
-{	String startDay = null;
-	String endDay = null;
-	Nth nth = null;
-	Nth nth1 = null;
-	WeekDayRange wdr = new WeekDayRange();
-}
-{  startDay = weekday() (( < HYPHEN > ( endDay = weekday() )  {
-    wdr.endDay = endDay;  }
-  )? | ( "[" nth = nth()  ( ( < WS >)* < COMMA > (< WS >)* nth1 = nth()    {
-      wdr.nth.add(nth);    }
-  )*  {
-    wdr.nth.add(nth);
-    Collections.reverse(wdr.nth);  }
-  "]" )?
-  )
-  {	wdr.startDay = startDay;
-	return wdr;
-  }
-}
-
-Nth nth() :{
-  Nth n = new Nth();
-  Token t1 = null;
-  Token t2 = null;}
-{
-  ( t1= < ONE2FIVE >    {
-      n.startNth = Integer.parseInt(t1.image);    }
-  )? ( < HYPHEN > t2 = < ONE2FIVE >
-    {
-      n.endNth = Integer.parseInt(t2.image);    }
-  )?	{		return n;
-	}
-}
-
-ArrayList<WeekDayRange> weekday_selector() :
-{
-  WeekDayRange wdr,wdr1;
-  ArrayList<WeekDayRange> result = new ArrayList<WeekDayRange>();  
-}
-{
-  wdr = weekday_range()  ( (< WS >)* < COMMA > (< WS >)* wdr1 = weekday_range()
-  	{
-    	result.add(0,wdr1);
-  	}
-  )*
-  {   
-    result.add(wdr);
-    Collections.reverse(result);
-    return result;
-  }
-}
-
-Holiday holiday() :
-{  Token h = null;
-  Token n = null;
-  Token m = null;
-  Holiday result = new Holiday();
-}
-{
-  h = < HOLIDAYS > ( ( m = < HYPHEN > | < PLUS > ) n = < NUMBER > ( < WS > )? "day" ("s")?    {
-      result.offset = Integer.parseInt(n.image);
-      if (m!= null) {		result.offset = result.offset*-1;
-      }             }
-  )?
-  {
-    result.type = Holiday.Type.valueOf(h.image);
-    return result;  }
-}
-
-ArrayList<Holiday> holiday_sequence() :
-{
-  Holiday h = null;
-  Holiday h1 = null;
-  ArrayList<Holiday> result = new ArrayList<Holiday>();  
-}
-{
-  h = holiday() ( (< WS >)* < COMMA > (< WS >)* h1 = holiday()
-  	{
-    	result.add(0,h1);
-  	}
-  )*
-  {   
-    result.add(h);
-    Collections.reverse(result);
-    return result;
-  }
-}
-
-String month() :{  Token m = null;
-}
-{  m=< MONTH >
-  {
-	return m.image;   }
-}
-
-MonthDayRange monthday_range() :
-{
-	Token nth = null;
-	Token year = null;
-	Token n = null;
-	String startMonth = null;
-	String endMonth = null;
-	MonthDayRange mdr = new MonthDayRange();
-	DateWithOffset startDate = null;
-	DateWithOffset endDate = null;
-	Token plus = null;
-}
-{
-  (    (       (
- 		startDate = datewithoffset() ( plus = < PLUS > )?
- 		{
- 		  mdr.startDate = startDate;
- 		  startDate.openEnded = plus != null; 		}        
-      )
-    )
-    (  
-      (< WS >)*< HYPHEN >(< WS >)*
-      (
-        endDate = datewithoffset()
- 		{
- 		  mdr.endDate = endDate;
- 		}        
-      )
-    )? 
-  )
-  {
-	return mdr;
-  }
-}
-
-int daynum() :
-{
-	Token n = null;
-}
-{
-  (n = < HOUR > | n = < DAYNUM > )
-  {
-	return Integer.parseInt(n.image);
-  } 
-}
-
-DateWithOffset datewithoffset() :{
-  DateWithOffset dwo = new DateWithOffset();
-  Token y = null;
-  Token m = null;
-  Token d = null;
-  Token h = null;
-  Token n = null;
-  Token v = null;
-  Token minus = null;
-  Token num = null;
-  Token wd = null;}
-{
-  ( y = < YEAR > (< WS >)+    {		dwo.year = Integer.parseInt(y.image);
-    }
-  )?
-
-  (
-    ( m = < MONTH > { dwo.month = m.image; } )    | ( ( ( ( m = < MONTH > (< WS >)+ { dwo.month = m.image; })? ( dwo.day = daynum() ) )
-      | ( m = < MONTH > (< WS >)+ d = < WEEKDAY >"[" ( h = < HYPHEN > )? n = < ONE2FIVE >"]" 
-           {
-             dwo.month = m.image;
-             dwo.weekDay = d.image;
-             dwo.nth = Integer.parseInt(n.image);
-             if (h!=null)
-             {
-		       dwo.nth = dwo.nth * -1;
-             }           } )
-         | ( v = < VARDATE >
-           { 	         dwo.varDate = v.image;
-           }
-         )
-       )       (         ( minus = < HYPHEN > | < PLUS > ) wd = < WEEKDAY >
-           {
-             dwo.weekDayOffsetPositive = minus == null;
-             dwo.weekDayOffset = wd.image;           }        )?
-       (
-          ( minus = < HYPHEN > | < PLUS > )  num = < NUMBER >
-            {
-              dwo.dayOffset = Integer.parseInt(num.image) * (minus != null ? -1 : 1);
-            } 
-        )?
-     )
-  )
-  {
-    return dwo;  }}
-
-ArrayList<MonthDayRange> monthday_selector() :
-{
-  MonthDayRange mdr,mdr1;
-  ArrayList<MonthDayRange> result = new ArrayList<MonthDayRange>();  
-}
-{
-  mdr = monthday_range()  ( (< WS >)* < COMMA > (< WS >)* mdr1 = monthday_range()
-  	{
-    	result.add(0,mdr1);
-  	}
-  )*
-  {   
-    result.add(mdr);
-    Collections.reverse(result);
-    return result;
-  }
-}
-
-int weeknum() :{	Token n = null;
-}
-{
-  (n = < HOUR > | n = < EXTENDEDHOUR > | n = <  WEEKNUM >)
-  {	return Integer.parseInt(n.image);
-  } }
-
-WeekRange week_range() :
-{	WeekRange wr = new WeekRange();
-	Token w = null;
-	Token w1 = null;
-	Token i = null;
-}
-{	wr.startWeek = weeknum() (< HYPHEN > wr.endWeek = weeknum() ( wr.interval = interval() )? )?
-	{		return wr;
-	}
-}
-
-ArrayList<WeekRange> week_selector() :
-{
-  WeekRange wr,wr1;
-  ArrayList<WeekRange> result = new ArrayList<WeekRange>();  
-}
-{    "week" (< WS >)+ wr = week_range()  ( (< WS >)* < COMMA > (< WS >)* wr1 = week_range()
-  	{
-    	result.add(0,wr1);
-  	}
-  )* 
-  {   
-    result.add(wr);
-    Collections.reverse(result);
-    return result;
-  }
-}
-
-RuleModifier rule_modifier() :{
-  	RuleModifier rm = new RuleModifier();	Token m = null;
-	String c = null;
-}
-{  ( m = < MODIFIER >	{	  rm.modifier = m.image;	}  )? ( c= comment()	{
-	  rm.comment = c;	}
-  )?
-  {
-	return rm;  }
-}
-Rule rule() :{
-  	Rule r = null;
-  	ArrayList<WeekRange> ws = null;
-  	ArrayList<MonthDayRange> ms = null;
-  	ArrayList<Holiday> hs = null;
-  	ArrayList<WeekDayRange> ds = null;	ArrayList<TimeSpan> ts = null;
-	RuleModifier rm = null;
-	
-}
-{	( ( < WS > )* ws = week_selector()  ) ?
-	//( ( < WS > )* ms = monthday_selector()  ) ?
-	( ( < WS > )* hs = holiday_sequence()  ) ?
-	( ( ( < WS > )+ | (< COMMA >) )? ds = weekday_selector()  ) ?
-	( (< WS >)*  ts = time_selector() )?
-	( (< WS >)* rm = rule_modifier() )
-	{
-	  	r = new Rule();
-	  	r.weeks = ws;
-	  	r.monthdays = ms;
-	  	r.holidays = hs;
-	  	r.days = ds;
-	  	r.times = ts;
-	  	r.modifier = rm;		return r;
-	}}
-ArrayList<Rule> rules() :
-{
-  ArrayList<Rule> result = new ArrayList<Rule>();
-  Rule r = null;
-  Rule r1 = null;
-}
-{
-  r = rule()  ( (< WS >)* ( < COMMA > | < SEMICOLON > | < FALLBACKSEPERATOR > | < EOF > ) (< WS >)* r1 = rule() 
-   {
-    	result.add(0,r1);
-  	}
-  )*
-  {
-	result.add(r);
-	Collections.reverse(result);
-    return result;
-  }
-}
