@@ -21,7 +21,7 @@
  */
 import java.util.ArrayList;
 
-class Rule {
+class Rule extends Element {
 	boolean fallBack = false;
 	boolean replace = true;
 	
@@ -47,6 +47,7 @@ class Rule {
 
 	public String toString() {
 		StringBuffer b = new StringBuffer();
+		// FIXME might want to write out fallBack and replace flags too
 		if (comment != null) {
 			b.append(comment + ": ");
 		}	
@@ -114,5 +115,41 @@ class Rule {
 			b.append(modifier.toString());
 		}
 		return b.toString();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		Rule o = (Rule)other;
+		if (fallBack == o.fallBack  && replace == o.replace 
+				&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
+				&& (years == o.years  || (years != null && years.equals(o.years)))
+				&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
+				&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
+				&& (holidays == o.holidays  || (holidays != null && holidays.equals(o.holidays)))
+				&& (days == o.days  || (days != null && days.equals(o.days)))
+				&& (times == o.times  || (times != null && times.equals(o.times)))
+				&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)))){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * (fallBack ? 0 : 1);
+		result = 37 * (replace ? 0 : 1);
+		result = 37 * result + (comment == null ? 0 : comment.hashCode());
+		result = 37 * result + (years == null ? 0 : years.hashCode());
+		result = 37 * result + (weeks == null ? 0 : weeks.hashCode());
+		result = 37 * result + (monthdays == null ? 0 : monthdays.hashCode());
+		result = 37 * result + (holidays == null ? 0 : holidays.hashCode());
+		result = 37 * result + (days == null ? 0 : days.hashCode());
+		result = 37 * result + (times == null ? 0 : times.hashCode());
+		result = 37 * result + (modifier == null ? 0 : modifier.hashCode());
+		return result;
 	}
 }

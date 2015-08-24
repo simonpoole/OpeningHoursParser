@@ -20,7 +20,7 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public class RuleModifier {
+public class RuleModifier extends Element {
 	String modifier = null;
 	String comment = null;
 	
@@ -36,5 +36,26 @@ public class RuleModifier {
 			b.append(comment);
 		}
 		return b.toString();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		RuleModifier o = (RuleModifier)other;
+		if ((modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier))) 
+				&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + (modifier == null ? 0 : modifier.hashCode());
+		result = 37 * result + (comment == null ? 0 : comment.hashCode());
+		return result;
 	}
 }

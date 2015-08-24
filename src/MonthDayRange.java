@@ -19,12 +19,10 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-class MonthDayRange {
+class MonthDayRange extends Element {
  
 	DateWithOffset startDate = null;
-
 	DateWithOffset endDate = null;
-	
 	int interval=0;
 
 	public String toString() {
@@ -37,5 +35,28 @@ class MonthDayRange {
 			b.append(endDate.toString());
 		}
 		return b.toString();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		MonthDayRange o = (MonthDayRange)other;
+		if ((startDate == o.startDate  || (startDate != null && startDate.equals(o.startDate))) 
+				&& (endDate == o.endDate  || (endDate != null && endDate.equals(o.endDate)))
+				&& interval == o.interval){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + (startDate == null ? 0 : startDate.hashCode());
+		result = 37 * result + (endDate == null ? 0 : endDate.hashCode());
+		result = 37 * result + interval;
+		return result;
 	}
 }

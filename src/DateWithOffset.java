@@ -20,7 +20,7 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
  
-public class DateWithOffset {
+public class DateWithOffset extends Element {
 	boolean openEnded = false;
 	int year = 0;
 	String month = null;
@@ -80,5 +80,39 @@ public class DateWithOffset {
 			b.append("+");
 		}
 		return b.toString();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		DateWithOffset o = (DateWithOffset)other;
+		if (openEnded == o.openEnded && year == o.year 
+				&& (month == o.month  || (month != null && month.equals(o.month))) 
+				&& day == o.day 
+				&& (weekDay == o.weekDay  || (weekDay != null && weekDay.equals(o.weekDay)))
+				&& nth == o.nth
+				&& weekDayOffsetPositive == o.weekDayOffsetPositive
+				&& (weekDayOffset == o.weekDayOffset  || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
+				&& dayOffset == o.dayOffset){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + (openEnded ? 0 : 1);
+		result = 37 * result + year;
+		result = 37 * result + (month == null ? 0 : month.hashCode());
+		result = 37 * result + day;
+		result = 37 * result + (weekDay == null ? 0 : weekDay.hashCode());
+		result = 37 * result + nth;
+		result = 37 * result + (weekDayOffsetPositive ? 0 : 1);
+		result = 37 * result + (weekDayOffset == null ? 0 : weekDayOffset.hashCode());
+		result = 37 * result + dayOffset;
+		return result;
 	}
 }

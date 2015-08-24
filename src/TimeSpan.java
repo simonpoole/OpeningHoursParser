@@ -20,7 +20,7 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public class TimeSpan {
+public class TimeSpan extends Element {
 
 	boolean twentyfourseven = false;
 	int start=-1;
@@ -63,5 +63,30 @@ public class TimeSpan {
 		}
 		return b.toString();
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		TimeSpan o = (TimeSpan)other;
+		if (twentyfourseven == o.twentyfourseven && start == o.start && (startEvent == o.startEvent  || (startEvent != null && startEvent.equals(o.startEvent))) 
+				&& end == o.end && (endEvent == o.endEvent  || (endEvent != null && endEvent.equals(o.endEvent))) && openEnded == o.openEnded && interval == o.interval) {
+			return true;
+		}
+		return false;
+	}
 
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + (twentyfourseven ? 0 : 1);
+		result = 37 * result + start;
+		result = 37 * result + (startEvent == null ? 0 : startEvent.hashCode());
+		result = 37 * result + end;
+		result = 37 * result + (endEvent == null ? 0 : endEvent.hashCode());
+		result = 37 * result + (openEnded ? 0 : 1);
+		result = 37 * result + interval;
+		return result;
+	}
 }

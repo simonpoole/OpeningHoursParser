@@ -20,7 +20,7 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public class YearRange {
+public class YearRange extends Element {
 
 	int startYear = -1;
 	int endYear = -1;
@@ -38,5 +38,26 @@ public class YearRange {
 			}
 		}
 		return b.toString();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		YearRange o = (YearRange)other;
+		if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + startYear;
+		result = 37 * result + endYear;
+		result = 37 * result + interval;
+		return result;
 	}
 }

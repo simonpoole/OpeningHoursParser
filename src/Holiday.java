@@ -19,7 +19,7 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-public class Holiday {
+public class Holiday extends Element {
 	enum Type { PH, SH };
 	Type type = null;
 	int offset = 0;
@@ -38,5 +38,26 @@ public class Holiday {
 			}
 		}
 		return b.toString();		
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		Holiday o = (Holiday)other;
+		if ((type == o.type  || (type != null && type.equals(o.type))) 
+				&& offset == o.offset){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + (type == null ? 0 : type.hashCode());
+		result = 37 * result + offset;
+		return result;
 	}
 }

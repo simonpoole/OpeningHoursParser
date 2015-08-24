@@ -20,7 +20,7 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public class VariableTime {
+public class VariableTime extends Element {
 	String event = null;
 	int offset = 0;
 	
@@ -38,5 +38,25 @@ public class VariableTime {
 			}
 		}
 		return b.toString();		
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		VariableTime o = (VariableTime)other;
+		if ((event == o.event  || (event != null && event.equals(o.event))) && offset == offset) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + (event == null ? 0 : event.hashCode());
+		result = 37 * result + offset;
+		return result;
 	}
 }

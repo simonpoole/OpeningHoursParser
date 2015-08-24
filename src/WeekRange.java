@@ -20,7 +20,7 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-public class WeekRange {
+public class WeekRange extends Element {
 	int startWeek = -1;
 	int endWeek = -1;
 	int interval = 0;
@@ -37,5 +37,26 @@ public class WeekRange {
 			}
 		}
 		return b.toString();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		WeekRange o = (WeekRange)other;
+		if (startWeek == o.startWeek && endWeek == o.endWeek && interval == o.interval) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + startWeek;
+		result = 37 * result + endWeek;
+		result = 37 * result + interval;
+		return result;
 	}
 }
