@@ -22,8 +22,8 @@
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */options{  JDK_VERSION = "1.5";  static = false;  LOOKAHEAD= 5;  IGNORE_CASE = true;  FORCE_LA_CHECK = true;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 2;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  UNICODE_INPUT = true;}PARSER_BEGIN(OpeningHoursParser)import java.util.ArrayList;import java.util.Collections;import java.io.ByteArrayInputStream;public class OpeningHoursParser{  public static void main(String args []) throws ParseException  {
     // test strings for running with debugging    // String str = "1 02:00; 2014 Mar Th[1] ; 2014 Jan 25 03:00;";
-    String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/45 ; 12-16 closed  ; Mo, We 12:01-13:02 ; Apr-Sep Tu-Th,Fr 10:01-13:03, Dec 13:03-21:01 ; week 01-22 10:11-14:14 ; 2014 Jan 2 03:00;";
-    // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; 12-16 closed \"ein test\" ; Mo, We 12:01-13:02 ; Apr-Sep 10:01-13:03, Dec 13:03-21:01";
+    // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/45 ; 12-16 closed  ; Mo, We 12:01-13:02 ; Apr-Sep Tu-Th,Fr 10:01-13:03, Dec 13:03-21:01 ; week 01-22 10:11-14:14 ; 2014 Jan 2 03:00;";
+    String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; 12-16 closed \"ein test\" ; Mo, We 12:01-13:02 ; Apr-Sep 10:01-13:03, Dec 13:03-21:01";
     // String str = "closed \"ein test\" ;";
     // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; closed \"ein test\"";
     // String str = "Mo[1-4,5] 4:01-13:02";
@@ -39,7 +39,20 @@
     // String str = "10:00-22:00;";
     // String str = "2002-2010/2 We-Sa 10:00-22:00;";
     
-    OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(str.getBytes()));    ArrayList < Rule > rules = parser.rules();    for (Rule rl : rules)    {      System.out.println(rl.toString());    }  }}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : "-" >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
+    OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(str.getBytes()));    ArrayList<Rule> rules = parser.rules();
+    System.out.println("Parse result");    for (Rule rl : rules)    {      System.out.println(rl.toString());    }
+    System.out.println();
+    ArrayList<ArrayList<Rule>> r = Util.getMergeableRules(rules);
+    System.out.println("Mergeable rules");
+    for (ArrayList<Rule>r2:r)
+    {
+      boolean first = true;
+      for (Rule r3 : r2)
+      {
+        System.out.print((!first ? (r3.replace?";":","):"") + r3.toString());
+        first = false;
+      }
+      System.out.println();    }  }}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : "-" >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
 TOKEN :{  < NUMBER : (< DIGIT >)+ >}//
 TOKEN :{  < MINUTES : < COLON > [ "0"-"5" ] < DIGIT >>}TOKEN :{  < DIGIT : [ "0"-"9" ] >}TOKEN :{  < WS : [ " ", "\t" ] >}TOKEN :{  < FALLBACKSEPERATOR : "||" >}TOKEN :{  < ALWAYS : "24/7" >}TOKEN :{  < WEEKDAY :    "Mo"  | "Tu"  | "We"  | "Th"  | "Fr"  | "Sa"  | "Su" >| < WEEKDAY3 :    "Mon"  | "Tue"  | "Wed"  | "Thu"  | "Fri"  | "Sat"  | "Sun" >| < MONTH :    "Jan"  | "Feb"  | "Mar"  | "Apr"  | "May"  | "Jun"  | "Jul"  | "Aug"  | "Sep"  | "Oct"  | "Nov"  | "Dec" >| < HOLIDAYS :    "SH"  | "PH" >| < EVENTS :    "sunrise"  | "sunset"  | "dawn"  | "dusk" >| < VARDATE : "easter" >}TOKEN :{  < MODIFIER :    "open"  | "closed"  | "off"  | "unknown" >}/**
  * match a number between 1 and 5

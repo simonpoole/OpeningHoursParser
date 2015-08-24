@@ -152,4 +152,25 @@ class Rule extends Element {
 		result = 37 * result + (modifier == null ? 0 : modifier.hashCode());
 		return result;
 	}
+	
+	/**
+	 * Returns true if the input only differs in the days and times objects
+	 * Current considers comments significant
+	 * @param o
+	 * @return
+	 */
+	public boolean isMergeableWith(Rule o) {
+		if (this == o) {
+			return true;
+		}		
+		if ((comment == o.comment  || (comment != null && comment.equals(o.comment)))
+			&& (years == o.years  || (years != null && years.equals(o.years)))
+			&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
+			&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
+			&& (holidays == o.holidays  || (holidays != null && holidays.equals(o.holidays)))
+			&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)))){
+			return true;
+		}
+		return false;
+	}
 }
