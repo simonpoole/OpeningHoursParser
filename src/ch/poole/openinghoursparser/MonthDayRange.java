@@ -60,4 +60,46 @@ public class MonthDayRange extends Element {
 		result = 37 * result + interval;
 		return result;
 	}
+
+	/**
+	 * @return the startDate
+	 */
+	public DateWithOffset getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * @return the endDate
+	 */
+	public DateWithOffset getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @return the interval
+	 */
+	public int getInterval() {
+		return interval;
+	}
+
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(DateWithOffset startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(DateWithOffset endDate) {
+		this.endDate = endDate;
+	}
+
+	/**
+	 * @param interval the interval to set
+	 */
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
 }

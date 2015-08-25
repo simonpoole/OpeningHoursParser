@@ -116,4 +116,144 @@ public class DateWithOffset extends Element {
 		result = 37 * result + dayOffset;
 		return result;
 	}
+
+	/**
+	 * @return the openEnded
+	 */
+	public boolean isOpenEnded() {
+		return openEnded;
+	}
+
+	/**
+	 * @return the year
+	 */
+	public int getYear() {
+		return year;
+	}
+
+	/**
+	 * @return the month
+	 */
+	public String getMonth() {
+		return month;
+	}
+
+	/**
+	 * @return the day
+	 */
+	public int getDay() {
+		return day;
+	}
+
+	/**
+	 * @return the weekDay
+	 */
+	public String getWeekDay() {
+		return weekDay;
+	}
+
+	/**
+	 * @return the nth
+	 */
+	public int getNth() {
+		return nth;
+	}
+
+	/**
+	 * @return the weekDayOffsetPositive
+	 */
+	public boolean isWeekDayOffsetPositive() {
+		return weekDayOffsetPositive;
+	}
+
+	/**
+	 * @return the weekDayOffset
+	 */
+	public String getWeekDayOffset() {
+		return weekDayOffset;
+	}
+
+	/**
+	 * @return the dayOffset
+	 */
+	public int getDayOffset() {
+		return dayOffset;
+	}
+
+	/**
+	 * @return the varDate
+	 */
+	public String getVarDate() {
+		return varDate;
+	}
+
+	/**
+	 * @param openEnded the openEnded to set
+	 */
+	public void setOpenEnded(boolean openEnded) {
+		this.openEnded = openEnded;
+	}
+
+	/**
+	 * @param year the year to set
+	 */
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	/**
+	 * @param month the month to set
+	 */
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+	/**
+	 * @param day the day to set
+	 */
+	public void setDay(int day) {
+		this.day = day;
+	}
+
+	/**
+	 * @param weekDay the weekDay to set
+	 */
+	public void setWeekDay(String weekDay) {
+		this.weekDay = weekDay;
+	}
+
+	/**
+	 * @param nth the nth to set
+	 */
+	public void setNth(int nth) {
+		this.nth = nth;
+	}
+
+	/**
+	 * @param weekDayOffsetPositive the weekDayOffsetPositive to set
+	 */
+	public void setWeekDayOffsetPositive(boolean weekDayOffsetPositive) {
+		this.weekDayOffsetPositive = weekDayOffsetPositive;
+	}
+
+	/**
+	 * @param weekDayOffset the weekDayOffset to set
+	 */
+	public void setWeekDayOffset(String weekDayOffset) {
+		this.weekDayOffset = weekDayOffset;
+	}
+
+	/**
+	 * @param dayOffset the dayOffset to set
+	 */
+	public void setDayOffset(int dayOffset) {
+		this.dayOffset = dayOffset;
+	}
+
+	/**
+	 * @param varDate the varDate to set
+	 */
+	public void setVarDate(String varDate) {
+		this.varDate = varDate;
+	}
 }

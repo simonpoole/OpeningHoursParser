@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class Rule extends Element {
 	boolean fallBack = false;
 	boolean replace = true;
-	
+
 	String comment = null;
 	// year range list
     ArrayList<YearRange> years = null;
@@ -173,5 +173,145 @@ public class Rule extends Element {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * @return the fallBack
+	 */
+	public boolean isFallBack() {
+		return fallBack;
+	}
+
+	/**
+	 * @return the replace
+	 */
+	public boolean isReplace() {
+		return replace;
+	}
+
+	/**
+	 * @return the comment
+	 */
+	public String getComment() {
+		return comment;
+	}
+
+	/**
+	 * @return the years
+	 */
+	public ArrayList<YearRange> getYears() {
+		return years;
+	}
+
+	/**
+	 * @return the weeks
+	 */
+	public ArrayList<WeekRange> getWeeks() {
+		return weeks;
+	}
+
+	/**
+	 * @return the monthdays
+	 */
+	public ArrayList<MonthDayRange> getMonthdays() {
+		return monthdays;
+	}
+
+	/**
+	 * @return the holidays
+	 */
+	public ArrayList<Holiday> getHolidays() {
+		return holidays;
+	}
+
+	/**
+	 * @return the days
+	 */
+	public ArrayList<WeekDayRange> getDays() {
+		return days;
+	}
+
+	/**
+	 * @return the times
+	 */
+	public ArrayList<TimeSpan> getTimes() {
+		return times;
+	}
+
+	/**
+	 * @return the modifier
+	 */
+	public RuleModifier getModifier() {
+		return modifier;
+	}
+
+	/**
+	 * @param fallBack the fallBack to set
+	 */
+	public void setFallBack(boolean fallBack) {
+		this.fallBack = fallBack;
+	}
+
+	/**
+	 * @param replace the replace to set
+	 */
+	public void setReplace(boolean replace) {
+		this.replace = replace;
+	}
+
+	/**
+	 * @param comment the comment to set
+	 */
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	/**
+	 * @param years the years to set
+	 */
+	public void setYears(ArrayList<YearRange> years) {
+		this.years = years;
+	}
+
+	/**
+	 * @param weeks the weeks to set
+	 */
+	public void setWeeks(ArrayList<WeekRange> weeks) {
+		this.weeks = weeks;
+	}
+
+	/**
+	 * @param monthdays the monthdays to set
+	 */
+	public void setMonthdays(ArrayList<MonthDayRange> monthdays) {
+		this.monthdays = monthdays;
+	}
+
+	/**
+	 * @param holidays the holidays to set
+	 */
+	public void setHolidays(ArrayList<Holiday> holidays) {
+		this.holidays = holidays;
+	}
+
+	/**
+	 * @param days the days to set
+	 */
+	public void setDays(ArrayList<WeekDayRange> days) {
+		this.days = days;
+	}
+
+	/**
+	 * @param times the times to set
+	 */
+	public void setTimes(ArrayList<TimeSpan> times) {
+		this.times = times;
+	}
+
+	/**
+	 * @param modifier the modifier to set
+	 */
+	public void setModifier(RuleModifier modifier) {
+		this.modifier = modifier;
 	}
 }

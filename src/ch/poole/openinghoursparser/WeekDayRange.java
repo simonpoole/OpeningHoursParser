@@ -69,4 +69,46 @@ public class WeekDayRange extends Element {
 		result = 37 * result + (nths == null ? 0 : nths.hashCode());
 		return result;
 	}
+
+	/**
+	 * @return the startDay
+	 */
+	public String getStartDay() {
+		return startDay;
+	}
+
+	/**
+	 * @return the endDay
+	 */
+	public String getEndDay() {
+		return endDay;
+	}
+
+	/**
+	 * @return the nths
+	 */
+	public ArrayList<Nth> getNths() {
+		return nths;
+	}
+
+	/**
+	 * @param startDay the startDay to set
+	 */
+	public void setStartDay(String startDay) {
+		this.startDay = startDay;
+	}
+
+	/**
+	 * @param endDay the endDay to set
+	 */
+	public void setEndDay(String endDay) {
+		this.endDay = endDay;
+	}
+
+	/**
+	 * @param nths the nths to set
+	 */
+	public void setNths(ArrayList<Nth> nths) {
+		this.nths = nths;
+	}
 }

@@ -60,4 +60,46 @@ public class WeekRange extends Element {
 		result = 37 * result + interval;
 		return result;
 	}
+
+	/**
+	 * @return the startWeek
+	 */
+	public int getStartWeek() {
+		return startWeek;
+	}
+
+	/**
+	 * @return the endWeek
+	 */
+	public int getEndWeek() {
+		return endWeek;
+	}
+
+	/**
+	 * @return the interval
+	 */
+	public int getInterval() {
+		return interval;
+	}
+
+	/**
+	 * @param startWeek the startWeek to set
+	 */
+	public void setStartWeek(int startWeek) {
+		this.startWeek = startWeek;
+	}
+
+	/**
+	 * @param endWeek the endWeek to set
+	 */
+	public void setEndWeek(int endWeek) {
+		this.endWeek = endWeek;
+	}
+
+	/**
+	 * @param interval the interval to set
+	 */
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
 }

@@ -90,4 +90,102 @@ public class TimeSpan extends Element {
 		result = 37 * result + interval;
 		return result;
 	}
+
+	/**
+	 * @return the twentyfourseven
+	 */
+	public boolean isTwentyfourseven() {
+		return twentyfourseven;
+	}
+
+	/**
+	 * @return the start
+	 */
+	public int getStart() {
+		return start;
+	}
+
+	/**
+	 * @return the startEvent
+	 */
+	public VariableTime getStartEvent() {
+		return startEvent;
+	}
+
+	/**
+	 * @return the end
+	 */
+	public int getEnd() {
+		return end;
+	}
+
+	/**
+	 * @return the endEvent
+	 */
+	public VariableTime getEndEvent() {
+		return endEvent;
+	}
+
+	/**
+	 * @return the openEnded
+	 */
+	public boolean isOpenEnded() {
+		return openEnded;
+	}
+
+	/**
+	 * @return the interval
+	 */
+	public int getInterval() {
+		return interval;
+	}
+
+	/**
+	 * @param twentyfourseven the twentyfourseven to set
+	 */
+	public void setTwentyfourseven(boolean twentyfourseven) {
+		this.twentyfourseven = twentyfourseven;
+	}
+
+	/**
+	 * @param start the start to set
+	 */
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	/**
+	 * @param startEvent the startEvent to set
+	 */
+	public void setStartEvent(VariableTime startEvent) {
+		this.startEvent = startEvent;
+	}
+
+	/**
+	 * @param end the end to set
+	 */
+	public void setEnd(int end) {
+		this.end = end;
+	}
+
+	/**
+	 * @param endEvent the endEvent to set
+	 */
+	public void setEndEvent(VariableTime endEvent) {
+		this.endEvent = endEvent;
+	}
+
+	/**
+	 * @param openEnded the openEnded to set
+	 */
+	public void setOpenEnded(boolean openEnded) {
+		this.openEnded = openEnded;
+	}
+
+	/**
+	 * @param interval the interval to set
+	 */
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
 }

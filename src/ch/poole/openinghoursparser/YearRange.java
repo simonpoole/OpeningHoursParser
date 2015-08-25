@@ -23,6 +23,48 @@ package ch.poole.openinghoursparser;
 
 public class YearRange extends Element {
 
+	/**
+	 * @return the startYear
+	 */
+	public int getStartYear() {
+		return startYear;
+	}
+
+	/**
+	 * @return the endYear
+	 */
+	public int getEndYear() {
+		return endYear;
+	}
+
+	/**
+	 * @return the interval
+	 */
+	public int getInterval() {
+		return interval;
+	}
+
+	/**
+	 * @param startYear the startYear to set
+	 */
+	public void setStartYear(int startYear) {
+		this.startYear = startYear;
+	}
+
+	/**
+	 * @param endYear the endYear to set
+	 */
+	public void setEndYear(int endYear) {
+		this.endYear = endYear;
+	}
+
+	/**
+	 * @param interval the interval to set
+	 */
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
+
 	int startYear = -1;
 	int endYear = -1;
 	int interval = 0;

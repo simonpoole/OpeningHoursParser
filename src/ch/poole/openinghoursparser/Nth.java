@@ -56,4 +56,32 @@ public class Nth extends Element {
 		result = 37 * result + endNth;
 		return result;
 	}
+
+	/**
+	 * @return the startNth
+	 */
+	public int getStartNth() {
+		return startNth;
+	}
+
+	/**
+	 * @return the endNth
+	 */
+	public int getEndNth() {
+		return endNth;
+	}
+
+	/**
+	 * @param startNth the startNth to set
+	 */
+	public void setStartNth(int startNth) {
+		this.startNth = startNth;
+	}
+
+	/**
+	 * @param endNth the endNth to set
+	 */
+	public void setEndNth(int endNth) {
+		this.endNth = endNth;
+	}
 }

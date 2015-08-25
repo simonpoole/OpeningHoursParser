@@ -21,7 +21,7 @@ package ch.poole.openinghoursparser;
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 public class Holiday extends Element {
-	enum Type { PH, SH };
+	public enum Type { PH, SH };
 	Type type = null;
 	int offset = 0;
 	
@@ -60,5 +60,33 @@ public class Holiday extends Element {
 		result = 37 * result + (type == null ? 0 : type.hashCode());
 		result = 37 * result + offset;
 		return result;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public Type getType() {
+		return type;
+	}
+
+	/**
+	 * @return the offset
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	/**
+	 * @param offset the offset to set
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 }
