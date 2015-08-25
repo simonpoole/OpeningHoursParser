@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -19,25 +20,23 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-public class Holiday extends Element {
-	enum Type { PH, SH };
-	Type type = null;
-	int offset = 0;
+
+public class RuleModifier extends Element {
+	String modifier = null;
+	String comment = null;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		if (type != null) {
-			b.append(type.toString());
-			if (offset != 0) {
-				if (offset > 0) {
-					b.append("+");
-				} else {
-					b.append("-");
-				}
-				b.append(String.format("%d",Math.abs(offset)));
-			}
+		if (modifier != null) {
+			b.append(modifier);
 		}
-		return b.toString();		
+		if (comment != null) {
+			if (modifier != null && modifier.length() > 0) {
+				b.append(" ");
+			}
+			b.append(comment);
+		}
+		return b.toString();
 	}
 	
 	@Override
@@ -45,9 +44,9 @@ public class Holiday extends Element {
 		if (this == other) {
 			return true;
 		}
-		Holiday o = (Holiday)other;
-		if ((type == o.type  || (type != null && type.equals(o.type))) 
-				&& offset == o.offset){
+		RuleModifier o = (RuleModifier)other;
+		if ((modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier))) 
+				&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))){
 			return true;
 		}
 		return false;
@@ -56,8 +55,8 @@ public class Holiday extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * result + (type == null ? 0 : type.hashCode());
-		result = 37 * result + offset;
+		result = 37 * result + (modifier == null ? 0 : modifier.hashCode());
+		result = 37 * result + (comment == null ? 0 : comment.hashCode());
 		return result;
 	}
 }

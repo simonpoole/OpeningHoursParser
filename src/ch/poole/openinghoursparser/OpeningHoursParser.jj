@@ -20,7 +20,10 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */options{  JDK_VERSION = "1.5";  static = false;  LOOKAHEAD= 5;  IGNORE_CASE = true;  FORCE_LA_CHECK = true;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 2;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  UNICODE_INPUT = true;}PARSER_BEGIN(OpeningHoursParser)import java.util.ArrayList;import java.util.Collections;import java.io.ByteArrayInputStream;public class OpeningHoursParser{  public static void main(String args []) throws ParseException  {
+ */options{  JDK_VERSION = "1.5";  static = false;  LOOKAHEAD= 5;  IGNORE_CASE = true;  FORCE_LA_CHECK = true;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 2;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  UNICODE_INPUT = true;}PARSER_BEGIN(OpeningHoursParser)
+
+package ch.poole.openinghoursparser;
+ import java.util.ArrayList;import java.util.Collections;import java.io.ByteArrayInputStream;public class OpeningHoursParser{  public static void main(String args []) throws ParseException  {
     // test strings for running with debugging    // String str = "1 02:00; 2014 Mar Th[1] ; 2014 Jan 25 03:00;";
     // String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/45 ; 12-16 closed  ; Mo, We 12:01-13:02 ; Apr-Sep Tu-Th,Fr 10:01-13:03, Dec 13:03-21:01 ; week 01-22 10:11-14:14 ; 2014 Jan 2 03:00;";
     String str = "12:01-13:02, 14:00 , 10:00-sunset , 11:01-45:00/46 ; 12-16 closed \"ein test\" ; Mo, We 12:01-13:02 ; Apr-Sep 10:01-13:03, Dec 13:03-21:01";

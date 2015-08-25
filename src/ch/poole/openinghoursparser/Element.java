@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Force implementation of equals and hashcode 
  * @author simon

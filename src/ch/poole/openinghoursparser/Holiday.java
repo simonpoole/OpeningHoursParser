@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -19,24 +20,25 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-public class WeekRange extends Element {
-	int startWeek = -1;
-	int endWeek = -1;
-	int interval = 0;
+public class Holiday extends Element {
+	enum Type { PH, SH };
+	Type type = null;
+	int offset = 0;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		b.append(String.format("%02d",startWeek));
-		if (endWeek > -1) {
-			b.append("-");
-			b.append(String.format("%02d",endWeek));
-			if (interval > 0) {
-				b.append("/");
-				b.append(interval);
+		if (type != null) {
+			b.append(type.toString());
+			if (offset != 0) {
+				if (offset > 0) {
+					b.append("+");
+				} else {
+					b.append("-");
+				}
+				b.append(String.format("%d",Math.abs(offset)));
 			}
 		}
-		return b.toString();
+		return b.toString();		
 	}
 	
 	@Override
@@ -44,8 +46,9 @@ public class WeekRange extends Element {
 		if (this == other) {
 			return true;
 		}
-		WeekRange o = (WeekRange)other;
-		if (startWeek == o.startWeek && endWeek == o.endWeek && interval == o.interval) {
+		Holiday o = (Holiday)other;
+		if ((type == o.type  || (type != null && type.equals(o.type))) 
+				&& offset == o.offset){
 			return true;
 		}
 		return false;
@@ -54,9 +57,8 @@ public class WeekRange extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * result + startWeek;
-		result = 37 * result + endWeek;
-		result = 37 * result + interval;
+		result = 37 * result + (type == null ? 0 : type.hashCode());
+		result = 37 * result + offset;
 		return result;
 	}
 }

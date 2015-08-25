@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -19,25 +20,21 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-public class VariableTime extends Element {
-	String event = null;
-	int offset = 0;
+public class Nth extends Element {
+	int startNth=-1;
+	int endNth=-1;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		if (event != null) {
-			b.append(event);
-			if (offset != 0) {
-				if (offset > 0) {
-					b.append("+");
-				} 
-				b.append(String.format("%02d",(int)offset/60));
-				b.append(":");
-				b.append(String.format("%02d",Math.abs(offset)%60));
-			}
+		
+		if (startNth != -1) {
+			b.append(startNth);
 		}
-		return b.toString();		
+		if (endNth != -1) {
+			b.append("-");
+			b.append(endNth);
+		}
+		return b.toString();
 	}
 	
 	@Override
@@ -45,8 +42,8 @@ public class VariableTime extends Element {
 		if (this == other) {
 			return true;
 		}
-		VariableTime o = (VariableTime)other;
-		if ((event == o.event  || (event != null && event.equals(o.event))) && offset == offset) {
+		Nth o = (Nth)other;
+		if (startNth == o.startNth && endNth == o.endNth) {
 			return true;
 		}
 		return false;
@@ -55,8 +52,8 @@ public class VariableTime extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * result + (event == null ? 0 : event.hashCode());
-		result = 37 * result + offset;
+		result = 37 * result + startNth;
+		result = 37 * result + endNth;
 		return result;
 	}
 }

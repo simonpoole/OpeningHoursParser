@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -19,31 +20,25 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import java.util.ArrayList;
 
-class WeekDayRange extends Element {
-	String startDay = null;
-	String endDay = null;
-	ArrayList<Nth> nths = new ArrayList<Nth>();
-
+public class VariableTime extends Element {
+	String event = null;
+	int offset = 0;
+	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		b.append(startDay);
-		if (endDay != null) {
-			b.append("-");
-			b.append(endDay);
-		} else if (nths != null && nths.size() > 0) {
-			b.append("["); 
-			for (Nth n:nths) {
-				b.append(n.toString());
-				if (!n.equals(nths.get(nths.size()-1))) {
-					b.append(",");
-				}
+		if (event != null) {
+			b.append(event);
+			if (offset != 0) {
+				if (offset > 0) {
+					b.append("+");
+				} 
+				b.append(String.format("%02d",(int)offset/60));
+				b.append(":");
+				b.append(String.format("%02d",Math.abs(offset)%60));
 			}
-			
-			b.append("]");
 		}
-		return b.toString();
+		return b.toString();		
 	}
 	
 	@Override
@@ -51,10 +46,8 @@ class WeekDayRange extends Element {
 		if (this == other) {
 			return true;
 		}
-		WeekDayRange o = (WeekDayRange)other;
-		if ((startDay == o.startDay  || (startDay != null && startDay.equals(o.startDay))) 
-				&& (endDay == o.endDay  || (endDay != null && endDay.equals(o.endDay)))
-				&& (nths == o.nths  || (nths != null && nths.equals(o.endDay)))){
+		VariableTime o = (VariableTime)other;
+		if ((event == o.event  || (event != null && event.equals(o.event))) && offset == offset) {
 			return true;
 		}
 		return false;
@@ -63,9 +56,8 @@ class WeekDayRange extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * result + (startDay == null ? 0 : startDay.hashCode());
-		result = 37 * result + (endDay == null ? 0 : endDay.hashCode());
-		result = 37 * result + (nths == null ? 0 : nths.hashCode());
+		result = 37 * result + (event == null ? 0 : event.hashCode());
+		result = 37 * result + offset;
 		return result;
 	}
 }

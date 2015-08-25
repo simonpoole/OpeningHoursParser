@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification 
  * @author Simon Poole

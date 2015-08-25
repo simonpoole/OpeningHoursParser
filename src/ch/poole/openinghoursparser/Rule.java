@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -21,7 +22,7 @@
  */
 import java.util.ArrayList;
 
-class Rule extends Element {
+public class Rule extends Element {
 	boolean fallBack = false;
 	boolean replace = true;
 	

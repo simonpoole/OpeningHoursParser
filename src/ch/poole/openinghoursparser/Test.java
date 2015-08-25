@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 
 
 import java.io.BufferedReader;

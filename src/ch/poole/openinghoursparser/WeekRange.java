@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -19,20 +20,22 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-class MonthDayRange extends Element {
- 
-	DateWithOffset startDate = null;
-	DateWithOffset endDate = null;
-	int interval=0;
 
+public class WeekRange extends Element {
+	int startWeek = -1;
+	int endWeek = -1;
+	int interval = 0;
+	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		if (startDate != null) {
-			b.append(startDate.toString());
-		} 
-		if (endDate != null) {
+		b.append(String.format("%02d",startWeek));
+		if (endWeek > -1) {
 			b.append("-");
-			b.append(endDate.toString());
+			b.append(String.format("%02d",endWeek));
+			if (interval > 0) {
+				b.append("/");
+				b.append(interval);
+			}
 		}
 		return b.toString();
 	}
@@ -42,10 +45,8 @@ class MonthDayRange extends Element {
 		if (this == other) {
 			return true;
 		}
-		MonthDayRange o = (MonthDayRange)other;
-		if ((startDate == o.startDate  || (startDate != null && startDate.equals(o.startDate))) 
-				&& (endDate == o.endDate  || (endDate != null && endDate.equals(o.endDate)))
-				&& interval == o.interval){
+		WeekRange o = (WeekRange)other;
+		if (startWeek == o.startWeek && endWeek == o.endWeek && interval == o.interval) {
 			return true;
 		}
 		return false;
@@ -54,8 +55,8 @@ class MonthDayRange extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * result + (startDate == null ? 0 : startDate.hashCode());
-		result = 37 * result + (endDate == null ? 0 : endDate.hashCode());
+		result = 37 * result + startWeek;
+		result = 37 * result + endWeek;
 		result = 37 * result + interval;
 		return result;
 	}

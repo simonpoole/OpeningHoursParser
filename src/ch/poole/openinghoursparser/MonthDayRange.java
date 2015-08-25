@@ -1,3 +1,4 @@
+package ch.poole.openinghoursparser;
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -19,21 +20,20 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+public class MonthDayRange extends Element {
+ 
+	DateWithOffset startDate = null;
+	DateWithOffset endDate = null;
+	int interval=0;
 
-public class RuleModifier extends Element {
-	String modifier = null;
-	String comment = null;
-	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		if (modifier != null) {
-			b.append(modifier);
-		}
-		if (comment != null) {
-			if (modifier != null && modifier.length() > 0) {
-				b.append(" ");
-			}
-			b.append(comment);
+		if (startDate != null) {
+			b.append(startDate.toString());
+		} 
+		if (endDate != null) {
+			b.append("-");
+			b.append(endDate.toString());
 		}
 		return b.toString();
 	}
@@ -43,9 +43,10 @@ public class RuleModifier extends Element {
 		if (this == other) {
 			return true;
 		}
-		RuleModifier o = (RuleModifier)other;
-		if ((modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier))) 
-				&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))){
+		MonthDayRange o = (MonthDayRange)other;
+		if ((startDate == o.startDate  || (startDate != null && startDate.equals(o.startDate))) 
+				&& (endDate == o.endDate  || (endDate != null && endDate.equals(o.endDate)))
+				&& interval == o.interval){
 			return true;
 		}
 		return false;
@@ -54,8 +55,9 @@ public class RuleModifier extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * result + (modifier == null ? 0 : modifier.hashCode());
-		result = 37 * result + (comment == null ? 0 : comment.hashCode());
+		result = 37 * result + (startDate == null ? 0 : startDate.hashCode());
+		result = 37 * result + (endDate == null ? 0 : endDate.hashCode());
+		result = 37 * result + interval;
 		return result;
 	}
 }
