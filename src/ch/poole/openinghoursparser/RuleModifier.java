@@ -34,7 +34,7 @@ public class RuleModifier extends Element {
 			if (modifier != null && modifier.length() > 0) {
 				b.append(" ");
 			}
-			b.append(comment);
+			b.append("\"" + comment + "\"");
 		}
 		return b.toString();
 	}
