@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class Util {
 	/**
-	 * find rules that can be merged 
+	 * find rules that only differs in the days and times objects and can be merged for display puposes
 	 * @param rules
 	 * @return
 	 */

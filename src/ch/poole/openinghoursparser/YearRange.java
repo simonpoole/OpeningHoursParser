@@ -23,6 +23,45 @@ package ch.poole.openinghoursparser;
 
 public class YearRange extends Element {
 
+	int startYear = -1;
+	int endYear = -1;
+	int interval = 0;
+	
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		b.append(String.format("%04d",startYear));
+		if (endYear > -1) {
+			b.append("-");
+			b.append(String.format("%04d",endYear));
+			if (interval > 0) {
+				b.append("/");
+				b.append(interval);
+			}
+		}
+		return b.toString();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		YearRange o = (YearRange)other;
+		if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = 37 * result + startYear;
+		result = 37 * result + endYear;
+		result = 37 * result + interval;
+		return result;
+	}
+	
 	/**
 	 * @return the startYear
 	 */
@@ -63,44 +102,5 @@ public class YearRange extends Element {
 	 */
 	public void setInterval(int interval) {
 		this.interval = interval;
-	}
-
-	int startYear = -1;
-	int endYear = -1;
-	int interval = 0;
-	
-	public String toString() {
-		StringBuilder b = new StringBuilder();
-		b.append(String.format("%04d",startYear));
-		if (endYear > -1) {
-			b.append("-");
-			b.append(String.format("%04d",endYear));
-			if (interval > 0) {
-				b.append("/");
-				b.append(interval);
-			}
-		}
-		return b.toString();
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		YearRange o = (YearRange)other;
-		if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		int result = 1;
-		result = 37 * result + startYear;
-		result = 37 * result + endYear;
-		result = 37 * result + interval;
-		return result;
 	}
 }

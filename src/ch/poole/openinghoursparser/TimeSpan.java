@@ -99,7 +99,7 @@ public class TimeSpan extends Element {
 	}
 
 	/**
-	 * @return the start
+	 * @return the start time in minutes
 	 */
 	public int getStart() {
 		return start;
@@ -113,7 +113,7 @@ public class TimeSpan extends Element {
 	}
 
 	/**
-	 * @return the end
+	 * @return the end time in minutes
 	 */
 	public int getEnd() {
 		return end;

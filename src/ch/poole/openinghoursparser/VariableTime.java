@@ -47,7 +47,7 @@ public class VariableTime extends Element {
 			return true;
 		}
 		VariableTime o = (VariableTime)other;
-		if ((event == o.event  || (event != null && event.equals(o.event))) && offset == offset) {
+		if ((event == o.event  || (event != null && event.equals(o.event))) && offset == o.offset) {
 			return true;
 		}
 		return false;
