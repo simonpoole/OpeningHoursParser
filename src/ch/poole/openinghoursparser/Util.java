@@ -22,7 +22,7 @@ package ch.poole.openinghoursparser;
  */
 
 import java.util.ArrayList;
-
+import java.util.Locale;
 
 public class Util {
 	/**
@@ -57,5 +57,44 @@ public class Util {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Generate an OH string from rules
+	 * @param rules
+	 * @return
+	 */
+	public static String rulesToOpeningHoursString(ArrayList<Rule> rules) {
+		StringBuffer result = new StringBuffer();
+		boolean first = true;
+		for (Rule r:rules) {
+			if (!first) {
+				if (r.isReplace()) {
+					result.append(';');
+				} else if (r.isFallBack()) {
+					result.append("||");
+				} else {
+					result.append(',');
+				}
+			} else {
+				first = false;
+			}
+			result.append(r.toString());
+		}
+		return result.toString();
+	}
+	
+	/**
+	 * Capitalize a string
+	 * @param s
+	 * @return
+	 */
+	public static String capitalize(String s) {
+		char[] c = s.toLowerCase(Locale.US).toCharArray();
+		if (c.length > 0) {
+			c[0] = Character.toUpperCase(c[0]);
+			return new String(c);
+		}
+		return s;
 	}
 }
