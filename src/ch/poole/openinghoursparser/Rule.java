@@ -168,7 +168,6 @@ public class Rule extends Element {
 			&& (years == o.years  || (years != null && years.equals(o.years)))
 			&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
 			&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
-			&& (holidays == o.holidays  || (holidays != null && holidays.equals(o.holidays)))
 			&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)))){
 			return true;
 		}
