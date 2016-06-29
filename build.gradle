@@ -17,26 +17,32 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 
-version = '0.0.2'
+version = '0.0.3'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 
+
 compileJavacc {
-    inputDirectory = file('src/ch/poole/openinghoursparser')
-    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+    inputDirectory = file('src/main/ch/poole/openinghoursparser')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser')
 }
 
 compileJava {
-    source file(project.buildDir.absolutePath + '/generated/javacc'),file('src/ch/poole/openinghoursparser')
+    source file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser'),file('src/main/ch/poole/openinghoursparser')
+}
+
+compileTestJava {
+    source file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser'),file('src/main/ch/poole/openinghoursparser'),file('src/test/ch/poole/openinghoursparser')
 }
 
 // In this section you declare where to find the dependencies of your project
 repositories {
- mavenCentral()
+    mavenCentral()
 }
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
+	testCompile 'junit:junit:4.12'
 }
 
