@@ -26,7 +26,7 @@
 package ch.poole.openinghoursparser;
  import java.util.ArrayList;import java.util.Collections;
 import java.util.Locale;import java.io.ByteArrayInputStream;public class OpeningHoursParser{
-	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : "-" >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
+	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : [ "-", "\u2013" ] >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
 TOKEN :{  < NUMBER : (< DIGIT >)+ >}//
 TOKEN :{  < MINUTES : < COLON > [ "0"-"5" ] < DIGIT >>}TOKEN :{  < DIGIT : [ "0"-"9" ] >}TOKEN :{  < WS : [ " ", "\t" ] >}TOKEN :{  < FALLBACKSEPERATOR : "||" >}TOKEN :{  < ALWAYS : "24/7" >}TOKEN :{  < WEEKDAY :    "Mo"  | "Tu"  | "We"  | "Th"  | "Fr"  | "Sa"  | "Su" >
   {
@@ -48,7 +48,12 @@ TOKEN :{  < MINUTES : < COLON > [ "0"-"5" ] < DIGIT >>}TOKEN :{  < DIGIT 
   }}TOKEN :{  < MODIFIER :    "open"  | "closed"  | "off"  | "unknown" >
   {
           matchedToken.image = image.toString().toLowerCase(Locale.US);
-  }}/**
+  }}
+
+TOKEN :
+{  < AM : "am" >
+| < PM : "pm" >
+}/**
  * match a number between 1 and 5
  */Token one2five() :{  Token n = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 5 })  n = < NUMBER >  {    return n;  }}/**
  * match a positive number larger than 1
@@ -64,7 +69,44 @@ TOKEN :{  < MINUTES : < COLON > [ "0"-"5" ] < DIGIT >>}TOKEN :{  < DIGIT 
  */Token hours() :{  Token h = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 24 })  h = < NUMBER >  {    return h;  }}
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh 
- */int time() :{  Token h = null;  Token m = null;  int result = 0;}{  (    h = hours()  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?  {    result = result + Integer.parseInt(h.image) * 60;    return result;  }}
+ */int time() :{  Token h = null;  Token m = null;  int result = 0;
+  boolean pm = false;}{  (    h = hours()  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?
+  (
+    pm = ampm()  )?  {    result = result + Integer.parseInt(h.image) * 60;
+    if (pm) {
+      result = result + 12*60;
+    }    return result;  }}
+
+boolean ampm() :
+{
+  boolean found = false;
+  boolean result = false;
+}
+{
+  (
+    (      < AM >
+      {
+		found = true;
+      }
+    )
+  |
+    (
+      < PM >
+      {
+		found = true;
+		result = true;
+      }
+    )
+  )
+  {
+	  if (found && strict) {
+        ParseException pex = new ParseException("AM found at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+	    pex.currentToken = token;
+        throw pex;
+      }
+      return result;
+  }
+}
 
 /**
  * time that requires minutes as per spec
@@ -93,7 +135,14 @@ int strict_time() :
 }
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh with hh up to 48 
- */int extendedtime() :{  Token h = null;  Token m = null;  int result = 0;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48 })    h = < NUMBER >  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?  {    result = result + Integer.parseInt(h.image) * 60;    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.event = event.image;    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.event = event.image;      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token minutes = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        minutes = number()      )      {        interval = Integer.parseInt(minutes.image);      }    )  |    (      hours = hours() minutes = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(minutes.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;  VariableTime startVT = null;  VariableTime endVT = null;  TimeSpan ts = new TimeSpan();  int inter = 0;}{  (    (      start = time()      {        ts.start = start;      }    | startVT = variabletime()      {        ts.startEvent = startVT;      }    )    (      startplus = < PLUS >    |      (        < HYPHEN >        (          end = extendedtime()          {
+ */int extendedtime() :{  Token h = null;  Token m = null;  int result = 0;
+  boolean pm = false;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48 })    h = < NUMBER >  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?
+  (
+    pm = ampm()
+  )?  {    result = result + Integer.parseInt(h.image) * 60;
+    if (pm) {
+      result = result + 12*60;
+    }    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.event = event.image;    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.event = event.image;      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token minutes = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        minutes = number()      )      {        interval = Integer.parseInt(minutes.image);      }    )  |    (      hours = hours() minutes = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(minutes.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;  VariableTime startVT = null;  VariableTime endVT = null;  TimeSpan ts = new TimeSpan();  int inter = 0;}{  (    (      start = time()      {        ts.start = start;      }    | startVT = variabletime()      {        ts.startEvent = startVT;      }    )    (      startplus = < PLUS >    |      (        < HYPHEN >        (          end = extendedtime()          {
             if (end < start) {  
               if (!strict)  
               {

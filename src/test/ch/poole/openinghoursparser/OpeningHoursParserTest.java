@@ -1,23 +1,20 @@
 
 package ch.poole.openinghoursparser;
 
-import java.io.BufferedReader;
 import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 
-import ch.poole.openinghoursparser.OpeningHoursParser;
-import ch.poole.openinghoursparser.ParseException;
-import ch.poole.openinghoursparser.Rule;
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.junit.Test;
 
 /**
  * Tests for the OpeningHoursParser
@@ -27,30 +24,44 @@ import java.util.Map;
 public class OpeningHoursParserTest {
 
 	@Test
-	public void testDataParsing() {
-		parseData("test-data/oh.txt", false, 143070, 18198, 2);
+	public void regressionTest() {
+		parseData("test-data/oh.txt", false, "test-data/oh.txt-result");
 	}
 	
 	@Test
-	public void testDataParsingStrict() {
-		parseData("test-data/oh.txt", true, 131590, 29678, 2);
+	public void regressionTestStrict() {
+		parseData("test-data/oh.txt", true, "test-data/oh.txt-result-strict");
 	}
 	
 	/**
-	 * This completes successfully if the number of errors etc remain the same, this is naturally a bit trivial since it doesn't test the actual parse result 
+	 * This completes successfully if parsing dives the same success result, this is naturally a bit trivial since it doesn't test the actual parse result 
 	 */
-	private void parseData(String inputFile, boolean strict, int expectedSuccessful, int expectedErrors, int expectedLexical)
+	private void parseData(String inputFile, boolean strict, String resultsFile)
 	{
 		int successful = 0;
 		int errors = 0;
 		int lexical = 0;
-		BufferedReader br = null;
+		BufferedReader brInput = null;
+		BufferedReader brResults = null;
+		BufferedWriter bw = null;
+		String line = null;
 		try
 		{ 
 
-			br = new BufferedReader(new InputStreamReader(new FileInputStream("test-data/oh.txt"), "UTF8"));
-			String line;
-			while ((line = br.readLine()) != null) {
+			brInput = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF8"));
+			try {
+				brResults = new BufferedReader(new InputStreamReader(new FileInputStream(resultsFile), "UTF8"));
+			} catch (FileNotFoundException fnfex)
+			{
+				System.out.println("File not found " + fnfex.toString());
+			} 
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-result" + (strict?"-strict":"")+"-temp"), "UTF8"));
+
+			String expectedResult = null;
+			while ((line = brInput.readLine()) != null) {
+				if (brResults != null) {
+					expectedResult = brResults.readLine();
+				}
 				try
 				{
 					OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(line.getBytes()));
@@ -60,6 +71,10 @@ public class OpeningHoursParserTest {
 //						System.out.println(rl.toString());
 //					}
 					successful++;
+					bw.write("0\n");
+					if (expectedResult != null) {
+						assertEquals(expectedResult,"0");
+					}
 				}
 				catch (ParseException pex) {
 					if (pex.toString().contains("Lexical")) {
@@ -68,14 +83,21 @@ public class OpeningHoursParserTest {
 						System.out.println("Parser exception for " + line + " " + pex.toString());
 					}
 					// pex.printStackTrace();
-					
 					errors++;
+					bw.write("1\n");
+					if (expectedResult != null) {
+						assertEquals(expectedResult,"1");
+					}
 				}
 				catch (NumberFormatException nfx) {
 					System.out.println("Parser exception for " + line + " " + nfx.toString());
 					// pex.printStackTrace();
 					lexical++;
 					errors++;
+					bw.write("2\n");
+					if (expectedResult != null) {
+						assertEquals(expectedResult,"2");
+					}
 				}
 				catch (Error err) {
 					if (err.toString().contains("Lexical")) {
@@ -85,6 +107,10 @@ public class OpeningHoursParserTest {
 						// err.printStackTrace();
 					}
 					errors++;
+					bw.write("3\n");
+					if (expectedResult != null) {
+						assertEquals(expectedResult,"3");
+					}
 				}
 			}
 		} catch (FileNotFoundException fnfex)
@@ -93,21 +119,28 @@ public class OpeningHoursParserTest {
 		}  catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (AssertionError ae) {
+			System.out.println("Assertion failed for " + line);
+			throw ae;
 		} finally {
-			if (br != null) {
+			if (brInput != null) {
 				try {
-					br.close();
+					brInput.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (bw != null) {
+				try {
+					bw.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
-		System.out.println("Successful " + successful + " errors " + errors + " of which " + lexical + " are lexical errors");
-		assertEquals(expectedSuccessful,successful);
-		assertEquals(expectedErrors,errors);
-		assertEquals(expectedLexical,lexical);
-		
+		System.out.println("Successful " + successful + " errors " + errors + " of which " + lexical + " are lexical errors");	
   	}
 	
 }
