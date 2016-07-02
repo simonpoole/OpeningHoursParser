@@ -21,19 +21,28 @@ version = '0.0.4'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-
+ext {
+    javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser')
+    mainSource = file('src/main/ch/poole/openinghoursparser')
+    testSource = file('src/test/ch/poole/openinghoursparser')
+}
 
 compileJavacc {
-    inputDirectory = file('src/main/ch/poole/openinghoursparser')
-    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser')
+    inputDirectory = mainSource
+    outputDirectory = javaccOutput
 }
 
 compileJava {
-    source file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser'),file('src/main/ch/poole/openinghoursparser')
+    source javaccOutput,mainSource
 }
 
 compileTestJava {
-    source file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser'),file('src/main/ch/poole/openinghoursparser'),file('src/test/ch/poole/openinghoursparser')
+    source javaccOutput,mainSource, testSource
+}
+
+javadoc {
+    source mainSource, testSource
+    exclude '**/*.jj'
 }
 
 // In this section you declare where to find the dependencies of your project
