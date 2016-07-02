@@ -34,46 +34,52 @@ public class OpeningHoursParserTest {
 	}
 	
 	/**
-	 * This completes successfully if parsing dives the same success result, this is naturally a bit trivial since it doesn't test the actual parse result 
+	 * This completes successfully if parsing gives the same success result and for sucessful parses the same regenerated OH string
 	 */
 	private void parseData(String inputFile, boolean strict, String resultsFile)
 	{
 		int successful = 0;
 		int errors = 0;
 		int lexical = 0;
-		BufferedReader brInput = null;
-		BufferedReader brResults = null;
-		BufferedWriter bw = null;
+		BufferedReader inputRules = null;
+		BufferedReader inputExpected = null;
+		BufferedWriter outputExpected = null;
 		String line = null;
 		try
 		{ 
 
-			brInput = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF8"));
+			inputRules = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF8"));
 			try {
-				brResults = new BufferedReader(new InputStreamReader(new FileInputStream(resultsFile), "UTF8"));
+				inputExpected = new BufferedReader(new InputStreamReader(new FileInputStream(resultsFile), "UTF8"));
 			} catch (FileNotFoundException fnfex)
 			{
 				System.out.println("File not found " + fnfex.toString());
 			} 
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-result" + (strict?"-strict":"")+"-temp"), "UTF8"));
+			outputExpected = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-result" + (strict?"-strict":"")+"-temp"), "UTF8"));
 
+			String expectedResultCode = null;
 			String expectedResult = null;
-			while ((line = brInput.readLine()) != null) {
-				if (brResults != null) {
-					expectedResult = brResults.readLine();
+			while ((line = inputRules.readLine()) != null) {
+				if (inputExpected != null) {
+					String[] expected = inputExpected.readLine().split("\t");
+					expectedResultCode = expected[0];
+					if (expected.length == 2) {
+						expectedResult = expected[1];
+					} else {
+						expectedResult = null;
+					}
 				}
 				try
 				{
 					OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(line.getBytes()));
 					ArrayList<Rule> rules = parser.rules(strict);
-//					for (Rule rl:rules)
-//					{
-//						System.out.println(rl.toString());
-//					}
 					successful++;
-					bw.write("0\n");
-					if (expectedResult != null) {
-						assertEquals(expectedResult,"0");
+					outputExpected.write("0\t"+Util.rulesToOpeningHoursString(rules)+"\n");
+					if (expectedResultCode != null) {
+						assertEquals(expectedResultCode,"0");
+						if (expectedResult != null) {
+							assertEquals(Util.rulesToOpeningHoursString(rules),expectedResult);
+						}
 					}
 				}
 				catch (ParseException pex) {
@@ -84,9 +90,9 @@ public class OpeningHoursParserTest {
 					}
 					// pex.printStackTrace();
 					errors++;
-					bw.write("1\n");
-					if (expectedResult != null) {
-						assertEquals(expectedResult,"1");
+					outputExpected.write("1\n");
+					if (expectedResultCode != null) {
+						assertEquals(expectedResultCode,"1");
 					}
 				}
 				catch (NumberFormatException nfx) {
@@ -94,9 +100,9 @@ public class OpeningHoursParserTest {
 					// pex.printStackTrace();
 					lexical++;
 					errors++;
-					bw.write("2\n");
-					if (expectedResult != null) {
-						assertEquals(expectedResult,"2");
+					outputExpected.write("2\n");
+					if (expectedResultCode != null) {
+						assertEquals(expectedResultCode,"2");
 					}
 				}
 				catch (Error err) {
@@ -107,9 +113,9 @@ public class OpeningHoursParserTest {
 						// err.printStackTrace();
 					}
 					errors++;
-					bw.write("3\n");
-					if (expectedResult != null) {
-						assertEquals(expectedResult,"3");
+					outputExpected.write("3\n");
+					if (expectedResultCode != null) {
+						assertEquals(expectedResultCode,"3");
 					}
 				}
 			}
@@ -123,17 +129,17 @@ public class OpeningHoursParserTest {
 			System.out.println("Assertion failed for " + line);
 			throw ae;
 		} finally {
-			if (brInput != null) {
+			if (inputRules != null) {
 				try {
-					brInput.close();
+					inputRules.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			if (bw != null) {
+			if (outputExpected != null) {
 				try {
-					bw.close();
+					outputExpected.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

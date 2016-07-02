@@ -57,53 +57,58 @@ public class Rule extends Element {
 				b.append(yr.toString());
 				if (years.get(years.size()-1)!=yr) {
 					b.append(",");
-				} else {
-					b.append(" ");
-				}
+				} 
 			}
 		}
 		if (weeks != null) {
+			if (b.length() > 0) {
+				b.append(" ");
+			}
 			b.append("week ");
 			for (WeekRange wr:weeks) {
 				b.append(wr.toString());
 				if (weeks.get(weeks.size()-1)!=wr) {
 					b.append(",");
-				} else {
-					b.append(" ");
-				}
+				} 
 			}
 		}
 		if (monthdays != null) {
+			if (b.length() > 0) {
+				b.append(" ");
+			}
 			for (MonthDayRange mdr:monthdays) {
 				b.append(mdr.toString());
 				if (monthdays.get(monthdays.size()-1)!=mdr) {
 					b.append(",");
-				} else {
-					b.append(" ");
-				}
+				} 
 			}
 		}
 		if (holidays != null) {
+			if (b.length() > 0) {
+				b.append(" ");
+			}
 			for (Holiday h:holidays) {
 				b.append(h.toString());
 				if (holidays.get(holidays.size()-1)!=h) {
 					b.append(",");
-				} else {
-					b.append(" ");
-				}
+				} 
 			}
 		}
 		if (days != null) {
+			if (b.length() > 0) {
+				b.append(" ");
+			}
 			for (WeekDayRange d:days) {
 				b.append(d.toString());
 				if (days.get(days.size()-1)!=d) {
 					b.append(",");
-				} else {
-					b.append(" ");
-				}
+				} 
 			}
 		}
 		if (times != null) {
+			if (b.length() > 0) {
+				b.append(" ");
+			}
 			for (TimeSpan ts:times) {
 				b.append(ts.toString());
 				if (times.get(times.size()-1)!=ts) {

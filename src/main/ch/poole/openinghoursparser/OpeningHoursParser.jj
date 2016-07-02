@@ -223,7 +223,10 @@ ArrayList < YearRange > year_selector() :
     Collections.reverse(result);
     return result;
   }
-}RuleModifier rule_modifier() :{  RuleModifier rm = new RuleModifier();  Token m = null;  String c = null;}{  (m = < MODIFIER >  {    rm.modifier = m.image;  }  )?  (    c = comment()    {      rm.comment = c;    }  )?  {    return rm;  }}Rule rule() :{  Rule r = null;
+}RuleModifier rule_modifier() :{  RuleModifier rm = new RuleModifier();  Token m = null;  String c = null;}{  (m = < MODIFIER >  {    rm.modifier = m.image;  }  )?  (    c = comment()    {      rm.comment = c;    }  )?  {
+    if (rm.modifier == null && rm.comment == null) {
+      return null;
+    }    return rm;  }}Rule rule() :{  Rule r = null;
   String comment = null;
   ArrayList < YearRange > ys = null;  ArrayList < WeekRange > ws = null;  ArrayList < MonthDayRange > ms = null;  ArrayList < Holiday > hs = null;  ArrayList < WeekDayRange > ds = null;  ArrayList < TimeSpan > ts = null;  RuleModifier rm = null;}{  (
     LOOKAHEAD(comment() < COLON >)
