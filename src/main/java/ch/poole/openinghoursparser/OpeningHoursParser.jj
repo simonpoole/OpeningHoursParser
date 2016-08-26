@@ -63,6 +63,7 @@ TOKEN :
  * Match char inside quoted string.
  */void getChar(StringBuilder builder) :{  Token t;}{  (t = < CHAR >)  {    if (t.image.length() < 2)    {      // CHAR
       builder.append(t.image.charAt(0));    }  }}
+
 /**
  * returns a number if between 0 and 24
  * uses semantic lookahead
