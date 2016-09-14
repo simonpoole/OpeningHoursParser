@@ -14,7 +14,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 
-version = '0.1.0'
+version = '0.1.1'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -62,7 +62,7 @@ bintray {
         licenses = ['BSD 3-Clause']
         vcsUrl = 'https://github.com/simonpoole/OpeningHoursParser.git'
         version {
-        	name = '0.1.0'
+        	name = '0.1.1'
         }
     }
 }

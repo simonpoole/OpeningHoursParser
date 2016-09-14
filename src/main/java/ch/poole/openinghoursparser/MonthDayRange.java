@@ -35,6 +35,10 @@ public class MonthDayRange extends Element {
 			b.append("-");
 			b.append(endDate.toString());
 		}
+		if (interval> 0) {
+			b.append("/");
+			b.append(interval);
+		}
 		return b.toString();
 	}
 	
