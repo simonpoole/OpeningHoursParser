@@ -14,7 +14,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 
-version = '0.1.1'
+version = '0.1.2'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -42,12 +42,25 @@ javadoc {
     exclude '**/*.jj'
 }
 
+task sourcesJar(type: Jar) {
+	from mainSource, testSource
+	classifier = 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+//	options.encoding = 'UTF-8'
+}
+
 publishing {
     publications {
         MyPublication(MavenPublication) {
             from components.java
             groupId 'ch.poole'
             artifactId 'OpeningHoursParser'
+			artifact sourcesJar
+			artifact javadocJar
         }
     }
 }
@@ -62,7 +75,12 @@ bintray {
         licenses = ['BSD 3-Clause']
         vcsUrl = 'https://github.com/simonpoole/OpeningHoursParser.git'
         version {
-        	name = '0.1.1'
+        	name = '0.1.2'
+			released  = new Date()
+			gpg {
+				sign = true //Determines whether to GPG sign the files. The default is false
+				passphrase = System.getenv('BINTRAY_PASSPHRASE')
+			}
         }
     }
 }
