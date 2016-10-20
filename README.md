@@ -39,14 +39,14 @@ You can either download the *jar* from GitHub or add the following to your *buil
 ``` groovy
 repositories {
     maven {
-    	url "https://dl.bintray.com/simonpoole/osm"
+    	jcenter()
     }
 }
 ```
 
 ``` groovy
 dependencies {
-    compile "ch.poole:OpeningHoursParser:0.1.0"
+    compile "ch.poole:OpeningHoursParser:0.1.2"
 }
 ```
 
