@@ -1,6 +1,6 @@
 /**
  * Parser for OpenStreetMap opening_hours values
- * See http://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
+ * See <a href="http://wiki.openstreetmap.org/wiki/Key:opening_hours/specification>http://wiki.openstreetmap.org/wiki/Key:opening_hours/specification</a>
  *
  * @author Simon Poole
  *
@@ -27,8 +27,12 @@ package ch.poole.openinghoursparser;
  import java.util.ArrayList;import java.util.Collections;
 import java.util.Locale;import java.io.ByteArrayInputStream;public class OpeningHoursParser{
 	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : [ "-", "\u2013" ] >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
-TOKEN :{  < NUMBER : (< DIGIT >)+ >}//
-TOKEN :{  < MINUTES : < COLON > [ "0"-"5" ] < DIGIT >>}TOKEN :{  < DIGIT : [ "0"-"9" ] >}TOKEN :{  < WS : [ " ", "\t" ] >}TOKEN :{  < FALLBACKSEPERATOR : "||" >}TOKEN :{  < ALWAYS : "24/7" >}TOKEN :{  < WEEKDAY :    "Mo"  | "Tu"  | "We"  | "Th"  | "Fr"  | "Sa"  | "Su" >
+TOKEN :{  < NUMBER : (< DIGIT >)+ >}
+
+TOKEN :
+{
+  < MINUTES : < COLON > ("0" | ([ "0"-"5" ] < DIGIT >))>
+}TOKEN :{  < DIGIT : [ "0"-"9" ] >}TOKEN :{  < WS : [ " ", "\t" ] >}TOKEN :{  < FALLBACKSEPERATOR : "||" >}TOKEN :{  < ALWAYS : "24/7" >}TOKEN :{  < WEEKDAY :    "Mo"  | "Tu"  | "We"  | "Th"  | "Fr"  | "Sa"  | "Su" >
   {
           matchedToken.image = Util.capitalize(image.toString());  }| < WEEKDAY3 :    "Mon"  | "Tue"  | "Wed"  | "Thu"  | "Fri"  | "Sat"  | "Sun" >
   {
