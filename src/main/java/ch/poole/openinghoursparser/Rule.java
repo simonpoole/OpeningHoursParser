@@ -318,4 +318,37 @@ public class Rule extends Element {
 	public void setModifier(RuleModifier modifier) {
 		this.modifier = modifier;
 	}
+
+	/**
+	 * Check if this rule actually contains something
+	 * @return true if empty
+	 */
+	public boolean isEmpty() {
+		// not done in one expression so that it remains legible
+		if (comment != null && !"".equals(comment)) {
+			return false;
+		}
+		if (years != null && !years.isEmpty()) {
+			return false;
+		}
+		if (weeks != null && !weeks.isEmpty()) {
+			return false;
+		}
+		if (monthdays != null && !monthdays.isEmpty()) {
+			return false;
+		}
+		if (holidays != null && !holidays.isEmpty()) {
+			return false;
+		}
+		if (days != null && !days.isEmpty()) {
+			return false;
+		}
+		if (times != null && !times.isEmpty()) {
+			return false;
+		}
+		if (modifier != null) {
+			return false;
+		}
+		return true;
+	}
 }

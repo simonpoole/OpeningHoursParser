@@ -68,18 +68,20 @@ public class Util {
 		StringBuffer result = new StringBuffer();
 		boolean first = true;
 		for (Rule r:rules) {
-			if (!first) {
-				if (r.isReplace()) {
-					result.append(';');
-				} else if (r.isFallBack()) {
-					result.append("||");
+			if (!r.isEmpty()) {
+				if (!first) {
+					if (r.isReplace()) {
+						result.append(';');
+					} else if (r.isFallBack()) {
+						result.append("||");
+					} else {
+						result.append(',');
+					}
 				} else {
-					result.append(',');
+					first = false;
 				}
-			} else {
-				first = false;
+				result.append(r.toString());
 			}
-			result.append(r.toString());
 		}
 		return result.toString();
 	}

@@ -23,6 +23,7 @@ package ch.poole.openinghoursparser;
 
 public class VariableTime extends Element {
 	String event = null;
+	/** offset in minutes */
 	int offset = 0;
 	
 	public String toString() {
