@@ -2,13 +2,14 @@
 
 This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification].
 
-It parses 144'319 (89%) of 161'268 unique test strings in non-strict mode. The remaining 16'949 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 12'546 fail.
+It parses 144'478 (90%) of 161'268 unique test strings in non-strict mode. The remaining 16'792 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 12'546 fail.
 
 Deviations from the grammar as of [this version of the opening hours specification][opening-hours-grammar-specification] in all modes:
 
  * case insensitive
  * minutes in times optional
  * leading 0s in times optional
+ * single 0 for minutes
  * unicode EN DASH character is allowed for hyphen
 
 In non-strict mode the following further differences are allowed:

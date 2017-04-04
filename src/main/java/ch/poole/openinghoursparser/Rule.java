@@ -43,16 +43,18 @@ public class Rule extends Element {
 	RuleModifier modifier = null;
 
 	Rule() {
-
 	}
 
 	public String toString() {
 		StringBuffer b = new StringBuffer();
 		// FIXME might want to write out fallBack and replace flags too
 		if (comment != null) {
-			b.append(comment + ": ");
+			b.append("\"" + comment + "\":"); // we only accept comments in quotes so only print them out this way
 		}	
 		if (years != null) {
+			if (b.length() > 0) {
+				b.append(" ");
+			}
 			for (YearRange yr:years) {
 				b.append(yr.toString());
 				if (years.get(years.size()-1)!=yr) {
