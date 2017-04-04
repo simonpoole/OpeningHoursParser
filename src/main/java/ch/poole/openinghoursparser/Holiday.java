@@ -31,11 +31,15 @@ public class Holiday extends Element {
 			b.append(type.toString());
 			if (offset != 0) {
 				if (offset > 0) {
-					b.append("+");
+					b.append(" +");
 				} else {
-					b.append("-");
+					b.append(" -");
 				}
 				b.append(String.format("%d",Math.abs(offset)));
+				b.append(" day");
+				if (Math.abs(offset)>1) {
+					b.append("s");
+				}
 			}
 		}
 		return b.toString();		
