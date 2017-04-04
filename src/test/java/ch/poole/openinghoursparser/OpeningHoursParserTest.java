@@ -2,6 +2,7 @@
 package ch.poole.openinghoursparser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -31,6 +32,41 @@ public class OpeningHoursParserTest {
 	@Test
 	public void regressionTestStrict() {
 		parseData("test-data/oh.txt", true, "test-data/oh.txt-result-strict");
+	}
+	
+	@Test
+	public void holidaysVsWeekdays() {
+		try
+		{
+			OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("PH,Su 10:00-12:00; PH Su 11:00-13:00".getBytes()));
+			ArrayList<Rule> rules = parser.rules(false);
+			for (Rule r:rules) {
+				System.out.println(r);
+			}
+		} catch (ParseException pex) {
+			fail(pex.getMessage());
+		}
+		try
+		{
+			OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
+			ArrayList<Rule> rules = parser.rules(false);
+			for (Rule r:rules) {
+				System.out.println(r);
+			}
+		} catch (ParseException pex) {
+			fail(pex.getMessage());
+		}
+		try
+		{
+			OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
+			ArrayList<Rule> rules = parser.rules(true);
+			for (Rule r:rules) {
+				System.out.println(r);
+			}
+			fail("this should have thrown an exception");
+		} catch (ParseException pex) {
+			
+		}
 	}
 	
 	/**

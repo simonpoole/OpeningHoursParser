@@ -240,7 +240,33 @@ ArrayList < YearRange > year_selector() :
     )
   |     (
       (        ys = year_selector()      )?        (        ws = week_selector()      )?      (        ms = monthday_selector()      )?    )  )
-  (  < COLON >  )?  (    hs = holiday_sequence()  |    (      hs = holiday_sequence() (< COMMA >)? ds = weekday_selector()    )  )?  (    ds = weekday_selector()  )?
+  (  < COLON >  )?  (
+     LOOKAHEAD(weekday_selector() < COMMA >holiday_sequence())
+     (
+       ds = weekday_selector()
+       < COMMA >
+       hs = holiday_sequence()
+     )
+     {
+        if (strict) {
+          ParseException e = new ParseException("Holiday after weekday at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+		  e.currentToken = token;
+          throw e;
+        }
+      }
+    |
+     (       (
+         hs = holiday_sequence()
+       )? 
+       (
+         (
+           < COMMA >
+           ds = weekday_selector()
+         )
+        |
+         ds = weekday_selector()
+       )?
+     )  )  
   // spec is not clear on this, however ":" is used in real life here a lot
   (
   < COLON >
