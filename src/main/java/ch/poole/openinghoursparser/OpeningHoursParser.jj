@@ -138,6 +138,7 @@ int strict_time() :
     return result;
   }
 }
+
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh with hh up to 48 
  */int extendedtime() :{  Token h = null;  Token m = null;  int result = 0;
