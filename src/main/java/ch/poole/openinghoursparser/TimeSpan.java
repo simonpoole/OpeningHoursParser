@@ -72,8 +72,13 @@ public class TimeSpan extends Element {
 		}
 		if (other != null && other instanceof TimeSpan) {
 			TimeSpan o = (TimeSpan)other;
-			if (twentyfourseven == o.twentyfourseven && start == o.start && (startEvent == o.startEvent  || (startEvent != null && startEvent.equals(o.startEvent))) 
-					&& end == o.end && (endEvent == o.endEvent  || (endEvent != null && endEvent.equals(o.endEvent))) && openEnded == o.openEnded && interval == o.interval) {
+			if (twentyfourseven == o.twentyfourseven 
+					&& start == o.start 
+					&& (startEvent == o.startEvent || (startEvent != null && startEvent.equals(o.startEvent))) 
+					&& end == o.end 
+					&& (endEvent == o.endEvent || (endEvent != null && endEvent.equals(o.endEvent))) 
+					&& openEnded == o.openEnded 
+					&& interval == o.interval) {
 				return true;
 			}
 		}

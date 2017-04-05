@@ -97,7 +97,8 @@ public class DateWithOffset extends Element {
 					&& nth == o.nth
 					&& weekDayOffsetPositive == o.weekDayOffsetPositive
 					&& (weekDayOffset == o.weekDayOffset  || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
-					&& dayOffset == o.dayOffset){
+					&& dayOffset == o.dayOffset 
+					&& (varDate == o.varDate  || (varDate != null && varDate.equals(o.varDate)))) {
 				return true;
 			}
 		}
@@ -116,6 +117,7 @@ public class DateWithOffset extends Element {
 		result = 37 * result + (weekDayOffsetPositive ? 0 : 1);
 		result = 37 * result + (weekDayOffset == null ? 0 : weekDayOffset.hashCode());
 		result = 37 * result + dayOffset;
+		result = 37 * result + (varDate == null ? 0 : varDate.hashCode());
 		return result;
 	}
 

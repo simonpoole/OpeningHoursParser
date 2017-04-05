@@ -22,6 +22,7 @@ package ch.poole.openinghoursparser;
  */
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class Util {
@@ -35,9 +36,9 @@ public class Util {
 	 * @param rules
 	 * @return
 	 */
-	public static ArrayList<ArrayList<Rule>> getMergeableRules(ArrayList<Rule> rules) {
+	public static List<ArrayList<Rule>> getMergeableRules(List<Rule> rules) {
 		
-		ArrayList<ArrayList<Rule>> result = new ArrayList<ArrayList<Rule>>();
+		List<ArrayList<Rule>> result = new ArrayList<ArrayList<Rule>>();
 		
 		ArrayList<Rule> copy = new ArrayList<Rule>(rules); // shallow copy for bookkeeping
 		
@@ -45,12 +46,10 @@ public class Util {
 			Rule r = copy.get(0);
 			boolean found = false;
 			for (ArrayList<Rule> mergeables:result) {
-				if (!mergeables.isEmpty()) {
-					if (r.isMergeableWith(mergeables.get(0))) {
-						mergeables.add(r);
-						found = true;
-						break;
-					}
+				if (!mergeables.isEmpty() && r.isMergeableWith(mergeables.get(0))) {
+					mergeables.add(r);
+					found = true;
+					break;
 				}
 			}
 			if (!found) {
@@ -59,8 +58,7 @@ public class Util {
 				result.add(m);
 			}
 			copy.remove(0);
-		}
-		
+		}		
 		return result;
 	}
 	
@@ -69,7 +67,7 @@ public class Util {
 	 * @param rules
 	 * @return
 	 */
-	public static String rulesToOpeningHoursString(ArrayList<Rule> rules) {
+	public static String rulesToOpeningHoursString(List<Rule> rules) {
 		StringBuilder result = new StringBuilder();
 		boolean first = true;
 		for (Rule r:rules) {
