@@ -52,11 +52,13 @@ public class WeekDayRange extends Element {
 		if (this == other) {
 			return true;
 		}
-		WeekDayRange o = (WeekDayRange)other;
-		if ((startDay == o.startDay  || (startDay != null && startDay.equals(o.startDay))) 
-				&& (endDay == o.endDay  || (endDay != null && endDay.equals(o.endDay)))
-				&& (nths == o.nths  || (nths != null && nths.equals(o.endDay)))){
-			return true;
+		if (other != null && other instanceof WeekDayRange) {
+			WeekDayRange o = (WeekDayRange)other;
+			if ((startDay == o.startDay  || (startDay != null && startDay.equals(o.startDay))) 
+					&& (endDay == o.endDay  || (endDay != null && endDay.equals(o.endDay)))
+					&& (nths == o.nths  || (nths != null && nths.equals(o.nths)))){
+				return true;
+			}
 		}
 		return false;
 	}

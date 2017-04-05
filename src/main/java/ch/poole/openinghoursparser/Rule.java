@@ -46,7 +46,7 @@ public class Rule extends Element {
 	}
 
 	public String toString() {
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		// FIXME might want to write out fallBack and replace flags too
 		if (comment != null) {
 			b.append("\"" + comment + "\":"); // we only accept comments in quotes so only print them out this way
@@ -130,17 +130,19 @@ public class Rule extends Element {
 		if (this == other) {
 			return true;
 		}
-		Rule o = (Rule)other;
-		if (fallBack == o.fallBack  && replace == o.replace 
-				&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
-				&& (years == o.years  || (years != null && years.equals(o.years)))
-				&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
-				&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
-				&& (holidays == o.holidays  || (holidays != null && holidays.equals(o.holidays)))
-				&& (days == o.days  || (days != null && days.equals(o.days)))
-				&& (times == o.times  || (times != null && times.equals(o.times)))
-				&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)))){
-			return true;
+		if (other != null && other instanceof Rule) {
+			Rule o = (Rule)other;
+			if (fallBack == o.fallBack  && replace == o.replace 
+					&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
+					&& (years == o.years  || (years != null && years.equals(o.years)))
+					&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
+					&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
+					&& (holidays == o.holidays  || (holidays != null && holidays.equals(o.holidays)))
+					&& (days == o.days  || (days != null && days.equals(o.days)))
+					&& (times == o.times  || (times != null && times.equals(o.times)))
+					&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)))){
+				return true;
+			}
 		}
 		return false;
 	}
@@ -148,8 +150,8 @@ public class Rule extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * (fallBack ? 0 : 1);
-		result = 37 * (replace ? 0 : 1);
+		result = 37 * result + (fallBack ? 0 : 1);
+		result = 37 * result + (replace ? 0 : 1);
 		result = 37 * result + (comment == null ? 0 : comment.hashCode());
 		result = 37 * result + (years == null ? 0 : years.hashCode());
 		result = 37 * result + (weeks == null ? 0 : weeks.hashCode());

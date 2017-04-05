@@ -32,14 +32,14 @@ public class TimeSpan extends Element {
 	int interval=0; //minutes
 
 	public String toString() {
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		if (twentyfourseven) {
 			b.append("24/7");
 		} else {
 			if (startEvent != null) {
 				b.append(startEvent.toString());
 			} else {
-				b.append(String.format("%02d",(int)start/60));
+				b.append(String.format("%02d",start/60));
 				b.append(":");
 				b.append(String.format("%02d",start%60));
 			}
@@ -48,7 +48,7 @@ public class TimeSpan extends Element {
 				b.append(endEvent.toString());
 			} else if (end != -1){
 				b.append("-");
-				b.append(String.format("%02d",(int)end/60));
+				b.append(String.format("%02d",end/60));
 				b.append(":");
 				b.append(String.format("%02d",end%60));
 			}
@@ -57,7 +57,7 @@ public class TimeSpan extends Element {
 			}
 			if (interval != 0) { // output only the full format
 				b.append("/");
-				b.append(String.format("%02d",(int)interval/60));
+				b.append(String.format("%02d",interval/60));
 				b.append(":");
 				b.append(String.format("%02d",interval%60));
 			}
@@ -70,10 +70,12 @@ public class TimeSpan extends Element {
 		if (this == other) {
 			return true;
 		}
-		TimeSpan o = (TimeSpan)other;
-		if (twentyfourseven == o.twentyfourseven && start == o.start && (startEvent == o.startEvent  || (startEvent != null && startEvent.equals(o.startEvent))) 
-				&& end == o.end && (endEvent == o.endEvent  || (endEvent != null && endEvent.equals(o.endEvent))) && openEnded == o.openEnded && interval == o.interval) {
-			return true;
+		if (other != null && other instanceof TimeSpan) {
+			TimeSpan o = (TimeSpan)other;
+			if (twentyfourseven == o.twentyfourseven && start == o.start && (startEvent == o.startEvent  || (startEvent != null && startEvent.equals(o.startEvent))) 
+					&& end == o.end && (endEvent == o.endEvent  || (endEvent != null && endEvent.equals(o.endEvent))) && openEnded == o.openEnded && interval == o.interval) {
+				return true;
+			}
 		}
 		return false;
 	}

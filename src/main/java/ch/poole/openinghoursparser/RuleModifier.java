@@ -44,10 +44,12 @@ public class RuleModifier extends Element {
 		if (this == other) {
 			return true;
 		}
-		RuleModifier o = (RuleModifier)other;
-		if ((modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier))) 
-				&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))){
-			return true;
+		if (other != null && other instanceof RuleModifier) {
+			RuleModifier o = (RuleModifier)other;
+			if ((modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier))) 
+					&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))){
+				return true;
+			}
 		}
 		return false;
 	}

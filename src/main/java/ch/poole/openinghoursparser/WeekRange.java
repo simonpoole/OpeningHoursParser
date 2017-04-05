@@ -45,9 +45,11 @@ public class WeekRange extends Element {
 		if (this == other) {
 			return true;
 		}
-		WeekRange o = (WeekRange)other;
-		if (startWeek == o.startWeek && endWeek == o.endWeek && interval == o.interval) {
-			return true;
+		if (other != null && other instanceof WeekRange) {
+			WeekRange o = (WeekRange)other;
+			if (startWeek == o.startWeek && endWeek == o.endWeek && interval == o.interval) {
+				return true;
+			}
 		}
 		return false;
 	}

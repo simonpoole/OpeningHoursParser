@@ -21,7 +21,7 @@ package ch.poole.openinghoursparser;
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 public class Holiday extends Element {
-	public enum Type { PH, SH };
+	public enum Type { PH, SH }
 	Type type = null;
 	int offset = 0;
 	
@@ -50,10 +50,12 @@ public class Holiday extends Element {
 		if (this == other) {
 			return true;
 		}
-		Holiday o = (Holiday)other;
-		if ((type == o.type  || (type != null && type.equals(o.type))) 
-				&& offset == o.offset){
-			return true;
+		if (other != null && other instanceof Holiday) {
+			Holiday o = (Holiday)other;
+			if ((type == o.type  || (type != null && type.equals(o.type))) 
+					&& offset == o.offset){
+				return true;
+			}
 		}
 		return false;
 	}

@@ -46,9 +46,11 @@ public class YearRange extends Element {
 		if (this == other) {
 			return true;
 		}
-		YearRange o = (YearRange)other;
-		if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
-			return true;
+		if (other != null && other instanceof YearRange) {
+			YearRange o = (YearRange)other;
+			if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
+				return true;
+			}
 		}
 		return false;
 	}

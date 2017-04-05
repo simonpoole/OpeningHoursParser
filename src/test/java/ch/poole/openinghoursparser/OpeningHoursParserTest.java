@@ -40,9 +40,7 @@ public class OpeningHoursParserTest {
 		{
 			OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("PH,Su 10:00-12:00; PH Su 11:00-13:00".getBytes()));
 			ArrayList<Rule> rules = parser.rules(false);
-			for (Rule r:rules) {
-				System.out.println(r);
-			}
+			assertEquals(2,rules.size());
 		} catch (ParseException pex) {
 			fail(pex.getMessage());
 		}
@@ -50,9 +48,7 @@ public class OpeningHoursParserTest {
 		{
 			OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
 			ArrayList<Rule> rules = parser.rules(false);
-			for (Rule r:rules) {
-				System.out.println(r);
-			}
+			assertEquals(1,rules.size());
 		} catch (ParseException pex) {
 			fail(pex.getMessage());
 		}
@@ -60,12 +56,8 @@ public class OpeningHoursParserTest {
 		{
 			OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
 			ArrayList<Rule> rules = parser.rules(true);
-			for (Rule r:rules) {
-				System.out.println(r);
-			}
 			fail("this should have thrown an exception");
 		} catch (ParseException pex) {
-			
 		}
 	}
 	

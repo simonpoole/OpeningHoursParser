@@ -47,11 +47,13 @@ public class MonthDayRange extends Element {
 		if (this == other) {
 			return true;
 		}
-		MonthDayRange o = (MonthDayRange)other;
-		if ((startDate == o.startDate  || (startDate != null && startDate.equals(o.startDate))) 
-				&& (endDate == o.endDate  || (endDate != null && endDate.equals(o.endDate)))
-				&& interval == o.interval){
-			return true;
+		if (other != null && other instanceof MonthDayRange) {
+			MonthDayRange o = (MonthDayRange)other;
+			if ((startDate == o.startDate  || (startDate != null && startDate.equals(o.startDate))) 
+					&& (endDate == o.endDate  || (endDate != null && endDate.equals(o.endDate)))
+					&& interval == o.interval){
+				return true;
+			}
 		}
 		return false;
 	}

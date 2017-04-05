@@ -88,16 +88,18 @@ public class DateWithOffset extends Element {
 		if (this == other) {
 			return true;
 		}
-		DateWithOffset o = (DateWithOffset)other;
-		if (openEnded == o.openEnded && year == o.year 
-				&& (month == o.month  || (month != null && month.equals(o.month))) 
-				&& day == o.day 
-				&& (weekDay == o.weekDay  || (weekDay != null && weekDay.equals(o.weekDay)))
-				&& nth == o.nth
-				&& weekDayOffsetPositive == o.weekDayOffsetPositive
-				&& (weekDayOffset == o.weekDayOffset  || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
-				&& dayOffset == o.dayOffset){
-			return true;
+		if (other != null && other instanceof DateWithOffset) {
+			DateWithOffset o = (DateWithOffset)other;
+			if (openEnded == o.openEnded && year == o.year 
+					&& (month == o.month  || (month != null && month.equals(o.month))) 
+					&& day == o.day 
+					&& (weekDay == o.weekDay  || (weekDay != null && weekDay.equals(o.weekDay)))
+					&& nth == o.nth
+					&& weekDayOffsetPositive == o.weekDayOffsetPositive
+					&& (weekDayOffset == o.weekDayOffset  || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
+					&& dayOffset == o.dayOffset){
+				return true;
+			}
 		}
 		return false;
 	}

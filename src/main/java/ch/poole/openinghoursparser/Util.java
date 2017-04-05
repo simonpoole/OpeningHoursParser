@@ -25,6 +25,11 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class Util {
+	
+	private Util() {
+		// dummy private constructor
+	}
+	
 	/**
 	 * find rules that only differs in the days and times objects and can be merged for display puposes
 	 * @param rules
@@ -36,11 +41,11 @@ public class Util {
 		
 		ArrayList<Rule> copy = new ArrayList<Rule>(rules); // shallow copy for bookkeeping
 		
-		while (copy.size() > 0) {
+		while (!copy.isEmpty()) {
 			Rule r = copy.get(0);
 			boolean found = false;
 			for (ArrayList<Rule> mergeables:result) {
-				if (mergeables.size()>0) {
+				if (!mergeables.isEmpty()) {
 					if (r.isMergeableWith(mergeables.get(0))) {
 						mergeables.add(r);
 						found = true;
@@ -65,7 +70,7 @@ public class Util {
 	 * @return
 	 */
 	public static String rulesToOpeningHoursString(ArrayList<Rule> rules) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		boolean first = true;
 		for (Rule r:rules) {
 			if (!r.isEmpty()) {

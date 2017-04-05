@@ -42,9 +42,11 @@ public class Nth extends Element {
 		if (this == other) {
 			return true;
 		}
-		Nth o = (Nth)other;
-		if (startNth == o.startNth && endNth == o.endNth) {
-			return true;
+		if (other != null && other instanceof Nth) {
+			Nth o = (Nth)other;
+			if (startNth == o.startNth && endNth == o.endNth) {
+				return true;
+			}
 		}
 		return false;
 	}
