@@ -33,8 +33,8 @@ public class Util {
 	
 	/**
 	 * find rules that only differs in the days and times objects and can be merged for display puposes
-	 * @param rules
-	 * @return
+	 * @param rules rules to check
+	 * @return list of list of rules that can be merged
 	 */
 	public static List<ArrayList<Rule>> getMergeableRules(List<Rule> rules) {
 		
@@ -64,8 +64,8 @@ public class Util {
 	
 	/**
 	 * Generate an OH string from rules
-	 * @param rules
-	 * @return
+	 * @param rules rules to convert to an opening_hours string
+	 * @return specification conformant opening_hours string
 	 */
 	public static String rulesToOpeningHoursString(List<Rule> rules) {
 		StringBuilder result = new StringBuilder();
@@ -91,8 +91,8 @@ public class Util {
 	
 	/**
 	 * Capitalize a string
-	 * @param s
-	 * @return
+	 * @param s string to capitalize
+	 * @return capitalized string
 	 */
 	public static String capitalize(String s) {
 		char[] c = s.toLowerCase(Locale.US).toCharArray();

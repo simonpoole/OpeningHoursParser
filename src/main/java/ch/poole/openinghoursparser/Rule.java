@@ -175,19 +175,19 @@ public class Rule extends Element {
 	/**
 	 * Returns true if the input only differs in the days and times objects
 	 * Current considers comments significant
-	 * @param o
-	 * @return
+	 * @param r rule to test against
+	 * @return true if r can be merged with this rule
 	 */
-	public boolean isMergeableWith(Rule o) {
-		if (this == o) {
+	public boolean isMergeableWith(Rule r) {
+		if (this == r) {
 			return true;
 		}		
 		if (!twentyfourseven
-			&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
-			&& (years == o.years  || (years != null && years.equals(o.years)))
-			&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
-			&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
-			&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)))){
+			&& (comment == r.comment  || (comment != null && comment.equals(r.comment)))
+			&& (years == r.years  || (years != null && years.equals(r.years)))
+			&& (weeks == r.weeks  || (weeks != null && weeks.equals(r.weeks)))
+			&& (monthdays == r.monthdays  || (monthdays != null && monthdays.equals(r.monthdays)))
+			&& (modifier == r.modifier  || (modifier != null && modifier.equals(r.modifier)))){
 			return true;
 		}
 		return false;
