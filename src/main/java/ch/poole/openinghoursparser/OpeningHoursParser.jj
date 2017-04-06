@@ -26,12 +26,13 @@
 package ch.poole.openinghoursparser;
  import java.util.ArrayList;import java.util.Collections;
 import java.util.Locale;import java.io.ByteArrayInputStream;public class OpeningHoursParser{
-	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : [ "-", "\u2013" ] >| < SLASH : "/" >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
+	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : ":" >| < PLUS : "+" >| < HYPHEN : [ "-", "\u2013" ] >| < SLASH : "/" >
+| < STOP : "." >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
 TOKEN :{  < NUMBER : (< DIGIT >)+ >}
 
 TOKEN :
 {
-  < MINUTES : < COLON > ("0" | ([ "0"-"5" ] < DIGIT >))>
+  < MINUTES : ( < COLON > | < STOP > ) ("0" | ([ "0"-"5" ] < DIGIT >))>
 }TOKEN :{  < DIGIT : [ "0"-"9" ] >}TOKEN :{  < WS : [ " ", "\t" ] >}TOKEN :{  < FALLBACKSEPERATOR : "||" >}TOKEN :{  < ALWAYS : "24/7" >}TOKEN :{  < WEEKDAY :    "Mo"  | "Tu"  | "We"  | "Th"  | "Fr"  | "Sa"  | "Su" >
   {
           matchedToken.image = Util.capitalize(image.toString());  }| < WEEKDAY3 :    "Mon"  | "Tue"  | "Wed"  | "Thu"  | "Fri"  | "Sat"  | "Sun" >
@@ -75,9 +76,24 @@ TOKEN :
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh 
  */int time() :{  Token h = null;  Token m = null;  int result = 0;
-  boolean pm = false;}{  (    h = hours()  )  (    m = < MINUTES >    {      result = Integer.parseInt(m.image.substring(1));    }  )?
+  boolean pm = false;}{  (    h = hours()  )  (
+    (      m = < MINUTES >
+    )    {
+      if (strict && (m.image.length() < 3 || m.image.startsWith("."))) {
+        ParseException pex = new ParseException("Invalid minutes at " + token.next.beginLine + ", column " + token.next.beginColumn);
+	    pex.currentToken = token;
+        throw pex;
+	  }
+      else
+      {        	result = Integer.parseInt(m.image.substring(1));
+      }    }  )?
   (
-    pm = ampm()  )?  {    result = result + Integer.parseInt(h.image) * 60;
+    pm = ampm()  )?  {
+    if (strict && m == null) {
+        ParseException pex = new ParseException("Hours without minutes");
+	    pex.currentToken = token;
+        throw pex;
+    }    result = result + Integer.parseInt(h.image) * 60;
     if (pm) {
       result = result + 12*60;
     }    return result;  }}

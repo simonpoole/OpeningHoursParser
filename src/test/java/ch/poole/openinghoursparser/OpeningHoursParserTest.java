@@ -122,7 +122,7 @@ public class OpeningHoursParserTest {
 					errors++;
 					outputExpected.write("1\n");
 					if (expectedResultCode != null) {
-						assertEquals("1",expectedResultCode);
+						assertEquals(expectedResultCode,"1");
 					}
 				}
 				catch (NumberFormatException nfx) {
@@ -132,7 +132,7 @@ public class OpeningHoursParserTest {
 					errors++;
 					outputExpected.write("2\n");
 					if (expectedResultCode != null) {
-						assertEquals("2",expectedResultCode);
+						assertEquals(expectedResultCode,"2");
 					}
 				}
 				catch (Error err) {
@@ -145,7 +145,7 @@ public class OpeningHoursParserTest {
 					errors++;
 					outputExpected.write("3\n");
 					if (expectedResultCode != null) {
-						assertEquals("3",expectedResultCode);
+						assertEquals(expectedResultCode,"3");
 					}
 				}
 			}
