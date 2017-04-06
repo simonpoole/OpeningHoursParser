@@ -159,7 +159,7 @@ int strict_time() :
 			    pex.currentToken = token;
                 throw pex;
               }
-            }            ts.end = end;          }        | endVT = variabletime()          {            ts.endEvent = endVT;          }        )        (          endplus = < PLUS >        |          (            inter = interval()            {              ts.interval = inter;            }          )        )?      )    )?    {      ts.openEnded = startplus != null || endplus != null;      return ts;    }  )| (< ALWAYS >  {    ts.twentyfourseven = true;    return ts;  }  )}ArrayList < TimeSpan > time_selector() :{  TimeSpan ts, ts1;  ArrayList < TimeSpan > result = new ArrayList < TimeSpan > ();}{  (    ts = timespan()    (      < COMMA > ts1 = timespan()      {        result.add(0, ts1);      }    )*  )  {    result.add(ts);    Collections.reverse(result);    return result;  }}String weekday() :{  Token w = null;}{  (w = < WEEKDAY >  {    return w.image;  }  )|  (    w = < WEEKDAY3 >    {
+            }            ts.end = end;          }        | endVT = variabletime()          {            ts.endEvent = endVT;          }        )        (          endplus = < PLUS >        |          (            inter = interval()            {              ts.interval = inter;            }          )        )?      )    )?    {      ts.openEnded = startplus != null || endplus != null;      return ts;    }  )}ArrayList < TimeSpan > time_selector() :{  TimeSpan ts, ts1;  ArrayList < TimeSpan > result = new ArrayList < TimeSpan > ();}{  (    ts = timespan()    (      < COMMA > ts1 = timespan()      {        result.add(0, ts1);      }    )*  )  {    result.add(ts);    Collections.reverse(result);    return result;  }}String weekday() :{  Token w = null;}{  (w = < WEEKDAY >  {    return w.image;  }  )|  (    w = < WEEKDAY3 >    {
       if (strict) {
         ParseException e = new ParseException("Three character weekday at line " + token.next.beginLine + ", column " + token.next.beginColumn);
 		e.currentToken = token;
@@ -234,45 +234,104 @@ ArrayList < YearRange > year_selector() :
       return null;
     }    return rm;  }}Rule rule() :{  Rule r = null;
   String comment = null;
-  ArrayList < YearRange > ys = null;  ArrayList < WeekRange > ws = null;  ArrayList < MonthDayRange > ms = null;  ArrayList < Holiday > hs = null;  ArrayList < WeekDayRange > ds = null;  ArrayList < TimeSpan > ts = null;  RuleModifier rm = null;}{  (
+  boolean always = false;
+  ArrayList < YearRange > ys = null;  ArrayList < WeekRange > ws = null;  ArrayList < MonthDayRange > ms = null;  ArrayList < Holiday > hs = null;  ArrayList < WeekDayRange > ds = null;  ArrayList < TimeSpan > ts = null;  RuleModifier rm = null;}{
+  (
     LOOKAHEAD(comment() < COLON >)
     (
       comment = comment()
     )
-  |     (
-      (        ys = year_selector()      )?        (        ws = week_selector()      )?      (        ms = monthday_selector()      )?    )  )
-  (  < COLON >  )?  (
-     LOOKAHEAD(weekday_selector() < COMMA >holiday_sequence())
-     (
-       ds = weekday_selector()
-       < COMMA >
-       hs = holiday_sequence()
-     )
-     {
-        if (strict) {
-          ParseException e = new ParseException("Holiday after weekday at line " + token.next.beginLine + ", column " + token.next.beginColumn);
-		  e.currentToken = token;
-          throw e;
-        }
-      }
-    |
-     (       (
-         hs = holiday_sequence()
-       )? 
-       (
-         (
-           < COMMA >
-           ds = weekday_selector()
-         )
-        |
-         ds = weekday_selector()
-       )?
-     )  )  
-  // spec is not clear on this, however ":" is used in real life here a lot
+  |
+    (
+      (
+        ys = year_selector()
+      )?
+      (
+        ws = week_selector()
+      )?
+      (
+        ms = monthday_selector()
+      )?
+    )
+  )
   (
   < COLON >
-  )?  (    ts = time_selector()  )?  (    rm = rule_modifier()  )  {    r = new Rule();
+  )?
+  (
+    (
+      < ALWAYS >
+      {
+        if (strict && (ys != null || ws != null || ms != null))
+        {
+          ParseException e = new ParseException("24/7 with other selectors");
+          e.currentToken = token;
+          throw e;
+        }
+        else
+        {
+          if (ys != null || ws != null || ms != null) {
+            // correct to proper syntax
+            ts = new ArrayList < TimeSpan > ();
+            TimeSpan t = new TimeSpan();
+            t.start = 0;
+            t.end = 1440;
+            ts.add(t);
+          }
+          else
+          { 
+          	always = true;
+         }
+        }
+      }
+    )
+  |
+    (
+      (
+        LOOKAHEAD(weekday_selector() < COMMA > holiday_sequence())
+        (
+          ds = weekday_selector() 
+          < COMMA > 
+          hs = holiday_sequence()
+        )
+        {
+          if (strict)
+          {
+            ParseException e = new ParseException("Holiday after weekday at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+            e.currentToken = token;
+            throw e;
+          }
+        }
+      |
+        (
+          (
+            hs = holiday_sequence()
+          )?
+          (
+            (
+              < COMMA > 
+              ds = weekday_selector()
+            )
+          | 
+            ds = weekday_selector()
+          )?
+        )
+      )
+      // spec is not clear on this, however ":" is used in real life here a lot
+      (
+      < COLON >
+      )?
+      (
+        ts = time_selector()
+      )?
+    )
+  )
+  (
+    rm = rule_modifier()
+  )
+  {
+    r = new Rule();
     r.comment = comment;
+    r.twentyfourseven = always;
     r.years = ys;    r.weeks = ws;    r.monthdays = ms;    r.holidays = hs;    r.days = ds;    r.times = ts;    r.modifier = rm;    return r;  }}ArrayList < Rule > rules(boolean strict) :{
   this.strict = strict;  ArrayList < Rule > result = new ArrayList < Rule > ();  Rule r = null;  Rule r1 = null;}{  r = rule()  (    (      < COMMA >
       (

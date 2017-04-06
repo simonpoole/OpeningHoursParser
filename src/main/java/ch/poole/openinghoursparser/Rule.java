@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class Rule extends Element {
 	boolean fallBack = false;
 	boolean replace = true;
+	boolean twentyfourseven = false;
 
 	String comment = null;
 	// year range list
@@ -47,74 +48,80 @@ public class Rule extends Element {
 
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		// FIXME might want to write out fallBack and replace flags too
 		if (comment != null) {
 			b.append("\"" + comment + "\":"); // we only accept comments in quotes so only print them out this way
-		}	
-		if (years != null) {
+		}		
+		if (twentyfourseven) {
 			if (b.length() > 0) {
 				b.append(" ");
 			}
-			for (YearRange yr:years) {
-				b.append(yr.toString());
-				if (years.get(years.size()-1)!=yr) {
-					b.append(",");
-				} 
+			b.append("24/7");
+		} else {
+			if (years != null) {
+				if (b.length() > 0) {
+					b.append(" ");
+				}
+				for (YearRange yr:years) {
+					b.append(yr.toString());
+					if (years.get(years.size()-1)!=yr) {
+						b.append(",");
+					} 
+				}
 			}
-		}
-		if (weeks != null) {
-			if (b.length() > 0) {
-				b.append(" ");
+			if (weeks != null) {
+				if (b.length() > 0) {
+					b.append(" ");
+				}
+				b.append("week ");
+				for (WeekRange wr:weeks) {
+					b.append(wr.toString());
+					if (weeks.get(weeks.size()-1)!=wr) {
+						b.append(",");
+					} 
+				}
 			}
-			b.append("week ");
-			for (WeekRange wr:weeks) {
-				b.append(wr.toString());
-				if (weeks.get(weeks.size()-1)!=wr) {
-					b.append(",");
-				} 
+			if (monthdays != null) {
+				if (b.length() > 0) {
+					b.append(" ");
+				}
+				for (MonthDayRange mdr:monthdays) {
+					b.append(mdr.toString());
+					if (monthdays.get(monthdays.size()-1)!=mdr) {
+						b.append(",");
+					} 
+				}
 			}
-		}
-		if (monthdays != null) {
-			if (b.length() > 0) {
-				b.append(" ");
+			if (holidays != null) {
+				if (b.length() > 0) {
+					b.append(" ");
+				}
+				for (Holiday h:holidays) {
+					b.append(h.toString());
+					if (holidays.get(holidays.size()-1)!=h) {
+						b.append(",");
+					} 
+				}
 			}
-			for (MonthDayRange mdr:monthdays) {
-				b.append(mdr.toString());
-				if (monthdays.get(monthdays.size()-1)!=mdr) {
-					b.append(",");
-				} 
+			if (days != null) {
+				if (b.length() > 0) {
+					b.append(" ");
+				}
+				for (WeekDayRange d:days) {
+					b.append(d.toString());
+					if (days.get(days.size()-1)!=d) {
+						b.append(",");
+					} 
+				}
 			}
-		}
-		if (holidays != null) {
-			if (b.length() > 0) {
-				b.append(" ");
-			}
-			for (Holiday h:holidays) {
-				b.append(h.toString());
-				if (holidays.get(holidays.size()-1)!=h) {
-					b.append(",");
-				} 
-			}
-		}
-		if (days != null) {
-			if (b.length() > 0) {
-				b.append(" ");
-			}
-			for (WeekDayRange d:days) {
-				b.append(d.toString());
-				if (days.get(days.size()-1)!=d) {
-					b.append(",");
-				} 
-			}
-		}
-		if (times != null) {
-			if (b.length() > 0) {
-				b.append(" ");
-			}
-			for (TimeSpan ts:times) {
-				b.append(ts.toString());
-				if (times.get(times.size()-1)!=ts) {
-					b.append(",");
+			if (times != null) {
+				if (b.length() > 0) {
+					b.append(" ");
+				}
+				for (TimeSpan ts:times) {
+					b.append(ts.toString());
+					if (times.get(times.size()-1)!=ts) {
+						b.append(",");
+					}
 				}
 			}
 		}
@@ -134,6 +141,7 @@ public class Rule extends Element {
 			Rule o = (Rule)other;
 			if (fallBack == o.fallBack  && replace == o.replace 
 					&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
+					&& twentyfourseven == o.twentyfourseven 
 					&& (years == o.years  || (years != null && years.equals(o.years)))
 					&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
 					&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
@@ -153,6 +161,7 @@ public class Rule extends Element {
 		result = 37 * result + (fallBack ? 0 : 1);
 		result = 37 * result + (replace ? 0 : 1);
 		result = 37 * result + (comment == null ? 0 : comment.hashCode());
+		result = 37 * result + (twentyfourseven ? 0 : 1);
 		result = 37 * result + (years == null ? 0 : years.hashCode());
 		result = 37 * result + (weeks == null ? 0 : weeks.hashCode());
 		result = 37 * result + (monthdays == null ? 0 : monthdays.hashCode());
@@ -173,7 +182,8 @@ public class Rule extends Element {
 		if (this == o) {
 			return true;
 		}		
-		if ((comment == o.comment  || (comment != null && comment.equals(o.comment)))
+		if (!twentyfourseven
+			&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
 			&& (years == o.years  || (years != null && years.equals(o.years)))
 			&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
 			&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
@@ -203,6 +213,21 @@ public class Rule extends Element {
 	public String getComment() {
 		return comment;
 	}
+	
+	/**
+	 * @return the twentyfourseven
+	 */
+	public boolean isTwentyfourseven() {
+		return twentyfourseven;
+	}
+	
+	/**
+	 * @param twentyfourseven the twentyfourseven to set
+	 */
+	public void setTwentyfourseven(boolean twentyfourseven) {
+		this.twentyfourseven = twentyfourseven;
+	}
+
 
 	/**
 	 * @return the years
@@ -329,6 +354,9 @@ public class Rule extends Element {
 	 */
 	public boolean isEmpty() {
 		// not done in one expression so that it remains legible
+		if (twentyfourseven) {
+			return false;
+		}
 		if (comment != null && !"".equals(comment)) {
 			return false;
 		}

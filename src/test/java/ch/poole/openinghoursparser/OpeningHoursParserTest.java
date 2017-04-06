@@ -250,7 +250,6 @@ public class OpeningHoursParserTest {
 		assertFalse(dwo1.equals(dwo2));
 		
 		TimeSpan ts1 = new TimeSpan();
-		ts1.twentyfourseven = true;
 		ts1.start=1;
 		
 		VariableTime vt1 = new VariableTime();
@@ -267,7 +266,6 @@ public class OpeningHoursParserTest {
 		assertEquals(ts1,ts1);
 		
 		TimeSpan ts2 = new TimeSpan();
-		ts2.twentyfourseven = true;
 		ts2.start=1;
 		
 		VariableTime vt2 = new VariableTime();
@@ -286,9 +284,6 @@ public class OpeningHoursParserTest {
 		assertEquals(ts1,ts2);
 		assertEquals(ts1.hashCode(),ts2.hashCode());
 		
-		ts2.twentyfourseven = false;
-		assertFalse(ts1.equals(ts2));
-		ts2.twentyfourseven = true;
 		assertEquals(ts1,ts2);
 		ts2.start=2;
 		assertFalse(ts1.equals(ts2));
@@ -335,6 +330,17 @@ public class OpeningHoursParserTest {
 			assertEquals(2,rules.size());
 			List<ArrayList<Rule>> mergeableRules = Util.getMergeableRules(rules);
 			assertEquals(1,mergeableRules.size());
+		} catch (ParseException pex) {
+			fail(pex.getMessage());
+		}
+	}
+	
+	@Test
+	public void twentyFourSeven() {
+		OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("2010-2011 Mo,Tu 10:00-11:00, 24/7".getBytes()));
+		try {
+			List<Rule>rules = parser.rules(false);
+			assertEquals(2,rules.size());;
 		} catch (ParseException pex) {
 			fail(pex.getMessage());
 		}

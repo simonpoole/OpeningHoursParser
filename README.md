@@ -18,6 +18,7 @@ In non-strict mode the following further differences are allowed:
  * times extending in to the next day that are missing the extra 24 hours are corrected
  * AM and PM time specifications are allowed
  * holidays following weekdays
+ * 24/7 rules with preceding selectors are corrected to 00:00-24:00 time spans
  
 The most common error that currently will cause an OH string not to be parsed is the use of "." instead of ":" in time specifications.
 

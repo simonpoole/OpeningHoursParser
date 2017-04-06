@@ -22,8 +22,6 @@ package ch.poole.openinghoursparser;
  */
 
 public class TimeSpan extends Element {
-
-	boolean twentyfourseven = false;
 	int start=-1;
 	VariableTime startEvent = null;
 	int end=-1;
@@ -33,34 +31,30 @@ public class TimeSpan extends Element {
 
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		if (twentyfourseven) {
-			b.append("24/7");
+		if (startEvent != null) {
+			b.append(startEvent.toString());
 		} else {
-			if (startEvent != null) {
-				b.append(startEvent.toString());
-			} else {
-				b.append(String.format("%02d",start/60));
-				b.append(":");
-				b.append(String.format("%02d",start%60));
-			}
-			if (endEvent != null) {
-				b.append("-");
-				b.append(endEvent.toString());
-			} else if (end != -1){
-				b.append("-");
-				b.append(String.format("%02d",end/60));
-				b.append(":");
-				b.append(String.format("%02d",end%60));
-			}
-			if (openEnded) {
-				b.append("+");
-			}
-			if (interval != 0) { // output only the full format
-				b.append("/");
-				b.append(String.format("%02d",interval/60));
-				b.append(":");
-				b.append(String.format("%02d",interval%60));
-			}
+			b.append(String.format("%02d",start/60));
+			b.append(":");
+			b.append(String.format("%02d",start%60));
+		}
+		if (endEvent != null) {
+			b.append("-");
+			b.append(endEvent.toString());
+		} else if (end != -1){
+			b.append("-");
+			b.append(String.format("%02d",end/60));
+			b.append(":");
+			b.append(String.format("%02d",end%60));
+		}
+		if (openEnded) {
+			b.append("+");
+		}
+		if (interval != 0) { // output only the full format
+			b.append("/");
+			b.append(String.format("%02d",interval/60));
+			b.append(":");
+			b.append(String.format("%02d",interval%60));
 		}
 		return b.toString();
 	}
@@ -72,8 +66,7 @@ public class TimeSpan extends Element {
 		}
 		if (other != null && other instanceof TimeSpan) {
 			TimeSpan o = (TimeSpan)other;
-			if (twentyfourseven == o.twentyfourseven 
-					&& start == o.start 
+			if (start == o.start 
 					&& (startEvent == o.startEvent || (startEvent != null && startEvent.equals(o.startEvent))) 
 					&& end == o.end 
 					&& (endEvent == o.endEvent || (endEvent != null && endEvent.equals(o.endEvent))) 
@@ -88,7 +81,6 @@ public class TimeSpan extends Element {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = 37 * result + (twentyfourseven ? 0 : 1);
 		result = 37 * result + start;
 		result = 37 * result + (startEvent == null ? 0 : startEvent.hashCode());
 		result = 37 * result + end;
@@ -96,13 +88,6 @@ public class TimeSpan extends Element {
 		result = 37 * result + (openEnded ? 0 : 1);
 		result = 37 * result + interval;
 		return result;
-	}
-
-	/**
-	 * @return the twentyfourseven
-	 */
-	public boolean isTwentyfourseven() {
-		return twentyfourseven;
 	}
 
 	/**
@@ -145,13 +130,6 @@ public class TimeSpan extends Element {
 	 */
 	public int getInterval() {
 		return interval;
-	}
-
-	/**
-	 * @param twentyfourseven the twentyfourseven to set
-	 */
-	public void setTwentyfourseven(boolean twentyfourseven) {
-		this.twentyfourseven = twentyfourseven;
 	}
 
 	/**
