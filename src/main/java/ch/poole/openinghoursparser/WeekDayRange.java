@@ -21,11 +21,51 @@ package ch.poole.openinghoursparser;
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import java.util.ArrayList;
+import java.util.List;
 
 public class WeekDayRange extends Element {
-	String startDay = null;
-	String endDay = null;
-	ArrayList<Nth> nths = new ArrayList<Nth>();
+	
+	public enum WeekDay {
+		MO("Mo"),
+		TU("Tu"),
+		WE("We"),
+		TH("Th"),
+		FR("Fr"),
+		SA("Sa"),
+		SU("Su");
+		
+		private final String name;
+		
+		WeekDay(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public static WeekDay getValue(String day) {
+			for (WeekDay w:WeekDay.values()) {
+				if (w.toString().equals(day)) {
+					return w;
+				}
+			}
+			return null;
+		}
+		
+		public static List<String> nameValues() {
+			List<String> result = new ArrayList<String>();
+			for (WeekDay w:values()) {
+				result.add(w.toString());
+			}
+			return result;
+		}
+	}
+	
+	WeekDay startDay = null;
+	WeekDay endDay = null;
+	List<Nth> nths = new ArrayList<Nth>();
 
 	public String toString() {
 		StringBuilder b = new StringBuilder();
@@ -33,7 +73,7 @@ public class WeekDayRange extends Element {
 		if (endDay != null) {
 			b.append("-");
 			b.append(endDay);
-		} else if (nths != null && nths.size() > 0) {
+		} else if (nths != null && !nths.isEmpty()) {
 			b.append("["); 
 			for (Nth n:nths) {
 				b.append(n.toString());
@@ -75,42 +115,72 @@ public class WeekDayRange extends Element {
 	/**
 	 * @return the startDay
 	 */
-	public String getStartDay() {
+	public WeekDay getStartDay() {
 		return startDay;
 	}
 
 	/**
 	 * @return the endDay
 	 */
-	public String getEndDay() {
+	public WeekDay getEndDay() {
 		return endDay;
 	}
 
 	/**
 	 * @return the nths
 	 */
-	public ArrayList<Nth> getNths() {
+	public List<Nth> getNths() {
 		return nths;
 	}
 
 	/**
-	 * @param startDay the startDay to set
+	 * Set the day the range starts on
+	 * 
+	 * @param day the day to set
 	 */
-	public void setStartDay(String startDay) {
-		this.startDay = startDay;
+	public void setStartDay(WeekDay day) {
+		this.startDay = day;
+	}
+	
+	/**
+	 * Set the day the range starts on
+	 * 
+	 * @param day the day to set
+	 */
+	public void setStartDay(String day) {
+		WeekDay w = WeekDay.getValue(day);
+		if (w==null) {
+			throw new IllegalArgumentException(day + " is not a valid WeekDay");
+		}
+		this.startDay = w;
 	}
 
 	/**
-	 * @param endDay the endDay to set
+	 * Set the day the range ends on
+	 * 
+	 * @param day the day to set
 	 */
-	public void setEndDay(String endDay) {
-		this.endDay = endDay;
+	public void setEndDay(WeekDay day) {
+		this.endDay = day;
+	}
+	
+	/**
+	 * Set the day the range ends on
+	 * 
+	 * @param day the day to set
+	 */
+	public void setEndDay(String day) {
+		WeekDay w = WeekDay.getValue(day);
+		if (w==null) {
+			throw new IllegalArgumentException(day + " is not a valid WeekDay");
+		}
+		this.endDay = w;
 	}
 
 	/**
 	 * @param nths the nths to set
 	 */
-	public void setNths(ArrayList<Nth> nths) {
+	public void setNths(List<Nth> nths) {
 		this.nths = nths;
 	}
 }

@@ -1,4 +1,8 @@
 package ch.poole.openinghoursparser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -22,7 +26,43 @@ package ch.poole.openinghoursparser;
  */
 
 public class RuleModifier extends Element {
-	String modifier = null;
+	public enum Modifier {
+		OPEN("open"),
+		CLOSED("closed"),
+		OFF("off"),
+		UNKNOWN("unknown");
+		
+		private final String name;
+		
+		Modifier(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public static Modifier getValue(String modifier) {
+			for (Modifier m:Modifier.values()) {
+				if (m.toString().equals(modifier)) {
+					return m;
+				}
+			}
+			return null;
+		}
+		
+		public static List<String> nameValues() {
+			List<String> result = new ArrayList<String>();
+			for (Modifier m:values()) {
+				result.add(m.toString());
+			}
+			return result;
+		}
+	}
+	
+	
+	Modifier modifier = null;
 	String comment = null;
 	
 	public String toString() {
@@ -31,7 +71,7 @@ public class RuleModifier extends Element {
 			b.append(modifier);
 		}
 		if (comment != null) {
-			if (modifier != null && modifier.length() > 0) {
+			if (modifier != null) {
 				b.append(" ");
 			}
 			b.append("\"" + comment + "\"");
@@ -65,7 +105,7 @@ public class RuleModifier extends Element {
 	/**
 	 * @return the modifier
 	 */
-	public String getModifier() {
+	public Modifier getModifier() {
 		return modifier;
 	}
 
@@ -77,10 +117,25 @@ public class RuleModifier extends Element {
 	}
 
 	/**
-	 * @param modifier the modifier to set
+	 * Set the rule modifier
+	 * 
+	 * @param start the modifer to set
+	 */
+	public void setModifier(Modifier modifier) {
+		this.modifier = modifier;
+	}
+	
+	/**
+	 * Set the rule modifier
+	 * 
+	 * @param start the modifer to set
 	 */
 	public void setModifier(String modifier) {
-		this.modifier = modifier;
+		Modifier m = Modifier.getValue(modifier);
+		if (m==null) {
+			throw new IllegalArgumentException(m + " is not a valid Modifier");
+		}
+		this.modifier = m;
 	}
 
 	/**

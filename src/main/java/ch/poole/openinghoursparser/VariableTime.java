@@ -1,4 +1,8 @@
 package ch.poole.openinghoursparser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -22,7 +26,42 @@ package ch.poole.openinghoursparser;
  */
 
 public class VariableTime extends Element {
-	String event = null;
+	public enum Event {
+		DAWN("dawn"),
+		SUNRISE("sunrise"),
+		DUSK("dusk"),
+		SUNSET("sunset");
+		
+		private final String name;
+		
+		Event(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public static Event getValue(String event) {
+			for (Event e:Event.values()) {
+				if (e.toString().equals(event)) {
+					return e;
+				}
+			}
+			return null;
+		}
+		
+		public static List<String> nameValues() {
+			List<String> result = new ArrayList<String>();
+			for (Event e:values()) {
+				result.add(e.toString());
+			}
+			return result;
+		}
+	}
+	
+	Event event = null;
 	/** offset in minutes */
 	int offset = 0;
 	
@@ -35,7 +74,7 @@ public class VariableTime extends Element {
 				if (offset > 0) {
 					b.append("+");
 				} 
-				b.append(String.format("%02d",(int)offset/60));
+				b.append(String.format("%02d",offset/60));
 				b.append(":");
 				b.append(String.format("%02d",Math.abs(offset)%60));
 				b.append(")");
@@ -72,7 +111,7 @@ public class VariableTime extends Element {
 	/**
 	 * @return the event
 	 */
-	public String getEvent() {
+	public Event getEvent() {
 		return event;
 	}
 
@@ -84,12 +123,28 @@ public class VariableTime extends Element {
 	}
 
 	/**
-	 * @param event the event to set
+	 * Set the day the range starts on
+	 * 
+	 * @param day the day to set
 	 */
-	public void setEvent(String event) {
+	public void setEvent(Event event) {
 		this.event = event;
 	}
 
+	/**
+	 * Set the day the range starts on
+	 * 
+	 * @param day the day to set
+	 */
+	public void setEvent(String event) {
+		Event e = Event.getValue(event);
+		if (e==null) {
+			throw new IllegalArgumentException(e + " is not a valid Event");
+		}
+		this.event = e;
+	}
+	
+	
 	/**
 	 * @param offset the offset to set
 	 */

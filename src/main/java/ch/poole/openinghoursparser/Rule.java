@@ -1,26 +1,5 @@
 package ch.poole.openinghoursparser;
-/**
- * Container for objects from the opening_hours specification
- * @author Simon Poole
- *
- * Copyright (c) 2015 Simon Poole
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies
- * or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
- * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
- " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-import java.util.ArrayList;
+import java.util.List;
 
 public class Rule extends Element {
 	boolean fallBack = false;
@@ -29,17 +8,17 @@ public class Rule extends Element {
 
 	String comment = null;
 	// year range list
-    ArrayList<YearRange> years = null;
+    List<YearRange> years = null;
 	// week list
-    ArrayList<WeekRange> weeks = null;
+    List<WeekRange> weeks = null;
 	// month day list
-	ArrayList<MonthDayRange> monthdays = null;
+	List<MonthDayRange> monthdays = null;
 	// holiday list
-	ArrayList<Holiday> holidays = null;
+	List<Holiday> holidays = null;
 	// day list
-	ArrayList<WeekDayRange> days = null;
+	List<WeekDayRange> days = null;
 	// times
-	ArrayList<TimeSpan> times = null;
+	List<TimeSpan> times = null;
 	// modifier
 	RuleModifier modifier = null;
 
@@ -232,42 +211,42 @@ public class Rule extends Element {
 	/**
 	 * @return the years
 	 */
-	public ArrayList<YearRange> getYears() {
+	public List<YearRange> getYears() {
 		return years;
 	}
 
 	/**
 	 * @return the weeks
 	 */
-	public ArrayList<WeekRange> getWeeks() {
+	public List<WeekRange> getWeeks() {
 		return weeks;
 	}
 
 	/**
 	 * @return the monthdays
 	 */
-	public ArrayList<MonthDayRange> getMonthdays() {
+	public List<MonthDayRange> getMonthdays() {
 		return monthdays;
 	}
 
 	/**
 	 * @return the holidays
 	 */
-	public ArrayList<Holiday> getHolidays() {
+	public List<Holiday> getHolidays() {
 		return holidays;
 	}
 
 	/**
 	 * @return the days
 	 */
-	public ArrayList<WeekDayRange> getDays() {
+	public List<WeekDayRange> getDays() {
 		return days;
 	}
 
 	/**
 	 * @return the times
 	 */
-	public ArrayList<TimeSpan> getTimes() {
+	public List<TimeSpan> getTimes() {
 		return times;
 	}
 
@@ -302,42 +281,42 @@ public class Rule extends Element {
 	/**
 	 * @param years the years to set
 	 */
-	public void setYears(ArrayList<YearRange> years) {
+	public void setYears(List<YearRange> years) {
 		this.years = years;
 	}
 
 	/**
 	 * @param weeks the weeks to set
 	 */
-	public void setWeeks(ArrayList<WeekRange> weeks) {
+	public void setWeeks(List<WeekRange> weeks) {
 		this.weeks = weeks;
 	}
 
 	/**
 	 * @param monthdays the monthdays to set
 	 */
-	public void setMonthdays(ArrayList<MonthDayRange> monthdays) {
+	public void setMonthdays(List<MonthDayRange> monthdays) {
 		this.monthdays = monthdays;
 	}
 
 	/**
 	 * @param holidays the holidays to set
 	 */
-	public void setHolidays(ArrayList<Holiday> holidays) {
+	public void setHolidays(List<Holiday> holidays) {
 		this.holidays = holidays;
 	}
 
 	/**
 	 * @param days the days to set
 	 */
-	public void setDays(ArrayList<WeekDayRange> days) {
+	public void setDays(List<WeekDayRange> days) {
 		this.days = days;
 	}
 
 	/**
 	 * @param times the times to set
 	 */
-	public void setTimes(ArrayList<TimeSpan> times) {
+	public void setTimes(List<TimeSpan> times) {
 		this.times = times;
 	}
 

@@ -1,4 +1,8 @@
 package ch.poole.openinghoursparser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -21,7 +25,17 @@ package ch.poole.openinghoursparser;
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 public class Holiday extends Element {
-	public enum Type { PH, SH }
+	public enum Type { PH, SH;
+		
+		public static List<String> nameValues() {
+			List<String> result = new ArrayList<String>();
+			for (Type t:values()) {
+				result.add(t.toString());
+			}
+			return result;
+		}	
+	}
+	
 	Type type = null;
 	int offset = 0;
 	

@@ -22,14 +22,20 @@ package ch.poole.openinghoursparser;
  */
 
 public class WeekRange extends Element {
-	int startWeek = -1;
-	int endWeek = -1;
+	/**
+	 * Valid week number are from 1 to 53
+	 */
+	public static final int UNDEFINED_WEEK = Integer.MIN_VALUE;
+	public static final int MIN_WEEK = 1;
+	public static final int MAX_WEEK = 53;
+	int startWeek = UNDEFINED_WEEK;
+	int endWeek = UNDEFINED_WEEK;
 	int interval = 0;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append(String.format("%02d",startWeek));
-		if (endWeek > -1) {
+		if (endWeek != UNDEFINED_WEEK) {
 			b.append("-");
 			b.append(String.format("%02d",endWeek));
 			if (interval > 0) {
@@ -85,17 +91,23 @@ public class WeekRange extends Element {
 	}
 
 	/**
-	 * @param startWeek the startWeek to set
+	 * @param start the startWeek to set
 	 */
-	public void setStartWeek(int startWeek) {
-		this.startWeek = startWeek;
+	public void setStartWeek(int start) {
+		if (start < MIN_WEEK || start > MAX_WEEK) {
+			throw new IllegalArgumentException(start + " is outside of the 1-53 range");
+		}
+		this.startWeek = start;
 	}
 
 	/**
-	 * @param endWeek the endWeek to set
+	 * @param end the endWeek to set
 	 */
-	public void setEndWeek(int endWeek) {
-		this.endWeek = endWeek;
+	public void setEndWeek(int end) {
+		if (end < MIN_WEEK || end > MAX_WEEK) {
+			throw new IllegalArgumentException(startWeek + " is outside of the 1-53 range");
+		}
+		this.endWeek = end;
 	}
 
 	/**

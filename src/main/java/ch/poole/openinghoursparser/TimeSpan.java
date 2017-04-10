@@ -22,9 +22,14 @@ package ch.poole.openinghoursparser;
  */
 
 public class TimeSpan extends Element {
-	int start=-1;
+	public static final int UNDEFINED_TIME = Integer.MIN_VALUE;
+	public static final int MIN_TIME = 0;
+	public static final int MAX_TIME = 1440;
+	public static final int MAX_EXTENDED_TIME = 2880;
+	
+	int start=UNDEFINED_TIME;
 	VariableTime startEvent = null;
-	int end=-1;
+	int end=UNDEFINED_TIME;
 	VariableTime endEvent = null;
 	boolean openEnded=false;
 	int interval=0; //minutes
@@ -41,7 +46,7 @@ public class TimeSpan extends Element {
 		if (endEvent != null) {
 			b.append("-");
 			b.append(endEvent.toString());
-		} else if (end != -1){
+		} else if (end != UNDEFINED_TIME){
 			b.append("-");
 			b.append(String.format("%02d",end/60));
 			b.append(":");
@@ -133,10 +138,15 @@ public class TimeSpan extends Element {
 	}
 
 	/**
-	 * @param start the start to set
+	 * Set the start of range value
+	 * 
+	 * @param s the start to set
 	 */
-	public void setStart(int start) {
-		this.start = start;
+	public void setStart(int s) {
+		if (s < MIN_TIME || s > MAX_EXTENDED_TIME) {
+			throw new IllegalArgumentException(s + " is not a valid time");
+		}
+		this.start = s;
 	}
 
 	/**
@@ -147,10 +157,15 @@ public class TimeSpan extends Element {
 	}
 
 	/**
+	 * Set the end of range value
+	 * 
 	 * @param end the end to set
 	 */
-	public void setEnd(int end) {
-		this.end = end;
+	public void setEnd(int e) {
+		if (e < MIN_TIME || e > MAX_EXTENDED_TIME) {
+			throw new IllegalArgumentException(e + " is not a valid time");
+		}
+		this.end = e;
 	}
 
 	/**

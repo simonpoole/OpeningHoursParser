@@ -1,4 +1,10 @@
 package ch.poole.openinghoursparser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.poole.openinghoursparser.WeekDayRange.WeekDay;
+
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -22,36 +28,115 @@ package ch.poole.openinghoursparser;
  */
  
 public class DateWithOffset extends Element {
+	public enum Month {
+		JAN("Jan"),
+		FEB("Feb"),
+		MAR("Mar"),
+		APR("Apr"),
+		MAY("May"),
+		JUN("Jun"),
+		JUL("Jul"),
+		AUG("Aug"),
+		SEP("Sep"),
+		OCT("Oct"),
+		NOV("Nov"),
+		DEC("Dec");
+		
+		private final String name;
+		
+		Month(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public static Month getValue(String month) {
+			for (Month m:Month.values()) {
+				if (m.toString().equals(month)) {
+					return m;
+				}
+			}
+			return null;
+		}
+		
+		public static List<String> nameValues() {
+			List<String> result = new ArrayList<String>();
+			for (Month m:values()) {
+				result.add(m.toString());
+			}
+			return result;
+		}
+	}
+	
+	public enum VarDate {
+		EASTER("easter");
+		
+		private final String name;
+		
+		VarDate(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public static VarDate getValue(String varDate) {
+			for (VarDate v:VarDate.values()) {
+				if (v.toString().equals(varDate)) {
+					return v;
+				}
+			}
+			return null;
+		}
+		
+		public static List<String> nameValues() {
+			List<String> result = new ArrayList<String>();
+			for (VarDate v:values()) {
+				result.add(v.toString());
+			}
+			return result;
+		}
+	}
+	
+	public static final int UNDEFINED_MONTH_DAY = Integer.MIN_VALUE;
+	public static final int MIN_MONTH_DAY = 1;
+	public static final int MAX_MONTH_DAY = 31;
+	
 	boolean openEnded = false;
-	int year = 0;
-	String month = null;
-	int day = -1;
-	String weekDay = null;
+	int year = YearRange.UNDEFINED_YEAR;
+	Month month = null;
+	int day = UNDEFINED_MONTH_DAY;
+	WeekDay weekDay = null;
 	int nth = 0;
 	boolean weekDayOffsetPositive=true;
 	String weekDayOffset = null;
 	int dayOffset = 0;
 	
-	String varDate = null;
+	VarDate varDate = null;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		if (year != 0) {
+		if (year != YearRange.UNDEFINED_YEAR) {
 			b.append(year);
 		}
 		if (month != null) {
-			if (year != 0) {
+			if (year != YearRange.UNDEFINED_YEAR) {
 				b.append(" ");
 			}
 			b.append(month);
 		}
-		if (day > 0) {
-			if (year != 0 || month != null) {
+		if (day != UNDEFINED_MONTH_DAY) {
+			if (year != YearRange.UNDEFINED_YEAR || month != null) {
 				b.append(" ");
 			}
 			b.append(day);
 		} else if (weekDay != null) {
-			if (year != 0 || month != null) {
+			if (year != YearRange.UNDEFINED_YEAR || month != null) {
 				b.append(" ");
 			}
 			b.append(weekDay);
@@ -59,7 +144,7 @@ public class DateWithOffset extends Element {
 			b.append(nth);
 			b.append("]");
 		} else if (varDate != null) {
-			if (year != 0) {
+			if (year != YearRange.UNDEFINED_YEAR ) {
 				b.append(" ");
 			}
 			b.append(varDate);
@@ -138,7 +223,7 @@ public class DateWithOffset extends Element {
 	/**
 	 * @return the month
 	 */
-	public String getMonth() {
+	public Month getMonth() {
 		return month;
 	}
 
@@ -152,7 +237,7 @@ public class DateWithOffset extends Element {
 	/**
 	 * @return the weekDay
 	 */
-	public String getWeekDay() {
+	public WeekDay getWeekDay() {
 		return weekDay;
 	}
 
@@ -187,8 +272,28 @@ public class DateWithOffset extends Element {
 	/**
 	 * @return the varDate
 	 */
-	public String getVarDate() {
+	public VarDate getVarDate() {
 		return varDate;
+	}
+	
+	/**
+	 * @param varDate the varDate to set
+	 */
+	public void setVarDate(VarDate varDate) {
+		this.varDate = varDate;
+	}
+	
+	/**
+	 * Set a variable date
+	 * 
+	 * @param the var date
+	 */
+	public void setVarDate(String date) {
+		VarDate v = VarDate.getValue(date);
+		if (v==null) {
+			throw new IllegalArgumentException(v + " is not a valid VarDate");
+		}
+		this.varDate = v;
 	}
 
 	/**
@@ -199,31 +304,67 @@ public class DateWithOffset extends Element {
 	}
 
 	/**
+	 * Set the year value
+	 * 
 	 * @param year the year to set
 	 */
 	public void setYear(int year) {
+		if (year < YearRange.FIRST_VALID_YEAR) {
+			throw new IllegalArgumentException(year + " is earlier than " + YearRange.FIRST_VALID_YEAR);
+		}
 		this.year = year;
 	}
 
 	/**
 	 * @param month the month to set
 	 */
-	public void setMonth(String month) {
+	public void setMonth(Month month) {
 		this.month = month;
 	}
 
 	/**
+	 * Set a month
+	 * 
+	 * @param the month
+	 */
+	public void setMonth(String month) {
+		Month m = Month.getValue(month);
+		if (m==null) {
+			throw new IllegalArgumentException(m + " is not a valid Month");
+		}
+		this.month = m;
+	}
+	
+	/**
+	 * Set the month day number
+	 * 
 	 * @param day the day to set
 	 */
 	public void setDay(int day) {
+		if (day < MIN_MONTH_DAY || day > MAX_MONTH_DAY) {
+			throw new IllegalArgumentException(day + " is not a valid month day number");
+		}
 		this.day = day;
 	}
 
 	/**
 	 * @param weekDay the weekDay to set
 	 */
-	public void setWeekDay(String weekDay) {
+	public void setWeekDay(WeekDay weekDay) {
 		this.weekDay = weekDay;
+	}
+	
+	/**
+	 * Set a week day
+	 * 
+	 * @param the day
+	 */
+	public void setWeekDay(String day) {
+		WeekDay w = WeekDay.getValue(day);
+		if (w==null) {
+			throw new IllegalArgumentException(day + " is not a valid WeekDay");
+		}
+		this.weekDay = w;
 	}
 
 	/**
@@ -252,12 +393,5 @@ public class DateWithOffset extends Element {
 	 */
 	public void setDayOffset(int dayOffset) {
 		this.dayOffset = dayOffset;
-	}
-
-	/**
-	 * @param varDate the varDate to set
-	 */
-	public void setVarDate(String varDate) {
-		this.varDate = varDate;
 	}
 }

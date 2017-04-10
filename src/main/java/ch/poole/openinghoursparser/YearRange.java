@@ -23,14 +23,20 @@ package ch.poole.openinghoursparser;
 
 public class YearRange extends Element {
 
-	int startYear = -1;
-	int endYear = -1;
+	public static final int FIRST_VALID_YEAR = 1900;
+	/**
+	 * years are defined as positive integers greater than 1900 (in the spec non-inclusive)
+	 * however that might change one day
+	 */
+	public static final int UNDEFINED_YEAR = Integer.MIN_VALUE;
+	int startYear = UNDEFINED_YEAR;
+	int endYear = UNDEFINED_YEAR;
 	int interval = 0;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append(String.format("%04d",startYear));
-		if (endYear > -1) {
+		if (endYear != UNDEFINED_YEAR) {
 			b.append("-");
 			b.append(String.format("%04d",endYear));
 			if (interval > 0) {
@@ -86,17 +92,27 @@ public class YearRange extends Element {
 	}
 
 	/**
-	 * @param startYear the startYear to set
+	 * Set the start of the year range
+	 * 
+	 * @param start the year to set
 	 */
-	public void setStartYear(int startYear) {
-		this.startYear = startYear;
+	public void setStartYear(int start) {
+		if (start < FIRST_VALID_YEAR) {
+			throw new IllegalArgumentException(start + " is earlier than 1900");
+		}
+		this.startYear = start;
 	}
 
 	/**
-	 * @param endYear the endYear to set
+	 * Set the end of the year range
+	 * 
+	 * @param end the year to set
 	 */
-	public void setEndYear(int endYear) {
-		this.endYear = endYear;
+	public void setEndYear(int end) {
+		if (end < FIRST_VALID_YEAR) {
+			throw new IllegalArgumentException(end + " is earlier than 1900");
+		}
+		this.endYear = end;
 	}
 
 	/**
