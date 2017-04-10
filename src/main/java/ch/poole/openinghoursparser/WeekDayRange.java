@@ -110,6 +110,10 @@ public class WeekDayRange extends Element {
 	 * @param day the day to set
 	 */
 	public void setStartDay(String day) {
+		if (day==null || "".equals(day)) {
+			this.startDay = null;
+			return;
+		}
 		WeekDay w = WeekDay.getValue(day);
 		if (w==null) {
 			throw new IllegalArgumentException(day + " is not a valid WeekDay");

@@ -97,7 +97,7 @@ public class YearRange extends Element {
 	 * @param start the year to set
 	 */
 	public void setStartYear(int start) {
-		if (start < FIRST_VALID_YEAR) {
+		if (start != UNDEFINED_YEAR && start < FIRST_VALID_YEAR) {
 			throw new IllegalArgumentException(start + " is earlier than 1900");
 		}
 		this.startYear = start;
@@ -109,7 +109,7 @@ public class YearRange extends Element {
 	 * @param end the year to set
 	 */
 	public void setEndYear(int end) {
-		if (end < FIRST_VALID_YEAR) {
+		if (end != UNDEFINED_YEAR && end < FIRST_VALID_YEAR) {
 			throw new IllegalArgumentException(end + " is earlier than 1900");
 		}
 		this.endYear = end;

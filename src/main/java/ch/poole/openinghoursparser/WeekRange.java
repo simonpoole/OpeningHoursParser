@@ -94,7 +94,7 @@ public class WeekRange extends Element {
 	 * @param start the startWeek to set
 	 */
 	public void setStartWeek(int start) {
-		if (start < MIN_WEEK || start > MAX_WEEK) {
+		if (start != UNDEFINED_WEEK && (start < MIN_WEEK || start > MAX_WEEK)) {
 			throw new IllegalArgumentException(start + " is outside of the 1-53 range");
 		}
 		this.startWeek = start;
@@ -104,7 +104,7 @@ public class WeekRange extends Element {
 	 * @param end the endWeek to set
 	 */
 	public void setEndWeek(int end) {
-		if (end < MIN_WEEK || end > MAX_WEEK) {
+		if (end != UNDEFINED_WEEK && (end < MIN_WEEK || end > MAX_WEEK)) {
 			throw new IllegalArgumentException(startWeek + " is outside of the 1-53 range");
 		}
 		this.endWeek = end;

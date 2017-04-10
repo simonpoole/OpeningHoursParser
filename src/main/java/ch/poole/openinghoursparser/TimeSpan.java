@@ -143,7 +143,7 @@ public class TimeSpan extends Element {
 	 * @param s the start value to set
 	 */
 	public void setStart(int s) {
-		if (s < MIN_TIME || s > MAX_EXTENDED_TIME) {
+		if (s != UNDEFINED_TIME && (s < MIN_TIME || s > MAX_EXTENDED_TIME)) {
 			throw new IllegalArgumentException(s + " is not a valid time");
 		}
 		this.start = s;
@@ -162,7 +162,7 @@ public class TimeSpan extends Element {
 	 * @param e the end value to set
 	 */
 	public void setEnd(int e) {
-		if (e < MIN_TIME || e > MAX_EXTENDED_TIME) {
+		if (e != UNDEFINED_TIME && (e < MIN_TIME || e > MAX_EXTENDED_TIME)) {
 			throw new IllegalArgumentException(e + " is not a valid time");
 		}
 		this.end = e;

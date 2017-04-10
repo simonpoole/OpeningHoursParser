@@ -249,6 +249,10 @@ public class DateWithOffset extends Element {
 	 * @param month the month
 	 */
 	public void setMonth(String month) {
+		if (month == null || "".equals(month)) {
+			this.month = null;
+			return;
+		}
 		Month m = Month.getValue(month);
 		if (m==null) {
 			throw new IllegalArgumentException(m + " is not a valid Month");
