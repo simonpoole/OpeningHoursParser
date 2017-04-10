@@ -1,10 +1,5 @@
 package ch.poole.openinghoursparser;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ch.poole.openinghoursparser.WeekDayRange.WeekDay;
-
 /**
  * Container for objects from the opening_hours specification
  * @author Simon Poole
@@ -28,80 +23,6 @@ import ch.poole.openinghoursparser.WeekDayRange.WeekDay;
  */
  
 public class DateWithOffset extends Element {
-	public enum Month {
-		JAN("Jan"),
-		FEB("Feb"),
-		MAR("Mar"),
-		APR("Apr"),
-		MAY("May"),
-		JUN("Jun"),
-		JUL("Jul"),
-		AUG("Aug"),
-		SEP("Sep"),
-		OCT("Oct"),
-		NOV("Nov"),
-		DEC("Dec");
-		
-		private final String name;
-		
-		Month(String name) {
-			this.name = name;
-		}
-		
-		@Override
-		public String toString() {
-			return name;
-		}
-
-		public static Month getValue(String month) {
-			for (Month m:Month.values()) {
-				if (m.toString().equals(month)) {
-					return m;
-				}
-			}
-			return null;
-		}
-		
-		public static List<String> nameValues() {
-			List<String> result = new ArrayList<String>();
-			for (Month m:values()) {
-				result.add(m.toString());
-			}
-			return result;
-		}
-	}
-	
-	public enum VarDate {
-		EASTER("easter");
-		
-		private final String name;
-		
-		VarDate(String name) {
-			this.name = name;
-		}
-		
-		@Override
-		public String toString() {
-			return name;
-		}
-
-		public static VarDate getValue(String varDate) {
-			for (VarDate v:VarDate.values()) {
-				if (v.toString().equals(varDate)) {
-					return v;
-				}
-			}
-			return null;
-		}
-		
-		public static List<String> nameValues() {
-			List<String> result = new ArrayList<String>();
-			for (VarDate v:values()) {
-				result.add(v.toString());
-			}
-			return result;
-		}
-	}
 	
 	public static final int UNDEFINED_MONTH_DAY = Integer.MIN_VALUE;
 	public static final int MIN_MONTH_DAY = 1;
