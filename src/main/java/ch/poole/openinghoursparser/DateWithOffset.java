@@ -286,7 +286,7 @@ public class DateWithOffset extends Element {
 	/**
 	 * Set a variable date
 	 * 
-	 * @param the var date
+	 * @param date the var date
 	 */
 	public void setVarDate(String date) {
 		VarDate v = VarDate.getValue(date);
@@ -325,7 +325,7 @@ public class DateWithOffset extends Element {
 	/**
 	 * Set a month
 	 * 
-	 * @param the month
+	 * @param month the month
 	 */
 	public void setMonth(String month) {
 		Month m = Month.getValue(month);
@@ -357,7 +357,7 @@ public class DateWithOffset extends Element {
 	/**
 	 * Set a week day
 	 * 
-	 * @param the day
+	 * @param day the day
 	 */
 	public void setWeekDay(String day) {
 		WeekDay w = WeekDay.getValue(day);

@@ -140,7 +140,7 @@ public class TimeSpan extends Element {
 	/**
 	 * Set the start of range value
 	 * 
-	 * @param s the start to set
+	 * @param s the start value to set
 	 */
 	public void setStart(int s) {
 		if (s < MIN_TIME || s > MAX_EXTENDED_TIME) {
@@ -159,7 +159,7 @@ public class TimeSpan extends Element {
 	/**
 	 * Set the end of range value
 	 * 
-	 * @param end the end to set
+	 * @param e the end value to set
 	 */
 	public void setEnd(int e) {
 		if (e < MIN_TIME || e > MAX_EXTENDED_TIME) {

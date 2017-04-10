@@ -119,7 +119,7 @@ public class RuleModifier extends Element {
 	/**
 	 * Set the rule modifier
 	 * 
-	 * @param start the modifer to set
+	 * @param modifier the modifier to set
 	 */
 	public void setModifier(Modifier modifier) {
 		this.modifier = modifier;
@@ -128,7 +128,7 @@ public class RuleModifier extends Element {
 	/**
 	 * Set the rule modifier
 	 * 
-	 * @param start the modifer to set
+	 * @param modifier the modifier to set
 	 */
 	public void setModifier(String modifier) {
 		Modifier m = Modifier.getValue(modifier);

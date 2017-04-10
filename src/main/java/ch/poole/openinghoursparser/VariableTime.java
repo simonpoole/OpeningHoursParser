@@ -125,7 +125,7 @@ public class VariableTime extends Element {
 	/**
 	 * Set the day the range starts on
 	 * 
-	 * @param day the day to set
+	 * @param event the event to set
 	 */
 	public void setEvent(Event event) {
 		this.event = event;
@@ -134,7 +134,7 @@ public class VariableTime extends Element {
 	/**
 	 * Set the day the range starts on
 	 * 
-	 * @param day the day to set
+	 * @param event the event to set
 	 */
 	public void setEvent(String event) {
 		Event e = Event.getValue(event);
