@@ -38,6 +38,18 @@ TOKEN :
           matchedToken.image = Util.capitalize(image.toString());  }| < WEEKDAY3 :    "Mon"  | "Tue"  | "Wed"  | "Thu"  | "Fri"  | "Sat"  | "Sun" >
   {
           matchedToken.image = Util.capitalize(image.toString()).substring(0, 2);
+  }
+|
+  < WEEKDAYDE :
+    "Mo"
+  | "Di"
+  | "Mi"
+  | "Do"
+  | "Fr"
+  | "Sa"
+  | "So" >
+  {
+          matchedToken.image = Util.deWeekDays2En(image.toString());
   }| < MONTH :    "Jan"  | "Feb"  | "Mar"  | "Apr"  | "May"  | "Jun"  | "Jul"  | "Aug"  | "Sep"  | "Oct"  | "Nov"  | "Dec" >
   {
           matchedToken.image = Util.capitalize(image.toString());
@@ -175,7 +187,8 @@ int strict_time() :
 			    pex.currentToken = token;
                 throw pex;
               }
-            }            ts.end = end;          }        | endVT = variabletime()          {            ts.endEvent = endVT;          }        )        (          endplus = < PLUS >        |          (            inter = interval()            {              ts.interval = inter;            }          )        )?      )    )?    {      ts.openEnded = startplus != null || endplus != null;      return ts;    }  )}ArrayList < TimeSpan > time_selector() :{  TimeSpan ts, ts1;  ArrayList < TimeSpan > result = new ArrayList < TimeSpan > ();}{  (    ts = timespan()    (      < COMMA > ts1 = timespan()      {        result.add(0, ts1);      }    )*  )  {    result.add(ts);    Collections.reverse(result);    return result;  }}String weekday() :{  Token w = null;}{  (w = < WEEKDAY >  {    return w.image;  }  )|  (    w = < WEEKDAY3 >    {
+            }            ts.end = end;          }        | endVT = variabletime()          {            ts.endEvent = endVT;          }        )        (          endplus = < PLUS >        |          (            inter = interval()            {              ts.interval = inter;            }          )        )?      )    )?    {      ts.openEnded = startplus != null || endplus != null;      return ts;    }  )}ArrayList < TimeSpan > time_selector() :{  TimeSpan ts, ts1;  ArrayList < TimeSpan > result = new ArrayList < TimeSpan > ();}{  (    ts = timespan()    (      < COMMA > ts1 = timespan()      {        result.add(0, ts1);      }    )*  )  {    result.add(ts);    Collections.reverse(result);    return result;  }}String weekday() :{  Token w = null;}{  (w = < WEEKDAY >  {    return w.image;  }  )|  (    (      w = < WEEKDAY3 > | w = < WEEKDAYDE >
+    )    {
       if (strict) {
         ParseException e = new ParseException("Three character weekday at line " + token.next.beginLine + ", column " + token.next.beginColumn);
 		e.currentToken = token;
@@ -184,7 +197,61 @@ int strict_time() :
 // Mo-Fr
 // Mo[1]
 // Mo[1,3,5]
-WeekDayRange weekday_range() :{  String startDay = null;  String endDay = null;  Nth nth = null;  Nth nth1 = null;  WeekDayRange wdr = new WeekDayRange();}{  startDay = weekday()  (    (      (        < HYPHEN > endDay = weekday()        {          wdr.setEndDay(endDay);        }      )    )  |    (      (        "[" nth = nth()        (          < COMMA > nth1 = nth()          {            wdr.nths.add(nth1);          }        )*        {          wdr.nths.add(nth);          Collections.reverse(wdr.nths);        }        "]"      )    )  )?  {    wdr.setStartDay(startDay);    return wdr;  }}Nth nth() :{  Nth n = new Nth();  Token t1 = null;  Token t2 = null;}{  (    t1 = one2five()    {      n.startNth = Integer.parseInt(t1.image);    }  )?  (    < HYPHEN > t2 = one2five()    {      n.endNth = Integer.parseInt(t2.image);    }  )?  {    return n;  }}ArrayList < WeekDayRange > weekday_selector() :{  WeekDayRange wdr, wdr1;  ArrayList < WeekDayRange > result = new ArrayList < WeekDayRange > ();}{  wdr = weekday_range()  (    < COMMA > wdr1 = weekday_range()    {      result.add(0, wdr1);    }  )*  {    result.add(wdr);    Collections.reverse(result);    return result;  }}Holiday holiday() :{  Token h = null;  Token n = null;  Token m = null;  Holiday result = new Holiday();}{  h = < HOLIDAYS >  (    (      (        m = < HYPHEN >      | < PLUS >      )      n = number()    )    "day" ("s")?    {      result.offset = Integer.parseInt(n.image);      if (m != null)      {        result.offset = result.offset * - 1;      }    }  )?  {    result.type = Holiday.Type.valueOf(h.image.toUpperCase()); // the enum values are in upper case
+WeekDayRange weekday_range() :{  String startDay = null;  String endDay = null;  Nth nth = null;  Nth nth1 = null;
+  Token m = null;
+  Token n = null;  WeekDayRange wdr = new WeekDayRange();}
+{
+  startDay = weekday()
+  (
+    (
+      (
+        < HYPHEN > endDay = weekday()
+        {
+          wdr.setEndDay(endDay);
+        }
+      )
+    )
+  |
+    (
+      (
+        "[" nth = nth()
+        (
+          < COMMA > nth1 = nth()
+          {
+            wdr.nths.add(nth1);
+          }
+        )*
+        {
+          wdr.nths.add(nth);
+          Collections.reverse(wdr.nths);
+        }
+        "]"
+      )
+      (
+        (
+          (
+            m = < HYPHEN >
+          | < PLUS >
+          )
+          n = number()
+        )
+        "day" ("s")?
+        {
+          wdr.offset = Integer.parseInt(n.image);
+          if (m != null)
+          {
+            wdr.offset = wdr.offset * - 1;
+          }
+        }
+      )?
+    )
+  )?
+  {
+    wdr.setStartDay(startDay);
+    return wdr;
+  }
+}
+Nth nth() :{  Nth n = new Nth();  Token t1 = null;  Token t2 = null;}{  (    t1 = one2five()    {      n.startNth = Integer.parseInt(t1.image);    }  )?  (    < HYPHEN > t2 = one2five()    {      n.endNth = Integer.parseInt(t2.image);    }  )?  {    return n;  }}ArrayList < WeekDayRange > weekday_selector() :{  WeekDayRange wdr, wdr1;  ArrayList < WeekDayRange > result = new ArrayList < WeekDayRange > ();}{  wdr = weekday_range()  (    < COMMA > wdr1 = weekday_range()    {      result.add(0, wdr1);    }  )*  {    result.add(wdr);    Collections.reverse(result);    return result;  }}Holiday holiday() :{  Token h = null;  Token n = null;  Token m = null;  Holiday result = new Holiday();}{  h = < HOLIDAYS >  (    (      (        m = < HYPHEN >      | < PLUS >      )      n = number()    )    "day" ("s")?    {      result.offset = Integer.parseInt(n.image);      if (m != null)      {        result.offset = result.offset * - 1;      }    }  )?  {    result.type = Holiday.Type.valueOf(h.image.toUpperCase()); // the enum values are in upper case
     return result;  }}ArrayList < Holiday > holiday_sequence() :{  Holiday h = null;  Holiday h1 = null;  ArrayList < Holiday > result = new ArrayList < Holiday > ();}{  h = holiday()  (    < COMMA > h1 = holiday()    {      result.add(0, h1);    }  )*  {    result.add(h);    Collections.reverse(result);    return result;  }}String month() :{  Token m = null;}{  m = < MONTH >  {    return m.image;  }}MonthDayRange monthday_range() :{  Token nth = null;  Token year = null;  Token n = null;  String startMonth = null;  String endMonth = null;  MonthDayRange mdr = new MonthDayRange();  DateWithOffset startDate = null;  DateWithOffset endDate = null;  Token plus = null;}{  startDate = datewithoffset() (plus = < PLUS >)?  {    mdr.startDate = startDate;    startDate.openEnded = plus != null;  }  (    < HYPHEN >    (      endDate = datewithoffset()      {        mdr.endDate = endDate;      }    )  )?  {    return mdr;  }}int daynum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 31 })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}
 
 int year() :

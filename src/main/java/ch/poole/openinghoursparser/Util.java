@@ -102,4 +102,22 @@ public class Util {
 		}
 		return s;
 	}
+	
+	public static String deWeekDays2En(String s) {
+		String l =  s.toLowerCase(Locale.US);
+		if ("mo".equals(l)) {
+			return "Mo";
+		} else if ("di".equals(l)) {
+			return "Tu";
+		} else if ("mi".equals(l)) {
+			return "We";
+		} else if ("do".equals(l)) {
+			return "Th";
+		} else if ("fr".equals(l)) {
+			return "Fr";
+		} else if ("sa".equals(l)) {
+			return "Sa";
+		} 
+		return "Su";		
+	}
 }

@@ -28,6 +28,7 @@ public class WeekDayRange extends Element {
 	WeekDay startDay = null;
 	WeekDay endDay = null;
 	List<Nth> nths = new ArrayList<Nth>();
+	int offset = 0;
 
 	public String toString() {
 		StringBuilder b = new StringBuilder();
@@ -42,9 +43,20 @@ public class WeekDayRange extends Element {
 				if (!n.equals(nths.get(nths.size()-1))) {
 					b.append(",");
 				}
-			}
-			
+			}			
 			b.append("]");
+			if (offset != 0) {
+				if (offset > 0) {
+					b.append(" +");
+				} else {
+					b.append(" -");
+				}
+				b.append(String.format("%d",Math.abs(offset)));
+				b.append(" day");
+				if (Math.abs(offset)>1) {
+					b.append("s");
+				}
+			}
 		}
 		return b.toString();
 	}
@@ -58,7 +70,8 @@ public class WeekDayRange extends Element {
 			WeekDayRange o = (WeekDayRange)other;
 			if ((startDay == o.startDay  || (startDay != null && startDay.equals(o.startDay))) 
 					&& (endDay == o.endDay  || (endDay != null && endDay.equals(o.endDay)))
-					&& (nths == o.nths  || (nths != null && nths.equals(o.nths)))){
+					&& (nths == o.nths  || (nths != null && nths.equals(o.nths)))
+					&& offset == o.offset) {
 				return true;
 			}
 		}
@@ -71,6 +84,7 @@ public class WeekDayRange extends Element {
 		result = 37 * result + (startDay == null ? 0 : startDay.hashCode());
 		result = 37 * result + (endDay == null ? 0 : endDay.hashCode());
 		result = 37 * result + (nths == null ? 0 : nths.hashCode());
+		result = 37 * result + offset;
 		return result;
 	}
 
@@ -148,5 +162,19 @@ public class WeekDayRange extends Element {
 	 */
 	public void setNths(List<Nth> nths) {
 		this.nths = nths;
+	}
+	
+	/**
+	 * @return the offset
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * @param offset the offset to set
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 }

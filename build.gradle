@@ -16,7 +16,7 @@ apply plugin: 'maven-publish'
 apply plugin: "jacoco"
 
 
-version = '0.3.2'
+version = '0.3.3'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -86,7 +86,7 @@ bintray {
         licenses = ['BSD 3-Clause']
         vcsUrl = 'https://github.com/simonpoole/OpeningHoursParser.git'
         version {
-        	name = '0.3.2'
+        	name = '0.3.3'
 			released  = new Date()
 			gpg {
 				sign = true //Determines whether to GPG sign the files. The default is false

@@ -91,12 +91,10 @@ public class DateWithOffset extends Element {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
 		if (other != null && other instanceof DateWithOffset) {
 			DateWithOffset o = (DateWithOffset)other;
-			if (openEnded == o.openEnded && year == o.year 
+			return openEnded == o.openEnded 
+					&& year == o.year 
 					&& (month == o.month  || (month != null && month.equals(o.month))) 
 					&& day == o.day 
 					&& (weekDay == o.weekDay  || (weekDay != null && weekDay.equals(o.weekDay)))
@@ -104,9 +102,7 @@ public class DateWithOffset extends Element {
 					&& weekDayOffsetPositive == o.weekDayOffsetPositive
 					&& (weekDayOffset == o.weekDayOffset  || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
 					&& dayOffset == o.dayOffset 
-					&& (varDate == o.varDate  || (varDate != null && varDate.equals(o.varDate)))) {
-				return true;
-			}
+					&& (varDate == o.varDate  || (varDate != null && varDate.equals(o.varDate)));
 		}
 		return false;
 	}

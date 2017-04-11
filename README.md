@@ -2,7 +2,7 @@
 
 This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification].
 
-It parses 145'141 (90%) of 161'268 unique test strings in non-strict mode. The remaining 16'127 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 20'417 fail (total 36'544).
+It parses 145'447 (90%) of 161'268 unique test strings in non-strict mode. The remaining 15'821 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 20'416 fail (total 36'543).
 
 Deviations from the grammar as of [this version of the opening hours specification][opening-hours-grammar-specification] in all modes:
 
@@ -13,6 +13,7 @@ Deviations from the grammar as of [this version of the opening hours specificati
 In non-strict mode the following further differences are allowed:
 
  * three-character weekday abbreviations
+ * German two-letter weekday abbreviations
  * times extending in to the next day that are missing the extra 24 hours are corrected
  * single 0 for minutes
  * minutes in times optional

@@ -74,6 +74,7 @@ public class OpeningHoursParserTest {
 		BufferedReader inputRules = null;
 		BufferedReader inputExpected = null;
 		BufferedWriter outputExpected = null;
+		BufferedWriter outputFail = null;
 		String line = null;
 		try
 		{ 
@@ -86,6 +87,8 @@ public class OpeningHoursParserTest {
 				System.out.println("File not found " + fnfex.toString());
 			} 
 			outputExpected = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-result" + (strict?"-strict":"")+"-temp"), "UTF8"));
+			outputFail = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-fail" + (strict?"-strict":"")), "UTF8"));
+
 
 			String expectedResultCode = null;
 			String expectedResult = null;
@@ -121,6 +124,7 @@ public class OpeningHoursParserTest {
 					// pex.printStackTrace();
 					errors++;
 					outputExpected.write("1\n");
+					outputFail.write(line+"\n");
 					if (expectedResultCode != null) {
 						assertEquals(expectedResultCode,"1");
 					}
@@ -131,6 +135,7 @@ public class OpeningHoursParserTest {
 					lexical++;
 					errors++;
 					outputExpected.write("2\n");
+					outputFail.write(line+"\n");
 					if (expectedResultCode != null) {
 						assertEquals(expectedResultCode,"2");
 					}
@@ -144,6 +149,7 @@ public class OpeningHoursParserTest {
 					}
 					errors++;
 					outputExpected.write("3\n");
+					outputFail.write(line+"\n");
 					if (expectedResultCode != null) {
 						assertEquals(expectedResultCode,"3");
 					}
@@ -163,7 +169,6 @@ public class OpeningHoursParserTest {
 				try {
 					inputRules.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -171,7 +176,13 @@ public class OpeningHoursParserTest {
 				try {
 					outputExpected.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (outputFail != null) {
+				try {
+					outputFail.close();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}

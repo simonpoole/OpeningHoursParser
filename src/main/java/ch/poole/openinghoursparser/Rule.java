@@ -1,4 +1,5 @@
 package ch.poole.openinghoursparser;
+import java.util.Iterator;
 import java.util.List;
 
 public class Rule extends Element {
@@ -25,6 +26,7 @@ public class Rule extends Element {
 	Rule() {
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		if (comment != null) {
@@ -36,73 +38,12 @@ public class Rule extends Element {
 			}
 			b.append("24/7");
 		} else {
-			if (years != null) {
-				if (b.length() > 0) {
-					b.append(" ");
-				}
-				for (YearRange yr:years) {
-					b.append(yr.toString());
-					if (years.get(years.size()-1)!=yr) {
-						b.append(",");
-					} 
-				}
-			}
-			if (weeks != null) {
-				if (b.length() > 0) {
-					b.append(" ");
-				}
-				b.append("week ");
-				for (WeekRange wr:weeks) {
-					b.append(wr.toString());
-					if (weeks.get(weeks.size()-1)!=wr) {
-						b.append(",");
-					} 
-				}
-			}
-			if (monthdays != null) {
-				if (b.length() > 0) {
-					b.append(" ");
-				}
-				for (MonthDayRange mdr:monthdays) {
-					b.append(mdr.toString());
-					if (monthdays.get(monthdays.size()-1)!=mdr) {
-						b.append(",");
-					} 
-				}
-			}
-			if (holidays != null) {
-				if (b.length() > 0) {
-					b.append(" ");
-				}
-				for (Holiday h:holidays) {
-					b.append(h.toString());
-					if (holidays.get(holidays.size()-1)!=h) {
-						b.append(",");
-					} 
-				}
-			}
-			if (days != null) {
-				if (b.length() > 0) {
-					b.append(" ");
-				}
-				for (WeekDayRange d:days) {
-					b.append(d.toString());
-					if (days.get(days.size()-1)!=d) {
-						b.append(",");
-					} 
-				}
-			}
-			if (times != null) {
-				if (b.length() > 0) {
-					b.append(" ");
-				}
-				for (TimeSpan ts:times) {
-					b.append(ts.toString());
-					if (times.get(times.size()-1)!=ts) {
-						b.append(",");
-					}
-				}
-			}
+			printList(b, "", years);
+			printList(b, "week ", weeks);
+			printList(b, "", monthdays);
+			printList(b, "", holidays);
+			printList(b, "", days);
+			printList(b, "", times);
 		}
 		if (modifier != null) {
 			b.append(" ");
@@ -111,14 +52,28 @@ public class Rule extends Element {
 		return b.toString();
 	}
 	
+	<T> void printList(StringBuilder b, String prefix, List<T>list) {
+		if (list != null) {
+			if (b.length() > 0) {
+				b.append(" ");
+			}
+			b.append(prefix);
+			Iterator<T> iter = list.iterator();
+			while (iter.hasNext()) {
+				b.append(iter.next().toString());
+				if (iter.hasNext()) {
+					b.append(",");
+				}
+			}
+		}
+	}
+	
 	@Override
 	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
 		if (other != null && other instanceof Rule) {
 			Rule o = (Rule)other;
-			if (fallBack == o.fallBack  && replace == o.replace 
+			return fallBack == o.fallBack  
+					&& replace == o.replace 
 					&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
 					&& twentyfourseven == o.twentyfourseven 
 					&& (years == o.years  || (years != null && years.equals(o.years)))
@@ -127,9 +82,7 @@ public class Rule extends Element {
 					&& (holidays == o.holidays  || (holidays != null && holidays.equals(o.holidays)))
 					&& (days == o.days  || (days != null && days.equals(o.days)))
 					&& (times == o.times  || (times != null && times.equals(o.times)))
-					&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)))){
-				return true;
-			}
+					&& (modifier == o.modifier  || (modifier != null && modifier.equals(o.modifier)));
 		}
 		return false;
 	}
@@ -158,18 +111,13 @@ public class Rule extends Element {
 	 * @return true if r can be merged with this rule
 	 */
 	public boolean isMergeableWith(Rule r) {
-		if (this == r) {
-			return true;
-		}		
-		if (!twentyfourseven
-			&& (comment == r.comment  || (comment != null && comment.equals(r.comment)))
-			&& (years == r.years  || (years != null && years.equals(r.years)))
-			&& (weeks == r.weeks  || (weeks != null && weeks.equals(r.weeks)))
-			&& (monthdays == r.monthdays  || (monthdays != null && monthdays.equals(r.monthdays)))
-			&& (modifier == r.modifier  || (modifier != null && modifier.equals(r.modifier)))){
-			return true;
-		}
-		return false;
+		return this.equals(r) 
+				|| (!twentyfourseven
+				&& ((comment == null && r.comment == null) || (comment != null && comment.equals(r.comment)))
+				&& ((years == null && r.years == null) || (years != null && years.equals(r.years)))
+				&& ((weeks == null && r.weeks == null) || (weeks != null && weeks.equals(r.weeks)))
+				&& ((monthdays == null && r.monthdays == null) || (monthdays != null && monthdays.equals(r.monthdays)))
+				&& ((modifier == null && r.modifier == null) || (modifier != null && modifier.equals(r.modifier))));
 	}
 	
 	/**
@@ -357,9 +305,6 @@ public class Rule extends Element {
 		if (times != null && !times.isEmpty()) {
 			return false;
 		}
-		if (modifier != null) {
-			return false;
-		}
-		return true;
+		return modifier == null;
 	}
 }
