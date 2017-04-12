@@ -44,11 +44,7 @@ public class Holiday extends Element {
 		if (type != null) {
 			b.append(type.toString());
 			if (offset != 0) {
-				if (offset > 0) {
-					b.append(" +");
-				} else {
-					b.append(" -");
-				}
+				b.append(offset > 0 ? " +" : " -");
 				b.append(String.format("%d",Math.abs(offset)));
 				b.append(" day");
 				if (Math.abs(offset)>1) {

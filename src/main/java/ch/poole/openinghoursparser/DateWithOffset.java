@@ -80,8 +80,12 @@ public class DateWithOffset extends Element {
 			b.append(weekDayOffset);
 		}
 		if (dayOffset != 0) {
-			b.append(dayOffset > 0 ? "+" : "-");
-			b.append(Math.abs(dayOffset));
+			b.append(dayOffset > 0 ? " +" : " -");
+			b.append(String.format("%d",Math.abs(dayOffset)));
+			b.append(" day");
+			if (Math.abs(dayOffset)>1) {
+				b.append("s");
+			}
 		}
 		if (openEnded) {
 			b.append("+");

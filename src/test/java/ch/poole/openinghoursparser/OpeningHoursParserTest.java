@@ -377,4 +377,15 @@ public class OpeningHoursParserTest {
 		}
 	}
 	
+	@Test
+	public void dateWithOffset() {
+		OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Dec 25 off".getBytes()));
+		try {
+			List<Rule>rules = parser.rules(false);
+			assertEquals(1,rules.size());;
+		} catch (ParseException pex) {
+			fail(pex.getMessage());
+		}
+	}
+	
 }

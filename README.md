@@ -2,7 +2,7 @@
 
 This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification].
 
-It parses 145'447 (90%) of 161'268 unique test strings in non-strict mode. The remaining 15'821 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 20'416 fail (total 36'543).
+It parses 145'549 (90%) of 161'268 unique test strings in non-strict mode. The remaining 15'719 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 20'746 fail (total 36'465).
 
 Deviations from the grammar as of [this version of the opening hours specification][opening-hours-grammar-specification] in all modes:
 
