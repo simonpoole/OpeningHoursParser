@@ -13,7 +13,7 @@ public class Rule extends Element {
 	// week list
     List<WeekRange> weeks = null;
 	// month day list
-	List<MonthDayRange> monthdays = null;
+	List<DateRange> monthdays = null;
 	// holiday list
 	List<Holiday> holidays = null;
 	// day list
@@ -173,7 +173,7 @@ public class Rule extends Element {
 	/**
 	 * @return the monthdays
 	 */
-	public List<MonthDayRange> getMonthdays() {
+	public List<DateRange> getMonthdays() {
 		return monthdays;
 	}
 
@@ -243,7 +243,7 @@ public class Rule extends Element {
 	/**
 	 * @param monthdays the monthdays to set
 	 */
-	public void setMonthdays(List<MonthDayRange> monthdays) {
+	public void setMonthdays(List<DateRange> monthdays) {
 		this.monthdays = monthdays;
 	}
 

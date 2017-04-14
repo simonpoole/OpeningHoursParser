@@ -230,7 +230,7 @@ public class DateWithOffset extends Element {
 	 * @param year the year to set
 	 */
 	public void setYear(int year) {
-		if (year < YearRange.FIRST_VALID_YEAR) {
+		if (year != YearRange.UNDEFINED_YEAR && year < YearRange.FIRST_VALID_YEAR) {
 			throw new IllegalArgumentException(year + " is earlier than " + YearRange.FIRST_VALID_YEAR);
 		}
 		this.year = year;
@@ -266,7 +266,7 @@ public class DateWithOffset extends Element {
 	 * @param day the day to set
 	 */
 	public void setDay(int day) {
-		if (day < MIN_MONTH_DAY || day > MAX_MONTH_DAY) {
+		if (day != UNDEFINED_MONTH_DAY && (day < MIN_MONTH_DAY || day > MAX_MONTH_DAY)) {
 			throw new IllegalArgumentException(day + " is not a valid month day number");
 		}
 		this.day = day;
@@ -318,5 +318,9 @@ public class DateWithOffset extends Element {
 	 */
 	public void setDayOffset(int dayOffset) {
 		this.dayOffset = dayOffset;
+	}
+	
+	boolean isUndefined() {
+		return year == YearRange.UNDEFINED_YEAR && month == null && day == DateWithOffset.UNDEFINED_MONTH_DAY && varDate == null;
 	}
 }
