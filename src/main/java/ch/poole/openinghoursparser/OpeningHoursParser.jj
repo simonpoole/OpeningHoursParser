@@ -26,7 +26,18 @@
 package ch.poole.openinghoursparser;
  import java.util.ArrayList;import java.util.Collections;
 import java.util.Locale;import java.io.ByteArrayInputStream;public class OpeningHoursParser{
-	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : [ ":" ] >| < PLUS : "+" >| < HYPHEN : [ "-", "\u2013" ] >| < SLASH : "/" >
+	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"
+| "\u200A"
+| "\u2009"
+| "\u00A0"
+| "\u2008"
+| "\u2002"
+| "\u2007"
+| "\u3000"
+| "\u2003"
+| "\u2006"
+| "\u2005"
+| "\u2004"}TOKEN :{  < COMMA : "," >| < SEMICOLON : ";" >| < COLON : [ ":", "\uFF1A" ] >| < PLUS : "+" >| < HYPHEN : [ "-", "\u2013" ] >| < SLASH : "/" >
 | < STOP : "." >}TOKEN :{  < QUOTE : "\"" > : COMMENT_STATE}< COMMENT_STATE >TOKEN :{  < ENDQUOTE : < QUOTE >> : DEFAULT| < CHAR : ~[ "\"", "\\" ] >}// parse all numbers as number and do the range checking in syntactic lookahead
 TOKEN :{  < NUMBER : (< DIGIT >)+ >}
 
