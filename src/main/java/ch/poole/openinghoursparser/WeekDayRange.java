@@ -20,6 +20,7 @@ package ch.poole.openinghoursparser;
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class WeekDayRange extends Element {
 	
 	WeekDay startDay = null;
 	WeekDay endDay = null;
-	List<Nth> nths = new ArrayList<Nth>();
+	List<Nth> nths = null;
 	int offset = 0;
 
 	public String toString() {
@@ -162,6 +163,17 @@ public class WeekDayRange extends Element {
 	 */
 	public void setNths(List<Nth> nths) {
 		this.nths = nths;
+	}
+	
+	/**
+	 * Add a occurrence in the month for a week day
+	 * @param nth the n'th occurrence
+	 */
+	public void add(Nth nth) {
+		if (nths==null) {
+			nths = new ArrayList<Nth>();
+		}
+		nths.add(nth);
 	}
 	
 	/**

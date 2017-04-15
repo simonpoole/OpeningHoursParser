@@ -222,12 +222,12 @@ WeekDayRange weekday_range() :{  String startDay = null;  String endDay = nul
         (
           < COMMA > nth1 = nth()
           {
-            wdr.nths.add(nth1);
+            wdr.add(nth1);
           }
         )*
         {
-          wdr.nths.add(nth);
-          Collections.reverse(wdr.nths);
+          wdr.add(nth);
+          Collections.reverse(wdr.getNths());
         }
         "]"
       )
