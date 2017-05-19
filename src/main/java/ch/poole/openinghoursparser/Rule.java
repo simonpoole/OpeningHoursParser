@@ -13,7 +13,7 @@ public class Rule extends Element {
 	// week list
     List<WeekRange> weeks = null;
 	// month day list
-	List<DateRange> monthdays = null;
+	List<DateRange> dates = null;
 	// holiday list
 	List<Holiday> holidays = null;
 	// day list
@@ -40,7 +40,7 @@ public class Rule extends Element {
 		} else {
 			printList(b, "", years);
 			printList(b, "week ", weeks);
-			printList(b, "", monthdays);
+			printList(b, "", dates);
 			printList(b, "", holidays);
 			printList(b, "", days);
 			printList(b, "", times);
@@ -78,7 +78,7 @@ public class Rule extends Element {
 					&& twentyfourseven == o.twentyfourseven 
 					&& (years == o.years  || (years != null && years.equals(o.years)))
 					&& (weeks == o.weeks  || (weeks != null && weeks.equals(o.weeks)))
-					&& (monthdays == o.monthdays  || (monthdays != null && monthdays.equals(o.monthdays)))
+					&& (dates == o.dates  || (dates != null && dates.equals(o.dates)))
 					&& (holidays == o.holidays  || (holidays != null && holidays.equals(o.holidays)))
 					&& (days == o.days  || (days != null && days.equals(o.days)))
 					&& (times == o.times  || (times != null && times.equals(o.times)))
@@ -96,7 +96,7 @@ public class Rule extends Element {
 		result = 37 * result + (twentyfourseven ? 0 : 1);
 		result = 37 * result + (years == null ? 0 : years.hashCode());
 		result = 37 * result + (weeks == null ? 0 : weeks.hashCode());
-		result = 37 * result + (monthdays == null ? 0 : monthdays.hashCode());
+		result = 37 * result + (dates == null ? 0 : dates.hashCode());
 		result = 37 * result + (holidays == null ? 0 : holidays.hashCode());
 		result = 37 * result + (days == null ? 0 : days.hashCode());
 		result = 37 * result + (times == null ? 0 : times.hashCode());
@@ -116,7 +116,7 @@ public class Rule extends Element {
 				&& ((comment == null && r.comment == null) || (comment != null && comment.equals(r.comment)))
 				&& ((years == null && r.years == null) || (years != null && years.equals(r.years)))
 				&& ((weeks == null && r.weeks == null) || (weeks != null && weeks.equals(r.weeks)))
-				&& ((monthdays == null && r.monthdays == null) || (monthdays != null && monthdays.equals(r.monthdays)))
+				&& ((dates == null && r.dates == null) || (dates != null && dates.equals(r.dates)))
 				&& ((modifier == null && r.modifier == null) || (modifier != null && modifier.equals(r.modifier))));
 	}
 	
@@ -164,17 +164,17 @@ public class Rule extends Element {
 	}
 
 	/**
-	 * @return the weeks
+	 * @return a List of WeekRange objects or null if none exist
 	 */
 	public List<WeekRange> getWeeks() {
 		return weeks;
 	}
 
 	/**
-	 * @return the monthdays
+	 * @return a List of DateRange objects or null if none exist
 	 */
-	public List<DateRange> getMonthdays() {
-		return monthdays;
+	public List<DateRange> getDates() {
+		return dates;
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class Rule extends Element {
 	 * @param monthdays the monthdays to set
 	 */
 	public void setMonthdays(List<DateRange> monthdays) {
-		this.monthdays = monthdays;
+		this.dates = monthdays;
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class Rule extends Element {
 		if (weeks != null && !weeks.isEmpty()) {
 			return false;
 		}
-		if (monthdays != null && !monthdays.isEmpty()) {
+		if (dates != null && !dates.isEmpty()) {
 			return false;
 		}
 		if (holidays != null && !holidays.isEmpty()) {

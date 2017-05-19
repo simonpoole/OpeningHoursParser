@@ -547,7 +547,7 @@ ArrayList < YearRange > year_selector() :
     r = new Rule();
     r.comment = comment;
     r.twentyfourseven = always;
-    r.years = ys;    r.weeks = ws;    r.monthdays = ms;    r.holidays = hs;    r.days = ds;    r.times = ts;    r.modifier = rm;    return r;  }}ArrayList < Rule > rules(boolean strict) :{
+    r.years = ys;    r.weeks = ws;    r.dates = ms;    r.holidays = hs;    r.days = ds;    r.times = ts;    r.modifier = rm;    return r;  }}ArrayList < Rule > rules(boolean strict) :{
   this.strict = strict;  ArrayList < Rule > result = new ArrayList < Rule > ();  Rule r = null;  Rule r1 = null;}{  r = rule()  (    (      < COMMA >
       (
         r1 = rule()
