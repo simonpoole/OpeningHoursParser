@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Rule extends Element {
 	boolean fallBack = false;
-	boolean replace = true;
+	boolean additive = true;
 	boolean twentyfourseven = false;
 
 	String comment = null;
@@ -73,7 +73,7 @@ public class Rule extends Element {
 		if (other != null && other instanceof Rule) {
 			Rule o = (Rule)other;
 			return fallBack == o.fallBack  
-					&& replace == o.replace 
+					&& additive == o.additive 
 					&& (comment == o.comment  || (comment != null && comment.equals(o.comment)))
 					&& twentyfourseven == o.twentyfourseven 
 					&& (years == o.years  || (years != null && years.equals(o.years)))
@@ -91,7 +91,7 @@ public class Rule extends Element {
 	public int hashCode() {
 		int result = 1;
 		result = 37 * result + (fallBack ? 0 : 1);
-		result = 37 * result + (replace ? 0 : 1);
+		result = 37 * result + (additive ? 0 : 1);
 		result = 37 * result + (comment == null ? 0 : comment.hashCode());
 		result = 37 * result + (twentyfourseven ? 0 : 1);
 		result = 37 * result + (years == null ? 0 : years.hashCode());
@@ -128,10 +128,10 @@ public class Rule extends Element {
 	}
 
 	/**
-	 * @return the replace
+	 * @return true if this rule does not overwrite rules for days with previous rules
 	 */
-	public boolean isReplace() {
-		return replace;
+	public boolean isAdditive() {
+		return additive;
 	}
 
 	/**
@@ -206,17 +206,17 @@ public class Rule extends Element {
 	}
 
 	/**
-	 * @param fallBack the fallBack to set
+	 * @param fallBack set the fallback flag for this rule
 	 */
 	public void setFallBack(boolean fallBack) {
 		this.fallBack = fallBack;
 	}
 
 	/**
-	 * @param replace the replace to set
+	 * @param additive set the additive flag for this rule
 	 */
-	public void setReplace(boolean replace) {
-		this.replace = replace;
+	public void setAdditive(boolean additive) {
+		this.additive = additive;
 	}
 
 	/**

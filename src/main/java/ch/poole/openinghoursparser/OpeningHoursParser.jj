@@ -552,25 +552,25 @@ ArrayList < YearRange > year_selector() :
       (
         r1 = rule()
     	{
-    	  r1.replace = false;
+    	  r1.additive = false;
       	  result.add(0, r1);
     	}      )    | < SEMICOLON >
       (
         r1 = rule()
     	{
-    	  r1.replace = true;
+    	  r1.additive = true;
       	  result.add(0, r1);
     	}
       )    | < FALLBACKSEPERATOR >
       (
         r1 = rule()
     	{
-    	  r1.replace = false;
+    	  r1.additive = false;
     	  r1.fallBack = true;
       	  result.add(0, r1);
     	}
       )    )  )*  < EOF >  {
-    r.replace = true;    result.add(r);    Collections.reverse(result);    return result;  }}
+    r.additive = true;    result.add(r);    Collections.reverse(result);    return result;  }}
 
 < * > TOKEN :
 {

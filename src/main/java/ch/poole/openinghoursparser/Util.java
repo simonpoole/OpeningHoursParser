@@ -73,7 +73,7 @@ public class Util {
 		for (Rule r:rules) {
 			if (!r.isEmpty()) {
 				if (!first) {
-					if (r.isReplace()) {
+					if (r.isAdditive()) {
 						result.append(';');
 					} else if (r.isFallBack()) {
 						result.append("||");
