@@ -552,13 +552,15 @@ ArrayList < YearRange > year_selector() :
       (
         r1 = rule()
     	{
-    	  r1.additive = false;
+    	  r1.additive = true;
+    	  r1.fallBack = false;
       	  result.add(0, r1);
     	}      )    | < SEMICOLON >
       (
         r1 = rule()
     	{
-    	  r1.additive = true;
+    	  r1.additive = false;
+    	  r1.fallBack = false;
       	  result.add(0, r1);
     	}
       )    | < FALLBACKSEPERATOR >
@@ -570,7 +572,8 @@ ArrayList < YearRange > year_selector() :
       	  result.add(0, r1);
     	}
       )    )  )*  < EOF >  {
-    r.additive = true;    result.add(r);    Collections.reverse(result);    return result;  }}
+    r.additive = false;
+    r.fallBack = false;    result.add(r);    Collections.reverse(result);    return result;  }}
 
 < * > TOKEN :
 {

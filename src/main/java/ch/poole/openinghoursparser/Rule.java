@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Rule extends Element {
 	boolean fallBack = false;
-	boolean additive = true;
+	boolean additive = false;
 	boolean twentyfourseven = false;
 
 	String comment = null;

@@ -64,6 +64,7 @@ public class Util {
 	
 	/**
 	 * Generate an OH string from rules
+	 * 
 	 * @param rules rules to convert to an opening_hours string
 	 * @return specification conformant opening_hours string
 	 */
@@ -74,11 +75,11 @@ public class Util {
 			if (!r.isEmpty()) {
 				if (!first) {
 					if (r.isAdditive()) {
-						result.append(';');
+						result.append(',');
 					} else if (r.isFallBack()) {
 						result.append("||");
 					} else {
-						result.append(',');
+						result.append(';');
 					}
 				} else {
 					first = false;
@@ -91,6 +92,7 @@ public class Util {
 	
 	/**
 	 * Capitalize a string
+	 * 
 	 * @param s string to capitalize
 	 * @return capitalized string
 	 */
