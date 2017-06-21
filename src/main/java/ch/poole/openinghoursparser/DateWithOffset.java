@@ -32,10 +32,8 @@ public class DateWithOffset extends Element {
 	int year = YearRange.UNDEFINED_YEAR;
 	Month month = null;
 	int day = UNDEFINED_MONTH_DAY;
-	WeekDay weekDay = null;
-	int nth = 0;
 	boolean weekDayOffsetPositive=true;
-	String weekDayOffset = null;
+	WeekDay weekDayOffset = null;
 	int dayOffset = 0;
 	
 	VarDate varDate = null;
@@ -56,14 +54,6 @@ public class DateWithOffset extends Element {
 				b.append(" ");
 			}
 			b.append(day);
-		} else if (weekDay != null) {
-			if (year != YearRange.UNDEFINED_YEAR || month != null) {
-				b.append(" ");
-			}
-			b.append(weekDay);
-			b.append("[");
-			b.append(nth);
-			b.append("]");
 		} else if (varDate != null) {
 			if (year != YearRange.UNDEFINED_YEAR ) {
 				b.append(" ");
@@ -101,8 +91,6 @@ public class DateWithOffset extends Element {
 					&& year == o.year 
 					&& (month == o.month  || (month != null && month.equals(o.month))) 
 					&& day == o.day 
-					&& (weekDay == o.weekDay  || (weekDay != null && weekDay.equals(o.weekDay)))
-					&& nth == o.nth
 					&& weekDayOffsetPositive == o.weekDayOffsetPositive
 					&& (weekDayOffset == o.weekDayOffset  || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
 					&& dayOffset == o.dayOffset 
@@ -118,8 +106,6 @@ public class DateWithOffset extends Element {
 		result = 37 * result + year;
 		result = 37 * result + (month == null ? 0 : month.hashCode());
 		result = 37 * result + day;
-		result = 37 * result + (weekDay == null ? 0 : weekDay.hashCode());
-		result = 37 * result + nth;
 		result = 37 * result + (weekDayOffsetPositive ? 0 : 1);
 		result = 37 * result + (weekDayOffset == null ? 0 : weekDayOffset.hashCode());
 		result = 37 * result + dayOffset;
@@ -155,19 +141,6 @@ public class DateWithOffset extends Element {
 		return day;
 	}
 
-	/**
-	 * @return the weekDay
-	 */
-	public WeekDay getWeekDay() {
-		return weekDay;
-	}
-
-	/**
-	 * @return the nth
-	 */
-	public int getNth() {
-		return nth;
-	}
 
 	/**
 	 * @return the weekDayOffsetPositive
@@ -179,7 +152,7 @@ public class DateWithOffset extends Element {
 	/**
 	 * @return the weekDayOffset
 	 */
-	public String getWeekDayOffset() {
+	public WeekDay getWeekDayOffset() {
 		return weekDayOffset;
 	}
 
@@ -273,33 +246,6 @@ public class DateWithOffset extends Element {
 	}
 
 	/**
-	 * @param weekDay the weekDay to set
-	 */
-	public void setWeekDay(WeekDay weekDay) {
-		this.weekDay = weekDay;
-	}
-	
-	/**
-	 * Set a week day
-	 * 
-	 * @param day the day
-	 */
-	public void setWeekDay(String day) {
-		WeekDay w = WeekDay.getValue(day);
-		if (w==null) {
-			throw new IllegalArgumentException(day + " is not a valid WeekDay");
-		}
-		this.weekDay = w;
-	}
-
-	/**
-	 * @param nth the nth to set
-	 */
-	public void setNth(int nth) {
-		this.nth = nth;
-	}
-
-	/**
 	 * @param weekDayOffsetPositive the weekDayOffsetPositive to set
 	 */
 	public void setWeekDayOffsetPositive(boolean weekDayOffsetPositive) {
@@ -309,8 +255,19 @@ public class DateWithOffset extends Element {
 	/**
 	 * @param weekDayOffset the weekDayOffset to set
 	 */
-	public void setWeekDayOffset(String weekDayOffset) {
+	public void setWeekDayOffset(WeekDay weekDayOffset) {
 		this.weekDayOffset = weekDayOffset;
+	}
+	
+	/**
+	 * @param weekDayOffset the weekDayOffset to set
+	 */
+	public void setWeekDayOffset(String weekDayOffset) {
+		WeekDay w = WeekDay.getValue(weekDayOffset);
+		if (w==null) {
+			throw new IllegalArgumentException(day + " is not a valid WeekDay");
+		}
+		this.weekDayOffset = w;
 	}
 
 	/**

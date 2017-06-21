@@ -201,7 +201,7 @@ public class OpeningHoursParserTest {
 		} catch (IllegalArgumentException ex) {
 		}
 		dwo1.setMonth("Jan");
-		dwo1.nth = 1;
+//		dwo1.nth = 1;
 		dwo1.openEnded = true;
 		try {
 			dwo1.setVarDate("bla");
@@ -209,13 +209,13 @@ public class OpeningHoursParserTest {
 		} catch (IllegalArgumentException ex) {
 		}
 		dwo1.setVarDate("easter");
-		try {
-			dwo1.setWeekDay("bla");
-			fail("This should have caused an exception");
-		} catch (IllegalArgumentException ex) {
-		}
-		dwo1.setWeekDay("Mo");
-		dwo1.weekDayOffset = "+Mo";
+//		try {
+//			dwo1.setWeekDay("bla");
+//			fail("This should have caused an exception");
+//		} catch (IllegalArgumentException ex) {
+//		}
+//		dwo1.setWeekDay("Mo");
+		dwo1.setWeekDayOffset("Mo");
 		dwo1.weekDayOffsetPositive = true;
 		try {
 			dwo1.setYear(1899);
@@ -230,11 +230,11 @@ public class OpeningHoursParserTest {
 		dwo2.day = 1;
 		dwo2.dayOffset = 1;
 		dwo2.setMonth("Jan");
-		dwo2.nth = 1;
+//		dwo2.nth = 1;
 		dwo2.openEnded = true;
 		dwo2.setVarDate("easter");
-		dwo2.setWeekDay("Mo");
-		dwo2.weekDayOffset = "+Mo";
+//		dwo2.setWeekDay("Mo");
+		dwo2.setWeekDayOffset("Mo");
 		dwo2.weekDayOffsetPositive = true;
 		dwo2.setYear(1999);
 		
@@ -253,9 +253,9 @@ public class OpeningHoursParserTest {
 		assertFalse(dwo1.equals(dwo2));
 		dwo2.setMonth("Jan");
 		assertEquals(dwo1, dwo2);
-		dwo2.nth=2;
-		assertFalse(dwo1.equals(dwo2));
-		dwo2.nth=1;
+//		dwo2.nth=2;
+// 		assertFalse(dwo1.equals(dwo2));
+//		dwo2.nth=1;
 		assertEquals(dwo1, dwo2);
 		dwo2.openEnded=false;
 		assertFalse(dwo1.equals(dwo2));
@@ -265,13 +265,13 @@ public class OpeningHoursParserTest {
 		assertFalse(dwo1.equals(dwo2));
 		dwo2.setVarDate("easter");
 		assertEquals(dwo1, dwo2);
-		dwo2.setWeekDay("Tu");
-		assertFalse(dwo1.equals(dwo2));
-		dwo2.setWeekDay("Mo");
+//		dwo2.setWeekDay("Tu");
+//		assertFalse(dwo1.equals(dwo2));
+//		dwo2.setWeekDay("Mo");
 		assertEquals(dwo1, dwo2);
-		dwo2.weekDayOffset = "+Tu";
+		dwo2.setWeekDayOffset("Tu");
 		assertFalse(dwo1.equals(dwo2));
-		dwo2.weekDayOffset = "+Mo";
+		dwo2.setWeekDayOffset("Mo");
 		assertEquals(dwo1, dwo2);
 		dwo2.weekDayOffsetPositive=false;
 		assertFalse(dwo1.equals(dwo2));
@@ -385,6 +385,31 @@ public class OpeningHoursParserTest {
 			assertEquals(1,rules.size());;
 		} catch (ParseException pex) {
 			fail(pex.getMessage());
+		}
+	}
+	
+	@Test
+	/**
+	 * This doesn't seem to turn up in our test data
+	 */
+	public void dateRangeWithInterval() {
+		OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Jan-Mar/8".getBytes()));
+		try {
+			List<Rule>rules = parser.rules(false);
+			assertEquals(1,rules.size());;
+			Rule r = rules.get(0);
+			List<DateRange>list = r.getDates();
+			assertEquals(1,list.size());
+			DateRange range = list.get(0);
+			assertEquals(8,range.getInterval());
+		} catch (ParseException pex) {
+			fail(pex.getMessage());
+		}
+		parser = new OpeningHoursParser(new ByteArrayInputStream("Jan-Mar 7/8".getBytes()));
+		try {
+			List<Rule>rules = parser.rules(false);
+			fail("should throw a ParseException");
+		} catch (ParseException pex) {
 		}
 	}
 	

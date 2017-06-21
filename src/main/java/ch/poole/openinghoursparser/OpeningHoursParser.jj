@@ -167,7 +167,7 @@ boolean ampm() :
   )?  {    result = result + Integer.parseInt(h.image) * 60;
     if (pm) {
       result = result + 12*60;
-    }    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.setEvent(event.image);    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.setEvent(event.image);      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token minutes = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        minutes = number()      )      {        interval = Integer.parseInt(minutes.image);      }    )  |    (      hours = hours() minutes = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(minutes.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;
+    }    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.setEvent(event.image);    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.setEvent(event.image);      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token number = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        number = number()      )      {        interval = Integer.parseInt(number.image);      }    )  |    (      hours = hours() number = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(number.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;
   Token to = null;  VariableTime startVT = null;  VariableTime endVT = null;  TimeSpan ts = new TimeSpan();  int inter = 0;}{  (    (      start = time()      {        ts.start = start;      }    | startVT = variabletime()      {        ts.startEvent = startVT;      }    )    (      startplus = < PLUS >    |      (        (          < HYPHEN > | (to = < TO >)
         )        (          end = extendedtime()          {
             if (end < start) {  
@@ -280,10 +280,18 @@ WeekDayRange weekday_range() :{  String startDay = null;  String endDay = nul
       endDate = datewithoffset()
       {
         if (strict && to != null) {
-          throw new ParseException("'to' instead of '-' " + token.next.beginLine + ", column " + token.next.beginColumn);
+          throw new ParseException("'to' instead of '-' " + (token != null && token.next != null ? token.next.beginLine + ", column " + token.next.beginColumn : ""));
         }
         mdr.endDate = endDate;
       }
+      (
+      	mdr.interval = interval()
+      	{ 
+      	  if (startDate.day != DateWithOffset.UNDEFINED_MONTH_DAY || endDate.day != DateWithOffset.UNDEFINED_MONTH_DAY || startDate.varDate!=null || endDate.varDate!=null) {
+      	  	throw new ParseException("interval not allowed here "+ (token != null && token.next != null ? token.next.beginLine + ", column " + token.next.beginColumn : ""));
+      	  }
+     	}
+      )?
     )
   )?
   {
@@ -338,7 +346,7 @@ int year() :
         wd = < WEEKDAY >
         {
           dwo.weekDayOffsetPositive = minus == null;
-          dwo.weekDayOffset = wd.image;
+          dwo.setWeekDayOffset(wd.image);
         }
       )?
       (
