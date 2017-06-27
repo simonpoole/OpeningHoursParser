@@ -28,12 +28,14 @@ public class OpeningHoursParserTest {
 
 	@Test
 	public void regressionTest() {
-		parseData("test-data/oh.txt", false, "test-data/oh.txt-result");
+		parseData("test-data/oh.txt", false, false, "test-data/oh.txt-result");
+		parseData("test-data/oh.txt", false, true, "test-data/oh.txt-debug-result");
 	}
 	
 	@Test
 	public void regressionTestStrict() {
-		parseData("test-data/oh.txt", true, "test-data/oh.txt-result-strict");
+		parseData("test-data/oh.txt", true, false, "test-data/oh.txt-result-strict");
+		parseData("test-data/oh.txt", true, true, "test-data/oh.txt-debug-result-strict");
 	}
 	
 	@Test
@@ -64,9 +66,9 @@ public class OpeningHoursParserTest {
 	}
 	
 	/**
-	 * This completes successfully if parsing gives the same success result and for sucessful parses the same regenerated OH string
+	 * This completes successfully if parsing gives the same success result and for successful parses the same regenerated OH string
 	 */
-	private void parseData(String inputFile, boolean strict, String resultsFile)
+	private void parseData(String inputFile, boolean strict, boolean debug, String resultsFile)
 	{
 		int successful = 0;
 		int errors = 0;
@@ -86,8 +88,8 @@ public class OpeningHoursParserTest {
 			{
 				System.out.println("File not found " + fnfex.toString());
 			} 
-			outputExpected = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-result" + (strict?"-strict":"")+"-temp"), "UTF8"));
-			outputFail = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-fail" + (strict?"-strict":"")), "UTF8"));
+			outputExpected = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-result" + (strict?"-strict":"")+(debug?"-debug":"")+"-temp"), "UTF8"));
+			outputFail = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile+"-fail" + (strict?"-strict"+(debug?"-debug":""):"")), "UTF8"));
 
 
 			String expectedResultCode = null;
@@ -107,11 +109,21 @@ public class OpeningHoursParserTest {
 					OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(line.getBytes()));
 					ArrayList<Rule> rules = parser.rules(strict);
 					successful++;
-					outputExpected.write("0\t"+Util.rulesToOpeningHoursString(rules)+"\n");
-					if (expectedResultCode != null) {
-						assertEquals("0", expectedResultCode);
-						if (expectedResult != null) {
-							assertEquals(expectedResult,Util.rulesToOpeningHoursString(rules));
+					if (debug) {
+						outputExpected.write("0\t"+Util.rulesToOpeningHoursDebugString(rules)+"\n");
+						if (expectedResultCode != null) {
+							assertEquals("0", expectedResultCode);
+							if (expectedResult != null) {
+								assertEquals(expectedResult,Util.rulesToOpeningHoursDebugString(rules));
+							}
+						}
+					} else {
+						outputExpected.write("0\t"+Util.rulesToOpeningHoursString(rules)+"\n");
+						if (expectedResultCode != null) {
+							assertEquals("0", expectedResultCode);
+							if (expectedResult != null) {
+								assertEquals(expectedResult,Util.rulesToOpeningHoursString(rules));
+							}
 						}
 					}
 				}

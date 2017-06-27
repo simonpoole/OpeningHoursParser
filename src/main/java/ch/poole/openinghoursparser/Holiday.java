@@ -38,6 +38,7 @@ public class Holiday extends Element {
 	
 	Type type = null;
 	int offset = 0;
+	boolean useAsWeekDay = true;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
@@ -104,5 +105,13 @@ public class Holiday extends Element {
 	 */
 	public void setOffset(int offset) {
 		this.offset = offset;
+	}
+	
+	public void setUseAsWeekDay(boolean yes) {
+		useAsWeekDay = yes;
+	}
+	
+	public boolean getUseAsWeekDay() {
+		return useAsWeekDay;
 	}
 }

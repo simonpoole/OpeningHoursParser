@@ -38,12 +38,17 @@ public class Rule extends Element {
 			}
 			b.append("24/7");
 		} else {
-			printList(b, "", years);
-			printList(b, "week ", weeks);
-			printList(b, "", dates);
-			printList(b, "", holidays);
-			printList(b, "", days);
-			printList(b, "", times);
+			printList(false, true, b, "", years);
+			printList(false, true, b, "week ", weeks);
+			printList(false, true, b, "", dates);
+			printList(false, true, b, "", holidays);
+			boolean holidaysAsWeekDays = false;
+			if (holidays!= null && holidays.size()> 0 && holidays.get(holidays.size()-1).getUseAsWeekDay() && days !=null && days.size()> 0) {
+				b.append(",");
+				holidaysAsWeekDays = true;
+			}
+			printList(false, !holidaysAsWeekDays, b, "", days);
+			printList(false, true, b, "", times);
 		}
 		if (modifier != null) {
 			b.append(" ");
@@ -52,15 +57,46 @@ public class Rule extends Element {
 		return b.toString();
 	}
 	
-	<T> void printList(StringBuilder b, String prefix, List<T>list) {
-		if (list != null) {
+	@Override
+	public String toDebugString() {
+		StringBuilder b = new StringBuilder();
+		if (comment != null) {
+			b.append("\"" + comment + "\":"); // we only accept comments in quotes so only print them out this way
+		}		
+		if (twentyfourseven) {
 			if (b.length() > 0) {
+				b.append(" ");
+			}
+			b.append("24/7");
+		} else {
+			printList(true, true, b, "", years);
+			printList(true, true, b, "week ", weeks);
+			printList(true, true, b, "", dates);
+			printList(true, true, b, "", holidays);
+			boolean holidaysAsWeekDays = false;
+			if (holidays!= null && holidays.size()> 0 && holidays.get(holidays.size()-1).getUseAsWeekDay() && days !=null && days.size()> 0) {
+				b.append(",");
+				holidaysAsWeekDays = true;
+			}
+			printList(true, !holidaysAsWeekDays, b, "", days);
+			printList(true, true, b, "", times);
+		}
+		if (modifier != null) {
+			b.append(" ");
+			b.append(modifier.toDebugString());
+		}
+		return b.toString();
+	}
+	
+	<T extends Element> void printList(boolean debug, boolean addSpace, StringBuilder b, String prefix, List<T>list) {
+		if (list != null) {
+			if (addSpace && b.length() > 0) {
 				b.append(" ");
 			}
 			b.append(prefix);
 			Iterator<T> iter = list.iterator();
 			while (iter.hasNext()) {
-				b.append(iter.next().toString());
+				b.append(debug ?  iter.next().toDebugString() : iter.next().toString());
 				if (iter.hasNext()) {
 					b.append(",");
 				}

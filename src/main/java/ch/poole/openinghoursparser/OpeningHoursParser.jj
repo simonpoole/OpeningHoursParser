@@ -531,11 +531,18 @@ ArrayList < YearRange > year_selector() :
           )?
           (
             (
-              < COMMA > 
+              < COMMA >
               ds = weekday_selector()
             )
           | 
             ds = weekday_selector()
+            {
+              if (hs != null) { 
+                for (Holiday h:hs) {
+                  h.setUseAsWeekDay(false);  
+                }
+              }
+            }
           )?
         )
       )

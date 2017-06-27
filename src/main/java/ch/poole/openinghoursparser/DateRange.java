@@ -27,13 +27,35 @@ public class DateRange extends Element {
 	int interval=0;
 
 	public String toString() {
+		if (startDate==null) {
+			throw new IllegalStateException("range must have a start date");
+		}
 		StringBuilder b = new StringBuilder();
-		if (startDate != null) {
-			b.append(startDate.toString());
-		} 
+		b.append(startDate.toString());
+
 		if (endDate != null && !endDate.isUndefined()) {
 			b.append("-");
 			b.append(endDate.toString());
+		}
+		if (interval> 0) {
+			b.append("/");
+			b.append(interval);
+		}
+		return b.toString();
+	}
+	
+	@Override
+	public String toDebugString() {
+		if (startDate==null) {
+			throw new IllegalStateException("range must have a start date");
+		}
+		StringBuilder b = new StringBuilder();
+		b.append(getClass().getSimpleName() +":");
+		b.append(startDate.toDebugString());
+		
+		if (endDate != null && !endDate.isUndefined()) {
+			b.append("-");
+			b.append(endDate.toDebugString());
 		}
 		if (interval> 0) {
 			b.append("/");
@@ -68,41 +90,61 @@ public class DateRange extends Element {
 	}
 
 	/**
+	 * Get the start date of the range
+	 * 
 	 * @return the startDate
 	 */
 	public DateWithOffset getStartDate() {
+		if (startDate==null) {
+			throw new IllegalStateException("range must have a start date");
+		}
 		return startDate;
 	}
 
 	/**
-	 * @return the endDate
+	 * Get the end date of the range
+	 * 
+	 * @return the endDate, null if not present
 	 */
 	public DateWithOffset getEndDate() {
 		return endDate;
 	}
 
 	/**
-	 * @return the interval
+	 * Get the interval for the date range
+	 * 
+	 * Note: currently the opening hours specification is quiet on what units this is supposed to be in
+	 * @return the interval, 0 if no interval
 	 */
 	public int getInterval() {
 		return interval;
 	}
 
 	/**
-	 * @param startDate the startDate to set
+	 * Set the start date of the range
+	 * 
+	 * @param startDate the startDate to set, can not be null
 	 */
 	public void setStartDate(DateWithOffset startDate) {
+		if (startDate==null) {
+			throw new IllegalArgumentException("start date cannot be null");
+		}
 		this.startDate = startDate;
 	}
 
 	/**
-	 * @param endDate the endDate to set
+	 * Set the end date of the range
+	 * 
+	 * @param endDate the end date of the range to set, null if there is no end date
 	 */
 	public void setEndDate(DateWithOffset endDate) {
 		this.endDate = endDate;
 	}
 
 	/**
+	 * Set an interval for the date range
+	 * 
+	 * Note: currently the opening hours specification is quiet on what units this is supposed to be in
 	 * @param interval the interval to set
 	 */
 	public void setInterval(int interval) {

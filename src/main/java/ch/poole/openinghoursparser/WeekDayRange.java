@@ -62,6 +62,38 @@ public class WeekDayRange extends Element {
 		return b.toString();
 	}
 	
+	public String toDebugString() {
+		StringBuilder b = new StringBuilder();
+		b.append(getClass().getSimpleName() +":");
+		b.append(startDay);
+		if (endDay != null) {
+			b.append("-");
+			b.append(endDay);
+		} else if (nths != null && !nths.isEmpty()) {
+			b.append("["); 
+			for (Nth n:nths) {
+				b.append(n.toDebugString());
+				if (!n.equals(nths.get(nths.size()-1))) {
+					b.append(",");
+				}
+			}			
+			b.append("]");
+			if (offset != 0) {
+				if (offset > 0) {
+					b.append(" +");
+				} else {
+					b.append(" -");
+				}
+				b.append(String.format("%d",Math.abs(offset)));
+				b.append(" day");
+				if (Math.abs(offset)>1) {
+					b.append("s");
+				}
+			}
+		}
+		return b.toString();
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {

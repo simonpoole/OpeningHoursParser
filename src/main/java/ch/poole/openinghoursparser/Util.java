@@ -65,8 +65,8 @@ public class Util {
 	/**
 	 * Generate an OH string from rules
 	 * 
-	 * @param rules rules to convert to an opening_hours string
-	 * @return specification conformant opening_hours string
+	 * @param rules 			rules to convert to an opening_hours string
+	 * @return specification 	conformant opening_hours string
 	 */
 	public static String rulesToOpeningHoursString(List<Rule> rules) {
 		StringBuilder result = new StringBuilder();
@@ -85,6 +85,34 @@ public class Util {
 					first = false;
 				}
 				result.append(r.toString());
+			}
+		}
+		return result.toString();
+	}
+	
+	/**
+	 * Generate a debugging output string from rules
+	 * 
+	 * @param rules 			rules to convert to an opening_hours string
+	 * @return specification 	debugging opening_hours string
+	 */
+	public static String rulesToOpeningHoursDebugString(List<Rule> rules) {
+		StringBuilder result = new StringBuilder();
+		boolean first = true;
+		for (Rule r:rules) {
+			if (!r.isEmpty()) {
+				if (!first) {
+					if (r.isAdditive()) {
+						result.append(',');
+					} else if (r.isFallBack()) {
+						result.append("||");
+					} else {
+						result.append(';');
+					}
+				} else {
+					first = false;
+				}
+				result.append(r.toDebugString());
 			}
 		}
 		return result.toString();
