@@ -22,11 +22,22 @@ targetCompatibility = 1.7
 
 ext {
     javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser')
-    javaccSource = file(project.buildDir.absolutePath + '/generated/javacc/');
+    javaccSourcePath = project.buildDir.absolutePath + '/generated/javacc/'
+    javaccSource = file(javaccSourcePath)
     mainSource = file('src/main/java/')
     testSource = file('src/test/java/')
 }
 
+eclipse {
+    classpath {
+        file {
+            beforeMerged { classpath ->
+                classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.SourceFolder(javaccSourcePath, "bin"))
+             }
+        }
+    }
+}
+            
 compileJavacc {
     inputDirectory = mainSource
     outputDirectory = javaccOutput
@@ -37,7 +48,7 @@ compileJava {
 }
 
 compileTestJava {
-    source javaccSource,mainSource, testSource
+    source javaccSource,mainSource,testSource
 }
 
 javadoc {

@@ -383,7 +383,7 @@ public class OpeningHoursParserTest {
 		OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("2010-2011 Mo,Tu 10:00-11:00, 24/7".getBytes()));
 		try {
 			List<Rule>rules = parser.rules(false);
-			assertEquals(2,rules.size());;
+			assertEquals(2,rules.size());
 		} catch (ParseException pex) {
 			fail(pex.getMessage());
 		}
