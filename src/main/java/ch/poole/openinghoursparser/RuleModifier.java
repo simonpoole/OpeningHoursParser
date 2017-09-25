@@ -132,9 +132,6 @@ public class RuleModifier extends Element {
 	 */
 	public void setModifier(String modifier) {
 		Modifier m = Modifier.getValue(modifier);
-		if (m==null) {
-			throw new IllegalArgumentException(m + " is not a valid Modifier");
-		}
 		this.modifier = m;
 	}
 
