@@ -21,16 +21,17 @@ package ch.poole.openinghoursparser;
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 public class Nth extends Element {
-	int startNth=-1;
-	int endNth=-1;
+    public static int INVALID_NTH = Integer.MIN_VALUE;
+	int startNth=INVALID_NTH;
+	int endNth=INVALID_NTH;
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		
-		if (startNth != -1) {
+		if (startNth != INVALID_NTH) {
 			b.append(startNth);
 		}
-		if (endNth != -1) {
+		if (endNth != INVALID_NTH) {
 			b.append("-");
 			b.append(endNth);
 		}
@@ -67,7 +68,7 @@ public class Nth extends Element {
 	}
 
 	/**
-	 * @return the endNth
+	 * @return the endNth of Nth.INVALID_NTH if not set/not a range
 	 */
 	public int getEndNth() {
 		return endNth;

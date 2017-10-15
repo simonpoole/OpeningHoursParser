@@ -24,7 +24,8 @@ package ch.poole.openinghoursparser;
  
 public class DateWithOffset extends Element {
 	
-	public static final int UNDEFINED_MONTH_DAY = Integer.MIN_VALUE;
+	private static final int MAX_NTH = 5;
+    public static final int UNDEFINED_MONTH_DAY = Integer.MIN_VALUE;
 	public static final int MIN_MONTH_DAY = 1;
 	public static final int MAX_MONTH_DAY = 31;
 	
@@ -32,6 +33,8 @@ public class DateWithOffset extends Element {
 	int year = YearRange.UNDEFINED_YEAR;
 	Month month = null;
 	int day = UNDEFINED_MONTH_DAY;
+	WeekDay nthWeekDay = null;
+	int nth = 0;
 	boolean weekDayOffsetPositive=true;
 	WeekDay weekDayOffset = null;
 	int dayOffset = 0;
@@ -48,6 +51,15 @@ public class DateWithOffset extends Element {
 				b.append(" ");
 			}
 			b.append(month);
+		}
+		if (nthWeekDay != null) {
+		    if (month != null) {
+		        b.append(" ");
+		    }
+		    b.append(nthWeekDay);
+		    b.append('[');
+		    b.append(nth);
+		    b.append(']');
 		}
 		if (day != UNDEFINED_MONTH_DAY) {
 			if (year != YearRange.UNDEFINED_YEAR || month != null) {
@@ -89,12 +101,14 @@ public class DateWithOffset extends Element {
 			DateWithOffset o = (DateWithOffset)other;
 			return openEnded == o.openEnded 
 					&& year == o.year 
-					&& (month == o.month  || (month != null && month.equals(o.month))) 
+					&& (month == o.month || (month != null && month.equals(o.month))) 
+					&& (nthWeekDay == o.nthWeekDay || (nthWeekDay != null && nthWeekDay.equals(o.nthWeekDay)))
+					&& nth == o.nth
 					&& day == o.day 
 					&& weekDayOffsetPositive == o.weekDayOffsetPositive
-					&& (weekDayOffset == o.weekDayOffset  || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
+					&& (weekDayOffset == o.weekDayOffset || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset)))
 					&& dayOffset == o.dayOffset 
-					&& (varDate == o.varDate  || (varDate != null && varDate.equals(o.varDate)));
+					&& (varDate == o.varDate || (varDate != null && varDate.equals(o.varDate)));
 		}
 		return false;
 	}
@@ -105,6 +119,8 @@ public class DateWithOffset extends Element {
 		result = 37 * result + (openEnded ? 0 : 1);
 		result = 37 * result + year;
 		result = 37 * result + (month == null ? 0 : month.hashCode());
+		result = 37 * result + (nthWeekDay == null ? 0 : nthWeekDay.hashCode());
+		result = 37 * result + nth;
 		result = 37 * result + day;
 		result = 37 * result + (weekDayOffsetPositive ? 0 : 1);
 		result = 37 * result + (weekDayOffset == null ? 0 : weekDayOffset.hashCode());
@@ -244,7 +260,49 @@ public class DateWithOffset extends Element {
 		}
 		this.day = day;
 	}
+	
+	/**
+	 * Set date specification via occurrence in month 
+	 * 
+	 * @param day  week day to use
+	 * @param nth  the occurrence in the month positive number between -5 and 5, negative numbers are last occurrence (-1), before last (-2) and so on 
+	 */
+	public void setNth(String day, int nth) {
+	    setNth(WeekDay.getValue(day), nth);
+	}
+	
+	/**
+     * Set date specification via occurrence in month 
+     * 
+     * @param day  WeekDay to use
+     * @param nth  the occurrence in the month positive number between -5 and 5, negative numbers are last occurrence (-1), before last (-2) and so on 
+     */
+	public void setNth(WeekDay day, int nth) {
+	    if (nth < -MAX_NTH || nth > MAX_NTH) {
+	         throw new IllegalArgumentException(nth + " is not a valid occurrence number");
+	    }
+	    nthWeekDay = day;
+	    this.nth = nth;
+	}
 
+	/**
+	 * Get the WeekDay for date specification via occurrence in month
+	 * 
+	 * @return the WeekDay or null if not set
+	 */
+	public WeekDay getNthWeekDay() {
+	    return nthWeekDay;
+	}
+	
+	/**
+	 * Get the occurrence value for date specification via occurrence in month
+	 * 
+	 * @return a integer between -5 and 5, valid only if the WeekDay has been set
+	 */
+	public int getNth() {
+	    return nth;
+	}
+	
 	/**
 	 * @param weekDayOffsetPositive the weekDayOffsetPositive to set
 	 */

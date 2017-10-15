@@ -6,6 +6,7 @@ public class Rule extends Element {
 	boolean fallBack = false;
 	boolean additive = false;
 	boolean twentyfourseven = false;
+	boolean colonForClarification = false;
 
 	String comment = null;
 	// year range list
@@ -41,6 +42,9 @@ public class Rule extends Element {
 			printList(false, true, b, "", years);
 			printList(false, true, b, "week ", weeks);
 			printList(false, true, b, "", dates);
+			if (colonForClarification) {
+			    b.append(":");
+			}
 			printList(false, true, b, "", holidays);
 			boolean holidaysAsWeekDays = false;
 			if (holidays!= null && holidays.size()> 0 && holidays.get(holidays.size()-1).getUseAsWeekDay() && days !=null && days.size()> 0) {
