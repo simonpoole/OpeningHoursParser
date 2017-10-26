@@ -26,7 +26,10 @@
 package ch.poole.openinghoursparser;
  import java.util.ArrayList;import java.util.Collections;
 import java.util.Locale;import java.io.ByteArrayInputStream;public class OpeningHoursParser{
-	boolean strict = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"
+  static int TWELVEHOURS = 12*60;
+  
+  boolean strict = false;
+  enum AMPM { AM, PM };}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"
 | "\u200A"
 | "\u2009"
 | "\u00A0"
@@ -79,8 +82,8 @@ TOKEN :
   }}
 
 TOKEN :
-{  < AM : "am" >
-| < PM : "pm" >
+{  < AM : "am" | ("a"< STOP >"m"< STOP >) >
+| < PM : "pm" | ("p"< STOP >"m"< STOP >) >
 }
 
 TOKEN :
@@ -101,9 +104,17 @@ TOKEN :
  * uses semantic lookahead
  */Token hours() :{  Token h = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 24 })  h = < NUMBER >  {    return h;  }}
 /**
- * returns the total number of minutes for a time of the form hh:00 or just hh 
+ * returns the total number of minutes for a time of the form hh:00 or just hh
+ *
+ * AM/PM handling
+ * 12:01pm to 12:59pm is 12:01 to 12:59
+ * 13:00pm and later is considered to be mistyped and in the 24:00 system
+ * 12:00 pm is 24:00
+ * 12:01am to 12:59am is 00:01 to 00:59
+ * 12:00am is 12:00
+ * 13:00am and later is considered to be mistyped and in the 24:00 system 
  */int time() :{  Token h = null;  Token m = null;  int result = 0;
-  boolean pm = false;}{  (    h = hours()  )  (
+  AMPM ampm = null;}{  (    h = hours()  )  (
     (      m = < MINUTES >
     )    {
       if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
@@ -112,61 +123,61 @@ TOKEN :
         throw pex;
 	  }       result = Integer.parseInt(m.image.substring(1));    }  )?
   (
-    pm = ampm()  )?  {
+    ampm = ampm()  )?  {
     if (strict && m == null) {
         ParseException pex = new ParseException("Hours without minutes");
 	    pex.currentToken = token;
         throw pex;
     }    result = result + Integer.parseInt(h.image) * 60;
-    if (pm && result <= 12*60) { // only use am/pm if the time is small than 12 h
-      result = result + 12*60;
+    if (ampm == AMPM.PM && result <= TWELVEHOURS) { // only use add 12h if the time is less than 12 h
+      result = result + TWELVEHOURS;               // 12:01 pm to 12:59 pm are already correct 24h times
+    } else if (ampm == AMPM.AM && result > TWELVEHOURS && result < TWELVEHOURS + 60) {
+	  result = result - TWELVEHOURS;               // 12:00am to 12:59am are clearly early morning
     }    return result;  }}
 
-boolean ampm() :
+AMPM ampm() :
 {
-  boolean found = false;
-  boolean result = false;
+  String result = null;
+  Token ampm = null;
 }
 {
   (
-    (      < AM >
-      {
-		found = true;
-      }
+    (      ampm =< AM >
     )
   |
     (
-      < PM >
-      {
-		found = true;
-		result = true;
-      }
+      ampm =< PM >
     )
   )
   {
-	  if (found && strict) {
-        ParseException pex = new ParseException("AM found at line " + token.next.beginLine + ", column " + token.next.beginColumn);
-	    pex.currentToken = token;
-        throw pex;
+	  if (ampm != null) {
+	    if (strict) {
+          ParseException pex = new ParseException(ampm.image + " found at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+	      pex.currentToken = token;
+          throw pex;
+        }
+        return ampm.kind == AM ? AMPM.AM : AMPM.PM;
       }
-      return result;
+      return null;
   }
 }
 
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh with hh up to 48 
  */int extendedtime() :{  Token h = null;  Token m = null;  int result = 0;
-  boolean pm = false;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48 })    h = < NUMBER >  )  (    m = < MINUTES >    {
+  AMPM ampm = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48 })    h = < NUMBER >  )  (    m = < MINUTES >    {
       if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
         ParseException pex = new ParseException("Invalid minutes at " + token.next.beginLine + ", column " + token.next.beginColumn);
 	    pex.currentToken = token;
         throw pex;
 	  }      result = Integer.parseInt(m.image.substring(1));    }  )?
   (
-    pm = ampm()
+    ampm = ampm()
   )?  {    result = result + Integer.parseInt(h.image) * 60;
-    if (pm) {
-      result = result + 12*60;
+    if (ampm == AMPM.PM && result <= TWELVEHOURS) {
+      result = result + TWELVEHOURS;
+    } else if (ampm == AMPM.AM && result > TWELVEHOURS && result < TWELVEHOURS + 60) {
+	  result = result - TWELVEHOURS; 
     }    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.setEvent(event.image);    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.setEvent(event.image);      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token number = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        number = number()      )      {        interval = Integer.parseInt(number.image);      }    )  |    (      hours = hours() number = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(number.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;
   Token to = null;  VariableTime startVT = null;  VariableTime endVT = null;  TimeSpan ts = new TimeSpan();  int inter = 0;}{  (    (      start = time()      {        ts.start = start;      }    | startVT = variabletime()      {        ts.startEvent = startVT;      }    )    (      startplus = < PLUS >    |      (        (          < HYPHEN > | (to = < TO >)
         )        (          end = extendedtime()          {
