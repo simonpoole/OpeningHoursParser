@@ -106,12 +106,12 @@ TOKEN :
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh
  *
- * AM/PM handling
+ * AM/PM handling, see http://www.npl.co.uk/reference/faqs/is-midnight-12-am-or-12-pm-faq-time for why this is a mess
  * 12:01pm to 12:59pm is 12:01 to 12:59
  * 13:00pm and later is considered to be mistyped and in the 24:00 system
- * 12:00 pm is 24:00
+ * 12:00 pm is 12:00
  * 12:01am to 12:59am is 00:01 to 00:59
- * 12:00am is 12:00
+ * 12:00am is 00:00
  * 13:00am and later is considered to be mistyped and in the 24:00 system 
  */int time() :{  Token h = null;  Token m = null;  int result = 0;
   AMPM ampm = null;}{  (    h = hours()  )  (
@@ -129,9 +129,9 @@ TOKEN :
 	    pex.currentToken = token;
         throw pex;
     }    result = result + Integer.parseInt(h.image) * 60;
-    if (ampm == AMPM.PM && result <= TWELVEHOURS) { // only use add 12h if the time is less than 12 h
+    if (ampm == AMPM.PM && result < TWELVEHOURS) { // only use add 12h if the time is less than 12 h
       result = result + TWELVEHOURS;               // 12:01 pm to 12:59 pm are already correct 24h times
-    } else if (ampm == AMPM.AM && result > TWELVEHOURS && result < TWELVEHOURS + 60) {
+    } else if (ampm == AMPM.AM && result >= TWELVEHOURS && result < TWELVEHOURS + 60) {
 	  result = result - TWELVEHOURS;               // 12:00am to 12:59am are clearly early morning
     }    return result;  }}
 
@@ -174,9 +174,9 @@ AMPM ampm() :
   (
     ampm = ampm()
   )?  {    result = result + Integer.parseInt(h.image) * 60;
-    if (ampm == AMPM.PM && result <= TWELVEHOURS) {
+    if (ampm == AMPM.PM && result < TWELVEHOURS) {
       result = result + TWELVEHOURS;
-    } else if (ampm == AMPM.AM && result > TWELVEHOURS && result < TWELVEHOURS + 60) {
+    } else if (ampm == AMPM.AM && result >= TWELVEHOURS && result < TWELVEHOURS + 60) {
 	  result = result - TWELVEHOURS; 
     }    return result;  }}VariableTime variabletime() :{  Token event = null;  Token sign = null;  int offset = 0;  VariableTime vt = new VariableTime();}{  (event = < EVENTS >  {    vt.setEvent(event.image);    return vt;  }  )|  (    "(" event = < EVENTS >    (      sign = < PLUS >    | sign = < HYPHEN >    )    offset = time() ")"    {      vt.setEvent(event.image);      vt.offset = (sign.image.equals("-") ? - 1 : 1) * offset;    }  )  {    return vt;  }}int interval() :{  Token number = null;  Token hours = null;  int interval = 0;}{  < SLASH >  (    (      (        number = number()      )      {        interval = Integer.parseInt(number.image);      }    )  |    (      hours = hours() number = < MINUTES >      {        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(number.image.substring(1));      }    )  )  {    return interval;  }}TimeSpan timespan() :{  int start = 0;  int end =-1;  Token startplus = null;  Token endplus = null;
   Token to = null;  VariableTime startVT = null;  VariableTime endVT = null;  TimeSpan ts = new TimeSpan();  int inter = 0;}{  (    (      start = time()      {        ts.start = start;      }    | startVT = variabletime()      {        ts.startEvent = startVT;      }    )    (      startplus = < PLUS >    |      (        (          < HYPHEN > | (to = < TO >)
