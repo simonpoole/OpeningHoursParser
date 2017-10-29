@@ -30,7 +30,23 @@ public class WeekDayRange extends Element {
 	WeekDay endDay = null;
 	List<Nth> nths = null;
 	int offset = 0;
+	
+	public WeekDayRange() {
+	}
+	
+	/**
+	 * Construct a new WeekDayRange with the same contents
+	 * 
+	 * @param wdr original WeekDayRange
+	 */
+	public WeekDayRange(WeekDayRange wdr) {
+	    startDay = wdr.startDay; // enum
+	    endDay = wdr.endDay; // wdr
+	    nths = (wdr.nths != null ? Util.copyList(wdr.nths) : null);
+	    offset = wdr.offset;
+	}
 
+	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append(startDay);
@@ -62,6 +78,7 @@ public class WeekDayRange extends Element {
 		return b.toString();
 	}
 	
+	@Override
 	public String toDebugString() {
 		StringBuilder b = new StringBuilder();
 		b.append(getClass().getSimpleName() +":");
@@ -221,4 +238,9 @@ public class WeekDayRange extends Element {
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
+
+    @Override
+    public WeekDayRange copy() {
+        return new WeekDayRange(this);
+    }
 }

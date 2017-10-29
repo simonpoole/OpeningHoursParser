@@ -32,6 +32,21 @@ public class WeekRange extends Element {
 	int endWeek = UNDEFINED_WEEK;
 	int interval = 0;
 	
+	public WeekRange() {
+	}
+	
+	/**
+	 * Construct a new WeekRange with the same contents
+	 * 
+	 * @param wr the original WeekRange
+	 */
+	public WeekRange(WeekRange wr) {
+	    startWeek = wr.startWeek;
+	    endWeek = wr.endWeek;
+	    interval = wr.interval;
+	}
+	
+	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append(String.format("%02d",startWeek));
@@ -116,4 +131,9 @@ public class WeekRange extends Element {
 	public void setInterval(int interval) {
 		this.interval = interval;
 	}
+
+    @Override
+    public WeekRange copy() {
+        return new WeekRange(this);
+    }
 }

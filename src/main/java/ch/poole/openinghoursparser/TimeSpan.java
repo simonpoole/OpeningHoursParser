@@ -31,8 +31,25 @@ public class TimeSpan extends Element {
 	VariableTime startEvent = null;
 	int end=UNDEFINED_TIME;
 	VariableTime endEvent = null;
-	boolean openEnded=false;
-	int interval=0; //minutes
+	boolean openEnded = false;
+	int interval = 0; //minutes
+	
+	public TimeSpan() {    
+	}
+	
+	/**
+	 * Construct a new TimeSpan with the same contents
+	 * 
+	 * @param ts the original TimeSpan
+	 */
+	public TimeSpan(TimeSpan ts) {
+	    start = ts.start;
+	    startEvent = ts.startEvent != null ? ts.startEvent.copy() : null;
+	    end = ts.end;
+	    endEvent = ts.endEvent != null ? ts.endEvent.copy() : null;
+	    openEnded = ts.openEnded;
+	    interval = ts.interval;
+	}
 
 	public String toString() {
 		StringBuilder b = new StringBuilder();
@@ -188,4 +205,9 @@ public class TimeSpan extends Element {
 	public void setInterval(int interval) {
 		this.interval = interval;
 	}
+
+    @Override
+    public TimeSpan copy() {
+        return new TimeSpan(this);
+    }
 }

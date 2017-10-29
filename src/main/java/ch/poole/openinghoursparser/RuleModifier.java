@@ -37,7 +37,7 @@ public class RuleModifier extends Element {
 		Modifier(String name) {
 			this.name = name;
 		}
-		
+
 		@Override
 		public String toString() {
 			return name;
@@ -61,9 +61,21 @@ public class RuleModifier extends Element {
 		}
 	}
 	
-	
 	Modifier modifier = null;
 	String comment = null;
+
+	public RuleModifier() {
+	}
+	
+	/**
+	 * Construct a new RuleModifier with the same contents
+	 * 
+	 * @param rm the original RuleModifier
+	 */
+	public RuleModifier(RuleModifier rm) {
+	    modifier = rm.modifier; // enum
+	    comment = rm.comment;
+	}
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
@@ -141,4 +153,9 @@ public class RuleModifier extends Element {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
+    @Override
+    public RuleModifier copy() {
+        return new RuleModifier(this);
+    }
 }

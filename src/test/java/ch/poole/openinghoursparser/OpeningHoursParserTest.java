@@ -435,67 +435,118 @@ public class OpeningHoursParserTest {
 		}
 	}
 	
-	   @Test
-	   public void ampm() {
-	       // 12:01pm to 12:59pm is 12:01 to 12:59
-	       // 13:00pm and later is considered to be mistyped and in the 24:00 system
-	       // 12:00 pm is 12:00
-	       // 12:01am to 12:59am is 00:01 to 00:59
-	       // 12:00am is 00:00
-	       // 13:00am and later is considered to be mistyped and in the 24:00 system
-	       OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("00:01 am".getBytes()));
-	       try {
-	           List<Rule>rules = parser.rules(false);
-	           Rule r = rules.get(0);
-	           List<TimeSpan>times = r.getTimes();
-	           TimeSpan span = times.get(0);
-	           assertEquals(1,span.getStart());
-	           
-	           parser = new OpeningHoursParser(new ByteArrayInputStream("12:01 pm".getBytes()));
-               rules = parser.rules(false);
-               r = rules.get(0);
-               times = r.getTimes();
-               span = times.get(0);
-               assertEquals(12*60+1,span.getStart());
-               
-               parser = new OpeningHoursParser(new ByteArrayInputStream("12:00 pm".getBytes()));
-               rules = parser.rules(false);
-               r = rules.get(0);
-               times = r.getTimes();
-               span = times.get(0);
-               assertEquals(12*60,span.getStart());
-               
-               parser = new OpeningHoursParser(new ByteArrayInputStream("13:00 pm".getBytes()));
-               rules = parser.rules(false);
-               r = rules.get(0);
-               times = r.getTimes();
-               span = times.get(0);
-               assertEquals(13*60,span.getStart());
-               
-               parser = new OpeningHoursParser(new ByteArrayInputStream("12:00 am".getBytes()));
-               rules = parser.rules(false);
-               r = rules.get(0);
-               times = r.getTimes();
-               span = times.get(0);
-               assertEquals(0,span.getStart());
-               
-               parser = new OpeningHoursParser(new ByteArrayInputStream("12:01 am".getBytes()));
-               rules = parser.rules(false);
-               r = rules.get(0);
-               times = r.getTimes();
-               span = times.get(0);
-               assertEquals(1,span.getStart());
-               
-               parser = new OpeningHoursParser(new ByteArrayInputStream("13:00 am".getBytes()));
-               rules = parser.rules(false);
-               r = rules.get(0);
-               times = r.getTimes();
-               span = times.get(0);
-               assertEquals(13*60,span.getStart());
-	           
-               
-	       } catch (ParseException pex) {
-	           fail(pex.getMessage());
-	       }
-	   }
+	@Test
+	public void ampm() {
+	    // 12:01pm to 12:59pm is 12:01 to 12:59
+	    // 13:00pm and later is considered to be mistyped and in the 24:00 system
+	    // 12:00 pm is 12:00
+	    // 12:01am to 12:59am is 00:01 to 00:59
+	    // 12:00am is 00:00
+	    // 13:00am and later is considered to be mistyped and in the 24:00 system
+	    OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("00:01 am".getBytes()));
+	    try {
+	        List<Rule>rules = parser.rules(false);
+	        Rule r = rules.get(0);
+	        List<TimeSpan>times = r.getTimes();
+	        TimeSpan span = times.get(0);
+	        assertEquals(1,span.getStart());
+
+	        parser = new OpeningHoursParser(new ByteArrayInputStream("12:01 pm".getBytes()));
+	        rules = parser.rules(false);
+	        r = rules.get(0);
+	        times = r.getTimes();
+	        span = times.get(0);
+	        assertEquals(12*60+1,span.getStart());
+
+	        parser = new OpeningHoursParser(new ByteArrayInputStream("12:00 pm".getBytes()));
+	        rules = parser.rules(false);
+	        r = rules.get(0);
+	        times = r.getTimes();
+	        span = times.get(0);
+	        assertEquals(12*60,span.getStart());
+
+	        parser = new OpeningHoursParser(new ByteArrayInputStream("13:00 pm".getBytes()));
+	        rules = parser.rules(false);
+	        r = rules.get(0);
+	        times = r.getTimes();
+	        span = times.get(0);
+	        assertEquals(13*60,span.getStart());
+
+	        parser = new OpeningHoursParser(new ByteArrayInputStream("12:00 am".getBytes()));
+	        rules = parser.rules(false);
+	        r = rules.get(0);
+	        times = r.getTimes();
+	        span = times.get(0);
+	        assertEquals(0,span.getStart());
+
+	        parser = new OpeningHoursParser(new ByteArrayInputStream("12:01 am".getBytes()));
+	        rules = parser.rules(false);
+	        r = rules.get(0);
+	        times = r.getTimes();
+	        span = times.get(0);
+	        assertEquals(1,span.getStart());
+
+	        parser = new OpeningHoursParser(new ByteArrayInputStream("13:00 am".getBytes()));
+	        rules = parser.rules(false);
+	        r = rules.get(0);
+	        times = r.getTimes();
+	        span = times.get(0);
+	        assertEquals(13*60,span.getStart());
+
+
+	    } catch (ParseException pex) {
+	        fail(pex.getMessage());
+	    }
+	}
+
+	static String LONG_TEST = "Mo[2] -2 days 10:00-12:00;24/7;week 4-40 PH+2days dawn-09:00;dawn-25:00/25;2010-2100/4 12:01-13:02, 14:00, 10:00-(sunset+02:00), 13:00+, 11:01-45:00/46, dawn-dusk, sunrise+; 12-16 closed \"ein test\"; Mo, We 12:01-13:02; Apr-Sep 10:01-13:03, Dec 13:03-21:01";
+
+	@Test
+	public void copyTest() {
+
+	    OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(LONG_TEST.getBytes()));
+	    try {
+            List<Rule>rules = parser.rules(false);
+            for (Rule r:rules) {
+                Rule copied = r.copy();
+                assertEquals(r.toDebugString(),copied.toDebugString());
+            }
+	    } catch (ParseException pex) {
+	        fail(pex.getMessage());
+	    }
+	}
+	
+	@Test
+	public void weekRangeTest() {
+
+	    OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("10:00-12:00".getBytes()));
+	    try {
+	        List<Rule>rules = parser.rules(false);
+	        Rule r = rules.get(0);
+	        WeekRange wr = new WeekRange();
+	        wr.setStartWeek(1);
+	        wr.setEndWeek(52);
+	        wr.setInterval(1);
+	        List<WeekRange> weeks = new ArrayList<WeekRange>();
+	        weeks.add(wr);
+	        r.setWeeks(weeks);
+	        assertEquals(1, wr.getStartWeek());
+	        assertEquals(52, wr.getEndWeek());
+	        assertEquals(1, wr.getInterval());
+	        assertEquals("week 01-52/1 10:00-12:00", r.toString());
+	        try {
+	            wr.setStartWeek(-1);
+	            fail("Should throw an exception");
+	        } catch (IllegalArgumentException ex) {
+	        }
+	        try {
+	            wr.setEndWeek(55);
+	            fail("Should throw an exception");
+	        } catch (IllegalArgumentException ex) {
+	        }
+	    } catch (ParseException pex) {
+	        fail(pex.getMessage());
+	    }
+	}
+	
 }

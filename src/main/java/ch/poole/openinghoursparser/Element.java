@@ -4,8 +4,8 @@ package ch.poole.openinghoursparser;
  * @author simon
  *
  */
-abstract class Element {
-   // put other methods from Command interface here
+abstract class Element implements Copy {
+   // put other methods from interface here
 
    public abstract boolean equals(Object other);
    public abstract int hashCode();

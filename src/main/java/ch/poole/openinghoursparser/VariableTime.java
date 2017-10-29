@@ -28,6 +28,19 @@ public class VariableTime extends Element {
 	/** offset in minutes */
 	int offset = 0;
 	
+	public VariableTime() {
+	}
+	
+	/**
+	 * Construct a new VariableTime with the same contents
+	 * 
+	 * @param vt the original VariableTime
+	 */
+	public VariableTime(VariableTime vt) {
+	    event = vt.event;
+	    offset = vt.offset;
+	}
+	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		if (event != null) {
@@ -106,12 +119,16 @@ public class VariableTime extends Element {
 		}
 		this.event = e;
 	}
-	
-	
+		
 	/**
 	 * @param offset the offset to set
 	 */
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
+
+    @Override
+    public VariableTime copy() {
+        return new VariableTime(this);
+    }
 }

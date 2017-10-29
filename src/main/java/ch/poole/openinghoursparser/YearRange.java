@@ -19,6 +19,7 @@ package ch.poole.openinghoursparser;
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * @param <T>
  */
 
 public class YearRange extends Element {
@@ -33,6 +34,21 @@ public class YearRange extends Element {
 	int endYear = UNDEFINED_YEAR;
 	int interval = 0;
 	
+	public YearRange() {
+	}
+	
+	/**
+	 * Construct a new YearRange with the same contents
+	 * 
+	 * @param yr original YearRange
+	 */
+	public YearRange(YearRange yr) {
+	    startYear = yr.startYear;
+	    endYear = yr.endYear;
+	    interval = yr.interval;
+	}
+	
+	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append(String.format("%04d",startYear));
@@ -121,4 +137,11 @@ public class YearRange extends Element {
 	public void setInterval(int interval) {
 		this.interval = interval;
 	}
+
+    @Override
+    public YearRange copy() {
+        return new YearRange(this);
+    }
+
+ 
 }

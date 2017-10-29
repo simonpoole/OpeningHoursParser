@@ -1,4 +1,5 @@
 package ch.poole.openinghoursparser;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +27,21 @@ public class Rule extends Element {
 
 	Rule() {
 	}
+	
+	public Rule(Rule r) {
+	    fallBack = r.fallBack;
+	    additive = r.additive;
+	    twentyfourseven = r.twentyfourseven;
+	    colonForClarification = r.colonForClarification;
+	    comment = r.comment;
+	    years = Util.copyList(r.years);
+	    weeks = Util.copyList(r.weeks);
+	    dates = Util.copyList(r.dates);
+	    holidays = Util.copyList(r.holidays);
+	    days = Util.copyList(r.days);
+	    times = Util.copyList(r.times);
+	    modifier = r.modifier != null ? r.modifier.copy() : null; 
+	}
 
 	@Override
 	public String toString() {
@@ -47,7 +63,7 @@ public class Rule extends Element {
 			}
 			printList(false, true, b, "", holidays);
 			boolean holidaysAsWeekDays = false;
-			if (holidays!= null && holidays.size()> 0 && holidays.get(holidays.size()-1).getUseAsWeekDay() && days !=null && days.size()> 0) {
+			if (holidays!= null && !holidays.isEmpty() && holidays.get(holidays.size()-1).getUseAsWeekDay() && days !=null && !days.isEmpty()) {
 				b.append(",");
 				holidaysAsWeekDays = true;
 			}
@@ -78,7 +94,7 @@ public class Rule extends Element {
 			printList(true, true, b, "", dates);
 			printList(true, true, b, "", holidays);
 			boolean holidaysAsWeekDays = false;
-			if (holidays!= null && holidays.size()> 0 && holidays.get(holidays.size()-1).getUseAsWeekDay() && days !=null && days.size()> 0) {
+			if (holidays!= null && !holidays.isEmpty() && holidays.get(holidays.size()-1).getUseAsWeekDay() && days !=null && !days.isEmpty()) {
 				b.append(",");
 				holidaysAsWeekDays = true;
 			}
@@ -347,4 +363,9 @@ public class Rule extends Element {
 		}
 		return modifier == null;
 	}
+
+    @Override
+    public Rule copy() {
+        return new Rule(this);
+    }
 }

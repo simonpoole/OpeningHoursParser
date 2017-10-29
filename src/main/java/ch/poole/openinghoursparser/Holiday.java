@@ -40,6 +40,20 @@ public class Holiday extends Element {
 	int offset = 0;
 	boolean useAsWeekDay = true;
 	
+	public Holiday() {    
+	}
+	
+	/**
+	 * Construct a new Holiday with the same content
+	 * 
+	 * @param h original Holiday
+	 */
+	public Holiday(Holiday h) {
+	    type = h.type; // enum
+	    offset = h.offset;
+	    useAsWeekDay = h.useAsWeekDay;
+	}
+	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		if (type != null) {
@@ -114,4 +128,9 @@ public class Holiday extends Element {
 	public boolean getUseAsWeekDay() {
 		return useAsWeekDay;
 	}
+
+    @Override
+    public Holiday copy() {
+        return new Holiday(this);
+    }
 }

@@ -21,9 +21,22 @@ package ch.poole.openinghoursparser;
  " OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 public class Nth extends Element {
-    public static int INVALID_NTH = Integer.MIN_VALUE;
+    public static final int INVALID_NTH = Integer.MIN_VALUE;
 	int startNth=INVALID_NTH;
 	int endNth=INVALID_NTH;
+	
+	public Nth() {
+	}
+	
+	/**
+	 * Construct a new Nth with the same content
+	 * 
+	 * @param n original Nth
+	 */
+	public Nth(Nth n) {
+	    startNth = n.startNth;
+	    endNth = n.endNth;
+	}
 	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
@@ -87,4 +100,9 @@ public class Nth extends Element {
 	public void setEndNth(int endNth) {
 		this.endNth = endNth;
 	}
+
+    @Override
+    public Nth copy() {
+        return new Nth(this);
+    }
 }

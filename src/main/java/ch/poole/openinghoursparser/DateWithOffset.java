@@ -41,6 +41,27 @@ public class DateWithOffset extends Element {
 	
 	VarDate varDate = null;
 	
+	public DateWithOffset() {
+	}
+	
+	/**
+	 * Construct a new DateWithOffset with the same content 
+	 * 
+	 * @param dwo original DateWithOffset
+	 */
+	public DateWithOffset(DateWithOffset dwo) {
+	    openEnded = dwo.openEnded;
+	    year = dwo.year;
+	    month = dwo.month; // enum
+	    day = dwo.day;
+	    nthWeekDay = dwo.nthWeekDay; // enum
+	    nth = dwo.nth;
+	    weekDayOffsetPositive = dwo.weekDayOffsetPositive;
+	    weekDayOffset = dwo.weekDayOffset;
+	    dayOffset = dwo.dayOffset;
+	    varDate = dwo.varDate; // enum
+	}
+	
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		if (year != YearRange.UNDEFINED_YEAR) {
@@ -338,4 +359,9 @@ public class DateWithOffset extends Element {
 	boolean isUndefined() {
 		return year == YearRange.UNDEFINED_YEAR && month == null && day == DateWithOffset.UNDEFINED_MONTH_DAY && varDate == null;
 	}
+
+    @Override
+    public DateWithOffset copy() {
+        return new DateWithOffset(this);
+    }
 }

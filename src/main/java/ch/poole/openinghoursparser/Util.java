@@ -150,4 +150,22 @@ public class Util {
 		} 
 		return "Su";		
 	}
+	
+	@SuppressWarnings("unchecked")
+	/**
+	 * Copy a list, creating copies of its contents
+	 * 
+	 * @param l List to copy
+	 * @return deep copy of the List or null if it is null
+	 */
+	static <T extends Copy<?>> List<T> copyList(List<T>l) {
+	    if (l == null) {
+	        return null;
+	    }
+	    List<T> r = new ArrayList<T>(l.size());
+	    for (T o:l) {
+	        r.add((T)o.copy());
+	    }
+	    return r;
+	}
 }

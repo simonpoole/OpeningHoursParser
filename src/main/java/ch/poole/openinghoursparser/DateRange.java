@@ -25,6 +25,20 @@ public class DateRange extends Element {
 	DateWithOffset startDate = null;
 	DateWithOffset endDate = null;
 	int interval=0;
+	
+	public DateRange() {
+	}
+	
+	/**
+	 * Construct a new DateRange with the same content
+	 * 
+	 * @param dr original DateRange
+	 */
+	public DateRange(DateRange dr) {
+	    startDate = dr.startDate != null ? dr.startDate.copy() : null;
+	    endDate = dr.endDate != null ? dr.endDate.copy() : null;
+	    interval = dr.interval;
+	}
 
 	public String toString() {
 		if (startDate==null) {
@@ -150,4 +164,9 @@ public class DateRange extends Element {
 	public void setInterval(int interval) {
 		this.interval = interval;
 	}
+
+    @Override
+    public DateRange copy() {
+        return new DateRange(this);
+    }
 }
