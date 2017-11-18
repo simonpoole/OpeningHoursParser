@@ -21,7 +21,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 ext {
-    javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/openinghoursparser')
+    javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/')
     javaccSourcePath = project.buildDir.absolutePath + '/generated/javacc/'
     javaccSource = file(javaccSourcePath)
     mainSource = file('src/main/java/')
