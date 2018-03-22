@@ -67,7 +67,7 @@ public class TimeSpan extends Element {
 		} else if (end != UNDEFINED_TIME){
 			b.append("-");
 			// output as normal time if time span is less than 24 hours
-			int tempEnd = (end - start) < HOURS_24 && end > HOURS_24 ? end - HOURS_24 : end;
+			int tempEnd = start != UNDEFINED_TIME && (end - start) < HOURS_24 && end > HOURS_24 ? end - HOURS_24 : end;
 			b.append(String.format("%02d",tempEnd/60));
 			b.append(":");
 			b.append(String.format("%02d",end%60));
