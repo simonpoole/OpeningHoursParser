@@ -22,9 +22,10 @@ package ch.poole.openinghoursparser;
  */
 
 public class TimeSpan extends Element {
-	public static final int UNDEFINED_TIME = Integer.MIN_VALUE;
+	private static final int HOURS_24 = 1440;
+    public static final int UNDEFINED_TIME = Integer.MIN_VALUE;
 	public static final int MIN_TIME = 0;
-	public static final int MAX_TIME = 1440;
+	public static final int MAX_TIME = HOURS_24;
 	public static final int MAX_EXTENDED_TIME = 2880;
 	
 	int start=UNDEFINED_TIME;
@@ -65,7 +66,9 @@ public class TimeSpan extends Element {
 			b.append(endEvent.toString());
 		} else if (end != UNDEFINED_TIME){
 			b.append("-");
-			b.append(String.format("%02d",end/60));
+			// output as normal time if time span is less than 24 hours
+			int tempEnd = (end - start) < HOURS_24 && end > HOURS_24 ? end - HOURS_24 : end;
+			b.append(String.format("%02d",tempEnd/60));
 			b.append(":");
 			b.append(String.format("%02d",end%60));
 		}
