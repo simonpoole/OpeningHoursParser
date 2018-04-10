@@ -71,7 +71,9 @@ public class Rule extends Element {
 			printList(false, true, b, "", times);
 		}
 		if (modifier != null) {
-			b.append(" ");
+		    if (b.length() > 0) {
+                b.append(" ");
+            }
 			b.append(modifier.toString());
 		}
 		return b.toString();
@@ -102,7 +104,9 @@ public class Rule extends Element {
 			printList(true, true, b, "", times);
 		}
 		if (modifier != null) {
-			b.append(" ");
+		    if (b.length() > 0) {
+                b.append(" ");
+            }
 			b.append(modifier.toDebugString());
 		}
 		return b.toString();

@@ -75,11 +75,11 @@ public class Util {
 			if (!r.isEmpty()) {
 				if (!first) {
 					if (r.isAdditive()) {
-						result.append(',');
+						result.append(", ");
 					} else if (r.isFallBack()) {
-						result.append("||");
+						result.append(" || ");
 					} else {
-						result.append(';');
+						result.append("; ");
 					}
 				} else {
 					first = false;
@@ -103,11 +103,11 @@ public class Util {
 			if (!r.isEmpty()) {
 				if (!first) {
 					if (r.isAdditive()) {
-						result.append(',');
+						result.append(", ");
 					} else if (r.isFallBack()) {
-						result.append("||");
+						result.append(" || ");
 					} else {
-						result.append(';');
+						result.append("; ");
 					}
 				} else {
 					first = false;
