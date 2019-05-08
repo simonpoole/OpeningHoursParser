@@ -30,6 +30,11 @@ public enum Event {
 
     private final String name;
 
+    /**
+     * Construct a new member of the enum
+     * 
+     * @param name the name as a String
+     */
     Event(String name) {
         this.name = name;
     }
@@ -39,6 +44,12 @@ public enum Event {
         return name;
     }
 
+    /**
+     * Get the Event value for a String
+     * 
+     * @param event the event as a String
+     * @return an Event or null
+     */
     public static Event getValue(String event) {
         for (Event e : Event.values()) {
             if (e.toString().equals(event)) {
@@ -48,8 +59,13 @@ public enum Event {
         return null;
     }
 
+    /**
+     * Get list of all values as Strings
+     * 
+     * @return a List with all values
+     */
     public static List<String> nameValues() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (Event e : values()) {
             result.add(e.toString());
         }

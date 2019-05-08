@@ -32,6 +32,11 @@ public class RuleModifier extends Element {
 
         private final String name;
 
+        /**
+         * Construct a new member of the enum
+         * 
+         * @param name the name as a String
+         */
         Modifier(String name) {
             this.name = name;
         }
@@ -41,6 +46,12 @@ public class RuleModifier extends Element {
             return name;
         }
 
+        /**
+         * Get the Modifier value for a String
+         * 
+         * @param modifier the modifier as a String
+         * @return a Modifier or null
+         */
         public static Modifier getValue(String modifier) {
             for (Modifier m : Modifier.values()) {
                 if (m.toString().equals(modifier)) {
@@ -50,6 +61,11 @@ public class RuleModifier extends Element {
             return null;
         }
 
+        /**
+         * Get list of all values as Strings
+         * 
+         * @return a List with all values
+         */
         public static List<String> nameValues() {
             List<String> result = new ArrayList<String>();
             for (Modifier m : values()) {
@@ -63,6 +79,7 @@ public class RuleModifier extends Element {
     String   comment  = null;
 
     public RuleModifier() {
+        // empty
     }
 
     /**
@@ -75,6 +92,7 @@ public class RuleModifier extends Element {
         comment = rm.comment;
     }
 
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
         if (modifier != null) {

@@ -33,6 +33,7 @@ public class WeekDayRange extends Element {
     int       offset   = 0;
 
     public WeekDayRange() {
+        // empty
     }
 
     /**
@@ -221,7 +222,7 @@ public class WeekDayRange extends Element {
      */
     public void add(Nth nth) {
         if (nths == null) {
-            nths = new ArrayList<Nth>();
+            nths = new ArrayList<>();
         }
         nths.add(nth);
     }

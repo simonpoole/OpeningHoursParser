@@ -30,6 +30,11 @@ public enum WeekDay {
 
     private final String name;
 
+    /**
+     * Construct a new member of the enum
+     * 
+     * @param name the name as a String
+     */
     WeekDay(String name) {
         this.name = name;
     }
@@ -39,6 +44,12 @@ public enum WeekDay {
         return name;
     }
 
+    /**
+     * Get the WeekDay value for a String
+     * 
+     * @param day the WeekDay as a String
+     * @return a WeekDay or null
+     */
     public static WeekDay getValue(String day) {
         for (WeekDay w : WeekDay.values()) {
             if (w.toString().equals(day)) {
@@ -48,8 +59,13 @@ public enum WeekDay {
         return null;
     }
 
+    /**
+     * Get list of all values as Strings
+     * 
+     * @return a List with all values
+     */
     public static List<String> nameValues() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (WeekDay w : values()) {
             result.add(w.toString());
         }

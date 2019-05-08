@@ -30,6 +30,11 @@ public enum Month {
 
     private final String name;
 
+    /**
+     * Construct a new member of the enum
+     * 
+     * @param name the name as a String
+     */
     Month(String name) {
         this.name = name;
     }
@@ -39,6 +44,12 @@ public enum Month {
         return name;
     }
 
+    /**
+     * Get the Month value for a String
+     * 
+     * @param month the month as a String
+     * @return a Month or null
+     */
     public static Month getValue(String month) {
         for (Month m : Month.values()) {
             if (m.toString().equals(month)) {
@@ -48,8 +59,13 @@ public enum Month {
         return null;
     }
 
+    /**
+     * Get list of all values as Strings
+     * 
+     * @return a List with all values
+     */
     public static List<String> nameValues() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (Month m : values()) {
             result.add(m.toString());
         }

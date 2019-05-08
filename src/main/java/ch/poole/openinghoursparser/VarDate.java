@@ -30,6 +30,11 @@ public enum VarDate {
 
     private final String name;
 
+    /**
+     * Construct a new member of the enum
+     * 
+     * @param name the name as a String
+     */
     VarDate(String name) {
         this.name = name;
     }
@@ -39,6 +44,12 @@ public enum VarDate {
         return name;
     }
 
+    /**
+     * Get the VarDate value for a String
+     * 
+     * @param varDate the VarDate as a String
+     * @return a VarDate or null
+     */
     public static VarDate getValue(String varDate) {
         for (VarDate v : VarDate.values()) {
             if (v.toString().equals(varDate)) {
@@ -48,8 +59,13 @@ public enum VarDate {
         return null;
     }
 
+    /**
+     * Get list of all values as Strings
+     * 
+     * @return a List with all values
+     */
     public static List<String> nameValues() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (VarDate v : values()) {
             result.add(v.toString());
         }

@@ -29,8 +29,13 @@ public class Holiday extends Element {
     public enum Type {
         PH, SH;
 
+        /**
+         * Get list of all values as Strings
+         * 
+         * @return a List with all values
+         */
         public static List<String> nameValues() {
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (Type t : values()) {
                 result.add(t.toString());
             }
@@ -43,6 +48,7 @@ public class Holiday extends Element {
     boolean useAsWeekDay = true;
 
     public Holiday() {
+        // empty
     }
 
     /**
@@ -56,6 +62,7 @@ public class Holiday extends Element {
         useAsWeekDay = h.useAsWeekDay;
     }
 
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
         if (type != null) {
