@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Container for objects from the opening_hours specification
@@ -155,7 +156,7 @@ public class Rule extends Element {
      * @param prefix a prefix
      * @param list the list of objects
      */
-    <T extends Element> void printList(boolean debug, boolean addSpace, @NotNull StringBuilder b, @NotNull String prefix, @NotNull List<T> list) {
+    <T extends Element> void printList(boolean debug, boolean addSpace, @NotNull StringBuilder b, @NotNull String prefix, @Nullable List<T> list) {
         if (list != null) {
             if (addSpace && b.length() > 0) {
                 b.append(" ");
