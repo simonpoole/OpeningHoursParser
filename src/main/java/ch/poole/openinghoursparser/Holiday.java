@@ -3,6 +3,8 @@ package ch.poole.openinghoursparser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -47,6 +49,9 @@ public class Holiday extends Element {
     int     offset       = 0;
     boolean useAsWeekDay = true;
 
+    /**
+     * DEfault constructor
+     */
     public Holiday() {
         // empty
     }
@@ -56,7 +61,7 @@ public class Holiday extends Element {
      * 
      * @param h original Holiday
      */
-    public Holiday(Holiday h) {
+    public Holiday(@NotNull Holiday h) {
         type = h.type; // enum
         offset = h.offset;
         useAsWeekDay = h.useAsWeekDay;
@@ -84,7 +89,7 @@ public class Holiday extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof Holiday) {
+        if (other instanceof Holiday) {
             Holiday o = (Holiday) other;
             if ((type == o.type || (type != null && type.equals(o.type))) && offset == o.offset) {
                 return true;
@@ -129,10 +134,20 @@ public class Holiday extends Element {
         this.offset = offset;
     }
 
-    public void setUseAsWeekDay(boolean yes) {
-        useAsWeekDay = yes;
+    /**
+     * Set how this holiday should be used
+     * 
+     * @param useAsWeekDay if true the holiday is a weekday equivalent
+     */
+    public void setUseAsWeekDay(boolean useAsWeekDay) {
+        this.useAsWeekDay = useAsWeekDay;
     }
 
+    /**
+     * Get the the "use as weekday" value
+     * 
+     * @return true if this should be used as a weekday equivalen
+     */
     public boolean getUseAsWeekDay() {
         return useAsWeekDay;
     }

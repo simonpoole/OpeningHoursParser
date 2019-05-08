@@ -1,5 +1,7 @@
 package ch.poole.openinghoursparser;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -35,7 +37,11 @@ public class YearRange extends Element {
     int                     endYear          = UNDEFINED_YEAR;
     int                     interval         = 0;
 
+    /**
+     * Default constructor
+     */
     public YearRange() {
+        // empty
     }
 
     /**
@@ -43,7 +49,7 @@ public class YearRange extends Element {
      * 
      * @param yr original YearRange
      */
-    public YearRange(YearRange yr) {
+    public YearRange(@NotNull YearRange yr) {
         startYear = yr.startYear;
         endYear = yr.endYear;
         interval = yr.interval;
@@ -69,7 +75,7 @@ public class YearRange extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof YearRange) {
+        if (other instanceof YearRange) {
             YearRange o = (YearRange) other;
             if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
                 return true;

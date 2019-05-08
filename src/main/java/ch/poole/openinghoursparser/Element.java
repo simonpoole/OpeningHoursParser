@@ -9,8 +9,10 @@ package ch.poole.openinghoursparser;
 abstract class Element implements Copy {
     // put other methods from interface here
 
+    @Override
     public abstract boolean equals(Object other);
 
+    @Override
     public abstract int hashCode();
 
     /**

@@ -89,7 +89,7 @@ public enum Month {
             if (year == YearRange.UNDEFINED_YEAR) {
                 throw new ParseException("Missing month day in date range for February");
             }
-            if ((year / 4) * 4 == year && !(year / 100 * 100 == year)) {
+            if ((year / 4) * 4 == year && year / 100 * 100 != year) {
                 return 29;
             } else {
                 return 28;

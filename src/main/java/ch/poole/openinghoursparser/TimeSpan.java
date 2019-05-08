@@ -1,5 +1,7 @@
 package ch.poole.openinghoursparser;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -37,7 +39,11 @@ public class TimeSpan extends Element {
     boolean      openEnded  = false;
     int          interval   = 0;             // minutes
 
+    /**
+     * Default constructor
+     */
     public TimeSpan() {
+        // empty
     }
 
     /**
@@ -45,7 +51,7 @@ public class TimeSpan extends Element {
      * 
      * @param ts the original TimeSpan
      */
-    public TimeSpan(TimeSpan ts) {
+    public TimeSpan(@NotNull TimeSpan ts) {
         start = ts.start;
         startEvent = ts.startEvent != null ? ts.startEvent.copy() : null;
         end = ts.end;
@@ -54,6 +60,7 @@ public class TimeSpan extends Element {
         interval = ts.interval;
     }
 
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
         if (startEvent != null) {
@@ -91,7 +98,7 @@ public class TimeSpan extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof TimeSpan) {
+        if (other instanceof TimeSpan) {
             TimeSpan o = (TimeSpan) other;
             if (start == o.start && (startEvent == o.startEvent || (startEvent != null && startEvent.equals(o.startEvent))) && end == o.end
                     && (endEvent == o.endEvent || (endEvent != null && endEvent.equals(o.endEvent))) && openEnded == o.openEnded && interval == o.interval) {

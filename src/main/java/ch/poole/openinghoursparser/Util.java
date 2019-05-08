@@ -26,8 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Util {
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+public final class Util {
+
+    /**
+     * Default constructor
+     */
     private Util() {
         // dummy private constructor
     }
@@ -40,9 +46,9 @@ public class Util {
      */
     public static List<ArrayList<Rule>> getMergeableRules(List<Rule> rules) {
 
-        List<ArrayList<Rule>> result = new ArrayList<ArrayList<Rule>>();
+        List<ArrayList<Rule>> result = new ArrayList<>();
 
-        ArrayList<Rule> copy = new ArrayList<Rule>(rules); // shallow copy for bookkeeping
+        ArrayList<Rule> copy = new ArrayList<>(rules); // shallow copy for bookkeeping
 
         while (!copy.isEmpty()) {
             Rule r = copy.get(0);
@@ -55,7 +61,7 @@ public class Util {
                 }
             }
             if (!found) {
-                ArrayList<Rule> m = new ArrayList<Rule>();
+                ArrayList<Rule> m = new ArrayList<>();
                 m.add(r);
                 result.add(m);
             }
@@ -70,7 +76,18 @@ public class Util {
      * @param rules rules to convert to an opening_hours string
      * @return specification conformant opening_hours string
      */
-    public static String rulesToOpeningHoursString(List<Rule> rules) {
+    public static String rulesToOpeningHoursString(@NotNull List<Rule> rules) {
+        return rulesToOpeningHoursString(rules, false);
+    }
+       
+    /**
+     * Generate an OH string from rules
+     * 
+     * @param rules rules to convert to an opening_hours string
+     * @param debug if true add debug output
+     * @return opening_hours string
+     */
+    private static String rulesToOpeningHoursString(@NotNull List<Rule> rules, boolean debug) {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for (Rule r : rules) {
@@ -86,7 +103,7 @@ public class Util {
                 } else {
                     first = false;
                 }
-                result.append(r.toString());
+                result.append(debug ? r.toDebugString() : r.toString());
             }
         }
         return result.toString();
@@ -98,26 +115,8 @@ public class Util {
      * @param rules rules to convert to an opening_hours string
      * @return specification debugging opening_hours string
      */
-    public static String rulesToOpeningHoursDebugString(List<Rule> rules) {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for (Rule r : rules) {
-            if (!r.isEmpty()) {
-                if (!first) {
-                    if (r.isAdditive()) {
-                        result.append(", ");
-                    } else if (r.isFallBack()) {
-                        result.append(" || ");
-                    } else {
-                        result.append("; ");
-                    }
-                } else {
-                    first = false;
-                }
-                result.append(r.toDebugString());
-            }
-        }
-        return result.toString();
+    public static String rulesToOpeningHoursDebugString(@NotNull List<Rule> rules) {
+        return rulesToOpeningHoursString(rules, true);
     }
 
     /**
@@ -135,36 +134,47 @@ public class Util {
         return s;
     }
 
+    /**
+     * Convert two letter German weekdays to our standard
+     * 
+     * @param s the String with the German weekday
+     * @return the standard weekday string
+     */
+    @Nullable
     public static String deWeekDays2En(String s) {
-        String l = s.toLowerCase(Locale.US);
-        if ("mo".equals(l)) {
+        switch (s.toLowerCase(Locale.US)) {
+        case "mo":
             return "Mo";
-        } else if ("di".equals(l)) {
+        case "di":
             return "Tu";
-        } else if ("mi".equals(l)) {
+        case "mi":
             return "We";
-        } else if ("do".equals(l)) {
+        case "do":
             return "Th";
-        } else if ("fr".equals(l)) {
+        case "fr":
             return "Fr";
-        } else if ("sa".equals(l)) {
+        case "sa":
             return "Sa";
+        case "so":
+            return "Su";
+        default:
+            return null;
         }
-        return "Su";
     }
 
-    @SuppressWarnings("unchecked")
     /**
      * Copy a list, creating copies of its contents
      * 
+     * @param <T> object class
      * @param l List to copy
      * @return deep copy of the List or null if it is null
      */
+    @SuppressWarnings("unchecked")
     static <T extends Copy<?>> List<T> copyList(List<T> l) {
         if (l == null) {
             return null;
         }
-        List<T> r = new ArrayList<T>(l.size());
+        List<T> r = new ArrayList<>(l.size());
         for (T o : l) {
             r.add((T) o.copy());
         }

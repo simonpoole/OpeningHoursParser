@@ -3,6 +3,8 @@ package ch.poole.openinghoursparser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -67,7 +69,7 @@ public class RuleModifier extends Element {
          * @return a List with all values
          */
         public static List<String> nameValues() {
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (Modifier m : values()) {
                 result.add(m.toString());
             }
@@ -78,6 +80,9 @@ public class RuleModifier extends Element {
     Modifier modifier = null;
     String   comment  = null;
 
+    /**
+     * Default constructor
+     */
     public RuleModifier() {
         // empty
     }
@@ -87,7 +92,7 @@ public class RuleModifier extends Element {
      * 
      * @param rm the original RuleModifier
      */
-    public RuleModifier(RuleModifier rm) {
+    public RuleModifier(@NotNull RuleModifier rm) {
         modifier = rm.modifier; // enum
         comment = rm.comment;
     }
@@ -112,7 +117,7 @@ public class RuleModifier extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof RuleModifier) {
+        if (other instanceof RuleModifier) {
             RuleModifier o = (RuleModifier) other;
             if ((modifier == o.modifier || (modifier != null && modifier.equals(o.modifier)))
                     && (comment == o.comment || (comment != null && comment.equals(o.comment)))) {

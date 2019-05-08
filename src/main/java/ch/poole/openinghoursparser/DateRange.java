@@ -1,5 +1,7 @@
 package ch.poole.openinghoursparser;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -28,7 +30,11 @@ public class DateRange extends Element {
     DateWithOffset endDate   = null;
     int            interval  = 0;
 
+    /**
+     * Default constructor
+     */
     public DateRange() {
+        // empty
     }
 
     /**
@@ -36,16 +42,15 @@ public class DateRange extends Element {
      * 
      * @param dr original DateRange
      */
-    public DateRange(DateRange dr) {
+    public DateRange(@NotNull DateRange dr) {
         startDate = dr.startDate != null ? dr.startDate.copy() : null;
         endDate = dr.endDate != null ? dr.endDate.copy() : null;
         interval = dr.interval;
     }
 
+    @Override
     public String toString() {
-        if (startDate == null) {
-            throw new IllegalStateException("range must have a start date");
-        }
+        checkStartDate();
         StringBuilder b = new StringBuilder();
         b.append(startDate.toString());
 
@@ -60,11 +65,18 @@ public class DateRange extends Element {
         return b.toString();
     }
 
-    @Override
-    public String toDebugString() {
+    /**
+     * 
+     */
+    private void checkStartDate() {
         if (startDate == null) {
             throw new IllegalStateException("range must have a start date");
         }
+    }
+
+    @Override
+    public String toDebugString() {
+        checkStartDate();
         StringBuilder b = new StringBuilder();
         b.append(getClass().getSimpleName() + ":");
         b.append(startDate.toDebugString());
@@ -85,7 +97,7 @@ public class DateRange extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof DateRange) {
+        if (other instanceof DateRange) {
             DateRange o = (DateRange) other;
             if ((startDate == o.startDate || (startDate != null && startDate.equals(o.startDate)))
                     && (endDate == o.endDate || (endDate != null && endDate.equals(o.endDate))) && interval == o.interval) {
@@ -110,9 +122,7 @@ public class DateRange extends Element {
      * @return the startDate
      */
     public DateWithOffset getStartDate() {
-        if (startDate == null) {
-            throw new IllegalStateException("range must have a start date");
-        }
+        checkStartDate();
         return startDate;
     }
 

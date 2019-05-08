@@ -3,6 +3,8 @@ package ch.poole.openinghoursparser;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -47,10 +49,19 @@ public class Rule extends Element {
     // modifier
     RuleModifier modifier = null;
 
+    /**
+     * Default constructor
+     */
     Rule() {
+        // empty
     }
 
-    public Rule(Rule r) {
+    /**
+     * Copy constructor
+     * 
+     * @param r the rule to copy
+     */
+    public Rule(@NotNull Rule r) {
         fallBack = r.fallBack;
         additive = r.additive;
         twentyfourseven = r.twentyfourseven;
@@ -134,7 +145,17 @@ public class Rule extends Element {
         return b.toString();
     }
 
-    <T extends Element> void printList(boolean debug, boolean addSpace, StringBuilder b, String prefix, List<T> list) {
+    /**
+     * Output a human readable list of objects
+     * 
+     * @param <T> the object class
+     * @param debug if true produce debug output
+     * @param addSpace add a space
+     * @param b the StringBuilder to append to
+     * @param prefix a prefix
+     * @param list the list of objects
+     */
+    <T extends Element> void printList(boolean debug, boolean addSpace, @NotNull StringBuilder b, @NotNull String prefix, @NotNull List<T> list) {
         if (list != null) {
             if (addSpace && b.length() > 0) {
                 b.append(" ");
@@ -152,7 +173,7 @@ public class Rule extends Element {
 
     @Override
     public boolean equals(Object other) {
-        if (other != null && other instanceof Rule) {
+        if (other instanceof Rule) {
             Rule o = (Rule) other;
             return fallBack == o.fallBack && additive == o.additive && (comment == o.comment || (comment != null && comment.equals(o.comment)))
                     && twentyfourseven == o.twentyfourseven && (years == o.years || (years != null && years.equals(o.years)))

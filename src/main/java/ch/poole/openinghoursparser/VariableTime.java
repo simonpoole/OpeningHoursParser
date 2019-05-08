@@ -1,5 +1,7 @@
 package ch.poole.openinghoursparser;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -29,7 +31,11 @@ public class VariableTime extends Element {
     /** offset in minutes */
     int   offset = 0;
 
+    /**
+     * Default constructor
+     */
     public VariableTime() {
+        // empty
     }
 
     /**
@@ -37,11 +43,12 @@ public class VariableTime extends Element {
      * 
      * @param vt the original VariableTime
      */
-    public VariableTime(VariableTime vt) {
+    public VariableTime(@NotNull VariableTime vt) {
         event = vt.event;
         offset = vt.offset;
     }
 
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
         if (event != null) {
@@ -67,7 +74,7 @@ public class VariableTime extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof VariableTime) {
+        if (other instanceof VariableTime) {
             VariableTime o = (VariableTime) other;
             if ((event == o.event || (event != null && event.equals(o.event))) && offset == o.offset) {
                 return true;

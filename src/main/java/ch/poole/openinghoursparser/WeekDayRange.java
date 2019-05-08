@@ -25,6 +25,8 @@ package ch.poole.openinghoursparser;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 public class WeekDayRange extends Element {
 
     WeekDay   startDay = null;
@@ -32,6 +34,9 @@ public class WeekDayRange extends Element {
     List<Nth> nths     = null;
     int       offset   = 0;
 
+    /**
+     * Default constructor
+     */
     public WeekDayRange() {
         // empty
     }
@@ -41,7 +46,7 @@ public class WeekDayRange extends Element {
      * 
      * @param wdr original WeekDayRange
      */
-    public WeekDayRange(WeekDayRange wdr) {
+    public WeekDayRange(@NotNull WeekDayRange wdr) {
         startDay = wdr.startDay; // enum
         endDay = wdr.endDay; // wdr
         nths = (wdr.nths != null ? Util.copyList(wdr.nths) : null);
@@ -118,7 +123,7 @@ public class WeekDayRange extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof WeekDayRange) {
+        if (other instanceof WeekDayRange) {
             WeekDayRange o = (WeekDayRange) other;
             if ((startDay == o.startDay || (startDay != null && startDay.equals(o.startDay)))
                     && (endDay == o.endDay || (endDay != null && endDay.equals(o.endDay))) && (nths == o.nths || (nths != null && nths.equals(o.nths)))

@@ -27,7 +27,11 @@ public class Nth extends Element {
     int                     startNth    = INVALID_NTH;
     int                     endNth      = INVALID_NTH;
 
+    /**
+     * Default constructor
+     */
     public Nth() {
+        // empty
     }
 
     /**
@@ -40,6 +44,7 @@ public class Nth extends Element {
         endNth = n.endNth;
     }
 
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
 
@@ -58,7 +63,7 @@ public class Nth extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof Nth) {
+        if (other instanceof Nth) {
             Nth o = (Nth) other;
             if (startNth == o.startNth && endNth == o.endNth) {
                 return true;

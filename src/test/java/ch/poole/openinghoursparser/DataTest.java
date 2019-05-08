@@ -1,3 +1,24 @@
+/**
+ * 
+ * @author Simon Poole
+ *
+ *         Copyright (c) 2015 Simon Poole
+ *
+ *         Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *         documentation files (the "Software"), to deal in the Software without restriction, including without
+ *         limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+ *         Software, and to permit persons to whom the Software is furnished to do so, subject to the following
+ *         conditions:
+ * 
+ *         The above copyright notice and this permission notice shall be included in all copies or substantial portions
+ *         of the Software.
+ *
+ *         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *         TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ *         THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *         CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE " OR THE USE OR OTHER
+ *         DEALINGS IN THE SOFTWARE.
+ */
 
 package ch.poole.openinghoursparser;
 
@@ -27,12 +48,18 @@ import org.junit.Test;
  */
 public class DataTest {
 
+    /**
+     * Compare non-strict mode output
+     */
     @Test
     public void regressionTest() {
         parseData("test-data/oh.txt", false, false, "test-data/oh.txt-result");
         parseData("test-data/oh.txt", false, true, "test-data/oh.txt-debug-result");
     }
 
+    /**
+     * Compare strict mode output
+     */
     @Test
     public void regressionTestStrict() {
         parseData("test-data/oh.txt", true, false, "test-data/oh.txt-result-strict");
@@ -42,6 +69,11 @@ public class DataTest {
     /**
      * This completes successfully if parsing gives the same success result and for successful parses the same
      * regenerated OH string
+     * 
+     * @param inputFile input data file
+     * @param strict if true use strict mode
+     * @param debug if true produce debug output
+     * @param resultsFile file to write results to
      */
     private void parseData(String inputFile, boolean strict, boolean debug, String resultsFile) {
         int successful = 0;
@@ -109,7 +141,7 @@ public class DataTest {
                     outputExpected.write("1\n");
                     outputFail.write(line + "\t" + pex.toString() + "\n");
                     if (expectedResultCode != null) {
-                        assertEquals(expectedResultCode, "1");
+                        assertEquals("1", expectedResultCode);
                     }
                 } catch (NumberFormatException nfx) {
                     System.out.println("Parser exception for " + line + " " + nfx.toString());
@@ -119,7 +151,7 @@ public class DataTest {
                     outputExpected.write("2\n");
                     outputFail.write(line + "\t" + nfx.toString() + "\n");
                     if (expectedResultCode != null) {
-                        assertEquals(expectedResultCode, "2");
+                        assertEquals("2", expectedResultCode);
                     }
                 } catch (Error err) {
                     if (err.toString().contains("Lexical")) {
@@ -132,7 +164,7 @@ public class DataTest {
                     outputExpected.write("3\n");
                     outputFail.write(line + "\t" + err.toString() + "\n");
                     if (expectedResultCode != null) {
-                        assertEquals(expectedResultCode, "3");
+                        assertEquals("3", expectedResultCode);
                     }
                 }
             }

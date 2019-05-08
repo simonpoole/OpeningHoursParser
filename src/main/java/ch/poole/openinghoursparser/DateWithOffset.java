@@ -1,5 +1,7 @@
 package ch.poole.openinghoursparser;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -42,6 +44,9 @@ public class DateWithOffset extends Element {
 
     VarDate varDate = null;
 
+    /**
+     * Default constructor
+     */
     public DateWithOffset() {
         //empty
     }
@@ -51,7 +56,7 @@ public class DateWithOffset extends Element {
      * 
      * @param dwo original DateWithOffset
      */
-    public DateWithOffset(DateWithOffset dwo) {
+    public DateWithOffset(@NotNull DateWithOffset dwo) {
         openEnded = dwo.openEnded;
         year = dwo.year;
         month = dwo.month; // enum
@@ -130,7 +135,7 @@ public class DateWithOffset extends Element {
 
     @Override
     public boolean equals(Object other) {
-        if (other != null && other instanceof DateWithOffset) {
+        if (other instanceof DateWithOffset) {
             DateWithOffset o = (DateWithOffset) other;
             return openEnded == o.openEnded && year == o.year && (month == o.month || (month != null && month.equals(o.month)))
                     && (nthWeekDay == o.nthWeekDay || (nthWeekDay != null && nthWeekDay.equals(o.nthWeekDay))) && nth == o.nth && day == o.day
@@ -364,6 +369,11 @@ public class DateWithOffset extends Element {
         this.dayOffset = dayOffset;
     }
 
+    /**
+     * Check if this object is undefined
+     * 
+     * @return true if undefined
+     */
     boolean isUndefined() {
         return year == YearRange.UNDEFINED_YEAR && month == null && day == DateWithOffset.UNDEFINED_MONTH_DAY && varDate == null;
     }

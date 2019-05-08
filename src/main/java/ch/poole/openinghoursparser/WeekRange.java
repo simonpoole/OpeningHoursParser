@@ -34,7 +34,11 @@ public class WeekRange extends Element {
     int                     endWeek        = UNDEFINED_WEEK;
     int                     interval       = 0;
 
+    /**
+     * Default constructor
+     */
     public WeekRange() {
+        // empty
     }
 
     /**
@@ -68,7 +72,7 @@ public class WeekRange extends Element {
         if (this == other) {
             return true;
         }
-        if (other != null && other instanceof WeekRange) {
+        if (other instanceof WeekRange) {
             WeekRange o = (WeekRange) other;
             if (startWeek == o.startWeek && endWeek == o.endWeek && interval == o.interval) {
                 return true;
