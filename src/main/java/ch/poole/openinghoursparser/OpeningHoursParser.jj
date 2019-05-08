@@ -29,7 +29,8 @@ import java.util.Locale;import java.io.ByteArrayInputStream;public class Open
   static int TWELVEHOURS = 12*60;
   
   boolean strict = false;
-  enum AMPM { AM, PM };}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"
+  enum AMPM { AM, PM };
+  boolean monthOnly = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"
 | "\u200A"
 | "\u2009"
 | "\u00A0"
@@ -289,7 +290,7 @@ WeekDayRange weekday_range() :{  String startDay = null;  String endDay = nul
 }
 {
   (
-    startDate = datewithoffset() (plus = < PLUS >)?
+    startDate = datewithoffset(false) (plus = < PLUS >)?
   )
   {
     if (strict && startDate.getVarDate()==null && startDate.getMonth()==null) {
@@ -302,10 +303,22 @@ WeekDayRange weekday_range() :{  String startDay = null;  String endDay = nul
     (      < HYPHEN > | (to = < TO >)
     )
     (
-      endDate = datewithoffset()
+      endDate = datewithoffset(startDate.undefinedDay())
       {
         if (strict && to != null) {
-          throw new ParseException("'to' instead of '-' " + (token != null && token.next != null ? token.next.beginLine + ", column " + token.next.beginColumn : ""));
+          throw new ParseException("'to' instead of '-' " + (token != null && token.next != null ? "line " + token.next.beginLine + ", column " + token.next.beginColumn : ""));
+        }
+        if ((startDate.undefinedDay() && !endDate.undefinedDay()) || (!startDate.undefinedDay() && endDate.undefinedDay())) {
+          if (strict) { 
+            throw new ParseException("Missing month day in date range " + startDate.toString() + " " + endDate.toString() + " "  + (token != null && token.next != null ? "line " + token.next.beginLine + ", column " + token.next.beginColumn : ""));
+          } else {
+            // fix this
+            if (startDate.undefinedDay()) {
+              startDate.setDay(1);
+            } else {
+              endDate.setDay(Month.lastDay(endDate.getYear(), endDate.getMonth()));
+            }
+          } 
         }
         mdr.endDate = endDate;
       }
@@ -313,7 +326,7 @@ WeekDayRange weekday_range() :{  String startDay = null;  String endDay = nul
       	mdr.interval = interval()
       	{ 
       	  if (startDate.day != DateWithOffset.UNDEFINED_MONTH_DAY || endDate.day != DateWithOffset.UNDEFINED_MONTH_DAY || startDate.varDate!=null || endDate.varDate!=null) {
-      	  	throw new ParseException("interval not allowed here "+ (token != null && token.next != null ? token.next.beginLine + ", column " + token.next.beginColumn : ""));
+      	  	throw new ParseException("Interval not allowed here "+ (token != null && token.next != null ? "line " + token.next.beginLine + ", column " + token.next.beginColumn : ""));
       	  }
      	}
       )?
@@ -337,17 +350,18 @@ int year() :
   {
     return Integer.parseInt(n.image);
   }
-}DateWithOffset datewithoffset() :{  DateWithOffset dwo = new DateWithOffset();  int y = 0;  Token m = null;  Token d = null;  Token h = null;  Token n = null;  Token v = null;  Token minus = null;  Token num = null;  Token wd = null;
+}DateWithOffset datewithoffset(boolean mo) :{  DateWithOffset dwo = new DateWithOffset();  int y = 0;  Token m = null;  Token d = null;  Token h = null;  Token n = null;  Token v = null;  Token minus = null;  Token num = null;  Token wd = null;
   Token nth = null;
   String nthWd = null;
-  Token sign = null;}{   (    y = year()    {      dwo.year = y;    }  )?
+  Token sign = null;
+  monthOnly = mo; // hack we can't pass an argument to semantic lookahead}{   (    y = year()    {      dwo.year = y;    }  )?
   (
     (
       (
         ( 
 		  // check that the daynum is not the hour part of a time, month should really only be optional if this is the end of a range
           LOOKAHEAD(((< MONTH >)? daynum()),
-          	{(getToken(1).kind == NUMBER && getToken(2).kind != MINUTES) || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && getToken(3).kind != MINUTES) })  
+          	{!monthOnly && (getToken(1).kind == NUMBER && getToken(2).kind != MINUTES) || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && getToken(3).kind != MINUTES) })  
           (
             (
               m = < MONTH >
@@ -360,7 +374,7 @@ int year() :
         |
           // check that the occurrence spec is not actually part of a weekday range, the OH specification is ambiguous on how this should be handled if it is not a range
           LOOKAHEAD(13, < MONTH > weekday()"[" (< HYPHEN >)? one2five() "]" ( (< HYPHEN > | < PLUS >) number() "day" ("s")?)?,
-          	{!(
+          	{!monthOnly && !(
 				(getToken(4).kind != HYPHEN
 					&& (getToken(6).kind == COMMA || (getToken(8).image.equals("day") && (getToken(9).kind == COMMA || (getToken(10).image.equals("s") && getToken(11).kind == COMMA && getToken(12).kind == WEEKDAY)))))
               ||(getToken(4).kind == HYPHEN 
@@ -429,7 +443,7 @@ int year() :
   )
   {    return dwo;  }}ArrayList < DateRange > date_selector() :{  DateRange mdr, mdr1;
   Month lastMonth = null;  ArrayList < DateRange > result = new ArrayList < DateRange > ();}{
-   // the fist date either need to be a vardate or have a month
+   // the first date either need to be a vardate or have a month
   LOOKAHEAD( { (getToken(1).kind == NUMBER && (getToken(2).kind == MONTH || getToken(2).kind == VARDATE))
   	|| getToken(1).kind == MONTH || getToken(1).kind == VARDATE }) 
   (

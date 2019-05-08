@@ -28,6 +28,8 @@ import java.util.List;
 public enum Month {
     JAN("Jan"), FEB("Feb"), MAR("Mar"), APR("Apr"), MAY("May"), JUN("Jun"), JUL("Jul"), AUG("Aug"), SEP("Sep"), OCT("Oct"), NOV("Nov"), DEC("Dec");
 
+    private static final int[] LASTDAY = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
     private final String name;
 
     /**
@@ -70,5 +72,28 @@ public enum Month {
             result.add(m.toString());
         }
         return result;
+    }
+
+    /**
+     * Return the last day of the month
+     * 
+     * @param year the year 
+     * @param month the month
+     * @return the last day
+     * @throws ParseException if no valid year is supplied and the month is February
+     */
+    public static int lastDay(int year, Month month) throws ParseException {
+        if (month != FEB) {
+            return LASTDAY[month.ordinal() + 1];
+        } else {
+            if (year == YearRange.UNDEFINED_YEAR) {
+                throw new ParseException("Missing month day in date range for February");
+            }
+            if ((year / 4) * 4 == year && !(year / 100 * 100 == year)) {
+                return 29;
+            } else {
+                return 28;
+            }
+        }
     }
 }

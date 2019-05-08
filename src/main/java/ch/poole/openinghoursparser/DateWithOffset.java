@@ -43,6 +43,7 @@ public class DateWithOffset extends Element {
     VarDate varDate = null;
 
     public DateWithOffset() {
+        //empty
     }
 
     /**
@@ -63,6 +64,16 @@ public class DateWithOffset extends Element {
         varDate = dwo.varDate; // enum
     }
 
+    /**
+     * Check if we don't have a month day number or equivalent
+     * 
+     * @return true if the day is undefined
+     */
+    public boolean undefinedDay() {
+        return day == UNDEFINED_MONTH_DAY && nthWeekDay == null && weekDayOffset == null && varDate == null;
+    }
+
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
         if (year != YearRange.UNDEFINED_YEAR) {
