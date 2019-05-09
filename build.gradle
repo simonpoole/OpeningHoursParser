@@ -16,9 +16,9 @@ apply plugin: 'maven-publish'
 apply plugin: "jacoco"
 
 
-version = '0.15.0'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+version = '0.16.0'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 ext {
     javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/')
