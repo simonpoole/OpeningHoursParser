@@ -62,3 +62,9 @@ dependencies {
 
 [opening-hours-specification]: http://wiki.openstreetmap.org/wiki/Key:opening_hours/specification
 [opening-hours-grammar-specification]: http://wiki.openstreetmap.org/w/index.php?title=Key:opening_hours/specification&oldid=1075290
+
+## Tests
+
+Besides some unit tests, we run the parser on ~160'000 and compare with previous output to detect any changes in behaviour. If you are running these on windows, you may need to add
+``org.gradle.jvmargs=-Dfile.encoding=UTF-8``
+to your gradle.properties to force correct use of the UTF-8 encoded test input. 
