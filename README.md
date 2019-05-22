@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/simonpoole/OpeningHoursParser.svg?branch=master)](https://travis-ci.org/simonpoole/OpeningHoursParser)
+
 # OpeningHoursParser
 
 This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification].
