@@ -5,3 +5,5 @@
 /.gradle/
 /build/
 /.project
+/gradle.properties
+/gradle/
