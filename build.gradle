@@ -75,7 +75,7 @@ sonarqube {
     }
 }
 
-task replaceVersion << {
+task replaceVersion {
     ant.replaceregexp(match:'ch\\.poole\\:OpeningHoursParser\\:([0-9\\.]+)', replace:"ch.poole:OpeningHoursParser:${version}", flags:'g', byline:true) {
         fileset(dir: '.', includes: 'README.md')
     }
