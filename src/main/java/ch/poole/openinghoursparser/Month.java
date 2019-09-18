@@ -84,7 +84,7 @@ public enum Month {
      */
     public static int lastDay(int year, Month month) throws ParseException {
         if (month != FEB) {
-            return LASTDAY[month.ordinal() + 1];
+            return LASTDAY[month.ordinal()];
         } else {
             if (year == YearRange.UNDEFINED_YEAR) {
                 throw new ParseException("Missing month day in date range for February");
