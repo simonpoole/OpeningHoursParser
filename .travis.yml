@@ -2,9 +2,9 @@ language: java
 
 jdk:
   - openjdk11
- 
-script: 
-  - gradle build 
+  
+before_install:
+ - chmod +x gradlew
  
 after_failure:
-  - cat /home/travis/build/simonpoole/mapsplit/build/test-results/test/*.xml
+  - cat /home/travis/build/simonpoole/OpeningHoursParser/build/test-results/test/*.xml
