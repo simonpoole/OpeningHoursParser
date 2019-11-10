@@ -5,6 +5,7 @@
 	<projects/>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
 	</natures>
 	<buildSpec>
@@ -16,6 +17,11 @@
 			<name>org.eclipse.buildship.core.gradleprojectbuilder</name>
 			<arguments/>
 		</buildCommand>
+		<buildCommand>
+			<name>net.sf.eclipsecs.core.CheckstyleBuilder</name>
+			<arguments/>
+		</buildCommand>
 	</buildSpec>
 	<linkedResources/>
+	<filteredResources/>
 </projectDescription>
