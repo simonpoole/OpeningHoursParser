@@ -38,7 +38,7 @@ try {
 		new ByteArrayInputStream(line.getBytes()));
 	ArrayList<Rule> rules = parser.rules(strict);
 	// ...
-} catch() {
+} catch(ParseException e) {
 	// ...
 }
 ```
