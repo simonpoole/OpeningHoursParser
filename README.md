@@ -49,9 +49,7 @@ You can either download the *jar* from GitHub or add the following to your *buil
 
 ``` groovy
 repositories {
-    maven {
-    	jcenter()
-    }
+    jcenter()
 }
 ```
 
