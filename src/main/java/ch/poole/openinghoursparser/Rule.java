@@ -53,7 +53,7 @@ public class Rule extends Element {
     /**
      * Default constructor
      */
-    Rule() {
+    public Rule() {
         // empty
     }
 
