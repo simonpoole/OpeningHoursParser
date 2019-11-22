@@ -48,7 +48,7 @@ public class DateWithOffset extends Element {
      * Default constructor
      */
     public DateWithOffset() {
-        //empty
+        // empty
     }
 
     /**
@@ -230,7 +230,7 @@ public class DateWithOffset extends Element {
      * 
      * @param date the var date
      */
-    public void setVarDate(String date) {
+    public void setVarDate(@NotNull String date) {
         VarDate v = VarDate.getValue(date);
         if (v == null) {
             throw new IllegalArgumentException(v + " is not a valid VarDate");

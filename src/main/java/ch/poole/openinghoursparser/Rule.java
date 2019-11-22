@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  * 
  * @author Simon Poole
  *
- *         Copyright (c) 2015 Simon Poole
+ *         Copyright (c) 2015, 2016, 2017, 2018, 2019 Simon Poole
  *
  *         Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *         documentation files (the "Software"), to deal in the Software without restriction, including without
@@ -253,114 +253,165 @@ public class Rule extends Element {
     }
 
     /**
-     * @return the years
+     * Get a List of YearRange objects
+     * 
+     * @return a List of YearRange objects or null if none exist
      */
+    @Nullable
     public List<YearRange> getYears() {
         return years;
     }
 
     /**
+     * Get a List of WeekRange objects
+     * 
      * @return a List of WeekRange objects or null if none exist
      */
+    @Nullable
     public List<WeekRange> getWeeks() {
         return weeks;
     }
 
     /**
+     * Get a List of DateRange objects
+     * 
      * @return a List of DateRange objects or null if none exist
      */
+    @Nullable
     public List<DateRange> getDates() {
         return dates;
     }
 
     /**
-     * @return the holidays
+     * Get a List of Holiday objects
+     * 
+     * @return a List of Holiday objects or null if none exists
      */
+    @Nullable
     public List<Holiday> getHolidays() {
         return holidays;
     }
 
     /**
-     * @return the days
+     * Get a List of WeekDayRange objects
+     * 
+     * @return a List of WeekDayRange objects or null if none exists
      */
+    @Nullable
     public List<WeekDayRange> getDays() {
         return days;
     }
 
     /**
-     * @return the times
+     * Get a List of TimeSpan objects
+     * 
+     * @return a List of TimeSpan objects or null if none exists
      */
+    @Nullable
     public List<TimeSpan> getTimes() {
         return times;
     }
 
     /**
-     * @return the modifier
+     * Get the RuleModifier
+     * 
+     * @return the modifier or null if none set
      */
+    @Nullable
     public RuleModifier getModifier() {
         return modifier;
     }
 
     /**
-     * @param fallBack set the fallback flag for this rule
+     * Set the fallback flag for this rule
+     * 
+     * @param fallBack if true this is a fallback rule
      */
     public void setFallBack(boolean fallBack) {
         this.fallBack = fallBack;
     }
 
     /**
-     * @param additive set the additive flag for this rule
+     * Set the additive flag for this rule
+     * 
+     * @param additive if true this is an additive rule
      */
     public void setAdditive(boolean additive) {
         this.additive = additive;
     }
 
     /**
+     * Set the comment for this rule
+     * 
      * @param comment the comment to set
      */
-    public void setComment(String comment) {
+    public void setComment(@Nullable String comment) {
         this.comment = comment;
     }
 
     /**
-     * @param years the years to set
+     * Set the List of YearRange objects
+     * 
+     * @param years the List of YearRange objects or null
      */
-    public void setYears(List<YearRange> years) {
+    public void setYears(@Nullable List<YearRange> years) {
         this.years = years;
     }
 
     /**
-     * @param weeks the weeks to set
+     * Set the List of WeekRange objects
+     * 
+     * @param weeks the List of WeekRange objects or null
      */
-    public void setWeeks(List<WeekRange> weeks) {
+    public void setWeeks(@Nullable List<WeekRange> weeks) {
         this.weeks = weeks;
     }
 
     /**
-     * @param monthdays the monthdays to set
+     * Set the list of DateRange objects
+     * 
+     * @deprecated Use setDates instead
+     * 
+     * @param monthdays a List of DateRange objects or null
      */
-    public void setMonthdays(List<DateRange> monthdays) {
+    @Deprecated
+    public void setMonthdays(@Nullable List<DateRange> monthdays) {
         this.dates = monthdays;
     }
 
     /**
-     * @param holidays the holidays to set
+     * Set the list of DateRange objects
+     * 
+     * @param dates a List of DateRange objects or null
      */
-    public void setHolidays(List<Holiday> holidays) {
+    public void setDates(@Nullable List<DateRange> dates) {
+        this.dates = dates;
+    }
+
+    /**
+     * Set the List of Holiday objects
+     * 
+     * @param holidays the List of Holiday objects or null
+     */
+    public void setHolidays(@Nullable List<Holiday> holidays) {
         this.holidays = holidays;
     }
 
     /**
-     * @param days the days to set
+     * Set the list of WeekDayRange objects
+     * 
+     * @param days a List of WeekDayRange objects or null
      */
-    public void setDays(List<WeekDayRange> days) {
+    public void setDays(@Nullable List<WeekDayRange> days) {
         this.days = days;
     }
 
     /**
-     * @param times the times to set
+     * Set the list of TimeSpan objects
+     * 
+     * @param times a List of TimeSpan objects or null
      */
-    public void setTimes(List<TimeSpan> times) {
+    public void setTimes(@Nullable List<TimeSpan> times) {
         this.times = times;
     }
 

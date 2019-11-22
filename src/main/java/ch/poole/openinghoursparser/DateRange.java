@@ -1,13 +1,14 @@
 package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Container for objects from the opening_hours specification
  * 
  * @author Simon Poole
  *
- *         Copyright (c) 2015 Simon Poole
+ *         Copyright (c) 2015, 2016, 2017, 2018, 2019 Simon Poole
  *
  *         Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *         documentation files (the "Software"), to deal in the Software without restriction, including without
@@ -121,6 +122,7 @@ public class DateRange extends Element {
      * 
      * @return the startDate
      */
+    @NotNull
     public DateWithOffset getStartDate() {
         checkStartDate();
         return startDate;
@@ -131,6 +133,7 @@ public class DateRange extends Element {
      * 
      * @return the endDate, null if not present
      */
+    @Nullable
     public DateWithOffset getEndDate() {
         return endDate;
     }
@@ -151,7 +154,7 @@ public class DateRange extends Element {
      * 
      * @param startDate the startDate to set, can not be null
      */
-    public void setStartDate(DateWithOffset startDate) {
+    public void setStartDate(@NotNull DateWithOffset startDate) {
         if (startDate == null) {
             throw new IllegalArgumentException("start date cannot be null");
         }
@@ -163,7 +166,7 @@ public class DateRange extends Element {
      * 
      * @param endDate the end date of the range to set, null if there is no end date
      */
-    public void setEndDate(DateWithOffset endDate) {
+    public void setEndDate(@Nullable DateWithOffset endDate) {
         this.endDate = endDate;
     }
 
