@@ -50,7 +50,7 @@ public class Holiday extends Element {
     boolean useAsWeekDay = true;
 
     /**
-     * DEfault constructor
+     * Default constructor
      */
     public Holiday() {
         // empty
@@ -146,7 +146,7 @@ public class Holiday extends Element {
     /**
      * Get the the "use as weekday" value
      * 
-     * @return true if this should be used as a weekday equivalen
+     * @return true if this should be used as a weekday equivalent
      */
     public boolean getUseAsWeekDay() {
         return useAsWeekDay;
