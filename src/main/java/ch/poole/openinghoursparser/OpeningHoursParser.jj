@@ -25,12 +25,15 @@
 
 package ch.poole.openinghoursparser;
  import java.util.ArrayList;import java.util.Collections;
-import java.util.Locale;import java.io.ByteArrayInputStream;public class OpeningHoursParser{
+import java.util.Locale;import java.io.ByteArrayInputStream;
+
+import ch.poole.openinghoursparser.Util;public class OpeningHoursParser{
   static int TWELVEHOURS = 12*60;
   
   boolean strict = false;
   enum AMPM { AM, PM };
-  boolean monthOnly = false;}PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"
+  boolean monthOnly = false;}
+PARSER_END(OpeningHoursParser)SKIP :{  "\r"| "\n"| " "| "\t"
 | "\u200A"
 | "\u2009"
 | "\u00A0"
@@ -91,9 +94,9 @@ TOKEN :
 {  < TO : " to " >
 }/**
  * match a number between 1 and 5
- */Token one2five() :{  Token n = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 5 })  n = < NUMBER >  {    return n;  }}/**
+ */Token one2five() :{  Token n = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 1, 5) })  n = < NUMBER >  {    return n;  }}/**
  * match a positive number larger than 1
- */Token number() :{  Token n = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 })  n = < NUMBER >  {    return n;  }}/**
+ */Token number() :{  Token n = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Util.equalsOrMore(getToken(1).image, 1) })  n = < NUMBER >  {    return n;  }}/**
  * Match a comment.
  */String comment() :{  StringBuilder builder = new StringBuilder();}{  < QUOTE >  (    getChar(builder)  )*  < ENDQUOTE >  {    return builder.toString();  }}/**
  * Match char inside quoted string.
@@ -103,7 +106,7 @@ TOKEN :
 /**
  * returns a number if between 0 and 24
  * uses semantic lookahead
- */Token hours() :{  Token h = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 24 })  h = < NUMBER >  {    return h;  }}
+ */Token hours() :{  Token h = null;}{  LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 24) })  h = < NUMBER >  {    return h;  }}
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh
  *
@@ -166,7 +169,7 @@ AMPM ampm() :
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh with hh up to 48 
  */int extendedtime() :{  Token h = null;  Token m = null;  int result = 0;
-  AMPM ampm = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 0 && Integer.parseInt(getToken(1).image) <= 48 })    h = < NUMBER >  )  (    m = < MINUTES >    {
+  AMPM ampm = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 48) })    h = < NUMBER >  )  (    m = < MINUTES >    {
       if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
         ParseException pex = new ParseException("Invalid minutes at " + token.next.beginLine + ", column " + token.next.beginColumn);
 	    pex.currentToken = token;
@@ -336,7 +339,7 @@ WeekDayRange weekday_range() :{  String startDay = null;  String endDay = nul
     return mdr;
   }
 }
-int daynum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 31 })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}
+int daynum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 1, 31) })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}
 
 int year() :
 {
@@ -344,7 +347,7 @@ int year() :
 }
 {
   (
-    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1900})
+    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.equalsOrMore(getToken(1).image, 1900)})
     n = < NUMBER >
   )
   {
@@ -486,7 +489,7 @@ int year() :
       return result;
     }
   )
-}int weeknum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Integer.parseInt(getToken(1).image) >= 1 && Integer.parseInt(getToken(1).image) <= 54 })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}WeekRange week_range() :{  WeekRange wr = new WeekRange();  Token w = null;  Token w1 = null;
+}int weeknum() :{  Token n = null;}{  (    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 1, 54) })    n = < NUMBER >  )  {    return Integer.parseInt(n.image);  }}WeekRange week_range() :{  WeekRange wr = new WeekRange();  Token w = null;  Token w1 = null;
   Token to = null;}{  wr.startWeek = weeknum()  (    (      < HYPHEN > | (to = < TO >)
     )
     (

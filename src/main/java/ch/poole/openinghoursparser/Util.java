@@ -79,7 +79,7 @@ public final class Util {
     public static String rulesToOpeningHoursString(@NotNull List<Rule> rules) {
         return rulesToOpeningHoursString(rules, false);
     }
-       
+
     /**
      * Generate an OH string from rules
      * 
@@ -179,5 +179,38 @@ public final class Util {
             r.add((T) o.copy());
         }
         return r;
+    }
+
+    /**
+     * Make a safe comparison catching parse errors
+     * 
+     * @param token the current token
+     * @param lower lower bounds
+     * @return true if greater or equals to limit and is an int
+     */
+    static boolean equalsOrMore(@NotNull String token, int lower) {
+        try {
+            int temp = Integer.parseInt(token);
+            return temp >= lower;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+
+    /**
+     * Make a safe comparison catching parse errors
+     * 
+     * @param token the current token
+     * @param lower lower bounds
+     * @param upper upper bounds
+     * @return true if in bounds and is an int
+     */
+    static boolean between(@NotNull String token, int lower, int upper) {
+        try {
+            int temp = Integer.parseInt(token);
+            return temp >= lower && temp <= upper;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 }
