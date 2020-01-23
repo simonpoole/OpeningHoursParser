@@ -84,6 +84,9 @@ task replaceVersion {
 }
 build.dependsOn replaceVersion
 
+// test input may change and require rerunning the tests
+test.inputs.files("test-data/oh.txt")
+
 publishing {
     publications {
         MyPublication(MavenPublication) {
