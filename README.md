@@ -68,3 +68,10 @@ dependencies {
 Besides some unit tests, we run the parser on ~160'000 and compare with previous output to detect any changes in behaviour. If you are running these on windows, you may need to add
 ``org.gradle.jvmargs=-Dfile.encoding=UTF-8``
 to your gradle.properties to force correct use of the UTF-8 encoded test input. 
+
+## Building
+
+The project uses [gradle](https://gradle.org/) for building. Standard gradle tasks for the java plugin can be found here [https://docs.gradle.org/current/userguide/java_plugin.html](https://docs.gradle.org/current/userguide/java_plugin.html). They can be invoked on the command line by running ``gradlew`` or ``gradlew.bat`` with the name of the task, for example
+``gradlew jar`` to create the jar archive. 
+
+Note: the project has no runtime dependencies and the jar file resulting from the build process is self sufficient.
