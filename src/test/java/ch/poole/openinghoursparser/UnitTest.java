@@ -69,6 +69,7 @@ public class UnitTest {
             ArrayList<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
+            assertEquals("Holiday after weekday at line 1, column 7", pex.getMessage());
         }
     }
   
@@ -82,6 +83,7 @@ public class UnitTest {
             dwo1.setMonth("bla");
             fail("This should have caused an exception");
         } catch (IllegalArgumentException ex) {
+            assertEquals("null is not a valid Month", ex.getMessage());
         }
         dwo1.setMonth("Jan");
         // dwo1.nth = 1;
@@ -90,6 +92,7 @@ public class UnitTest {
             dwo1.setVarDate("bla");
             fail("This should have caused an exception");
         } catch (IllegalArgumentException ex) {
+            assertEquals("null is not a valid VarDate", ex.getMessage());
         }
         dwo1.setVarDate("easter");
         // try {
@@ -104,6 +107,7 @@ public class UnitTest {
             dwo1.setYear(1899);
             fail("This should have caused an exception");
         } catch (IllegalArgumentException ex) {
+            assertEquals("1899 is earlier than 1900", ex.getMessage());
         }
         dwo1.setYear(1999);
 
@@ -304,6 +308,7 @@ public class UnitTest {
             List<Rule> rules = parser.rules(false);
             fail("should throw a ParseException");
         } catch (ParseException pex) {
+            assertEquals("Interval not allowed here at line 1, column 11", pex.getMessage());
         }
     }
 
@@ -409,11 +414,13 @@ public class UnitTest {
                 wr.setStartWeek(-1);
                 fail("Should throw an exception");
             } catch (IllegalArgumentException ex) {
+                assertEquals("-1 is outside of the 1-53 range", ex.getMessage());
             }
             try {
                 wr.setEndWeek(55);
                 fail("Should throw an exception");
             } catch (IllegalArgumentException ex) {
+                assertEquals("1 is outside of the 1-53 range", ex.getMessage());
             }
         } catch (ParseException pex) {
             fail(pex.getMessage());

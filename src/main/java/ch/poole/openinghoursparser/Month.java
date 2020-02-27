@@ -87,7 +87,7 @@ public enum Month {
             return LASTDAY[month.ordinal()];
         } else {
             if (year == YearRange.UNDEFINED_YEAR) {
-                throw new ParseException("Missing month day in date range for February");
+                throw new OpeningHoursParseException("Missing month day in date range for February");
             }
             if ((year / 4) * 4 == year && year / 100 * 100 != year) {
                 return 29;
