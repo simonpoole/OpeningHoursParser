@@ -338,7 +338,7 @@ int time() :
     )
     {
       if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
-        ParseException pex = new ParseException("Invalid minutes at " + token.next.beginLine + ", column " + token.next.beginColumn);
+        ParseException pex = new OpeningHoursParseException("Invalid minutes", token.next);
 	    pex.currentToken = token;
         throw pex;
 	  } 
@@ -350,7 +350,7 @@ int time() :
   )?
   {
     if (strict && m == null) {
-        ParseException pex = new ParseException("Hours without minutes");
+        ParseException pex = new OpeningHoursParseException("Hours without minutes");
 	    pex.currentToken = token;
         throw pex;
     }
@@ -382,7 +382,7 @@ AMPM ampm() :
   {
 	  if (ampm != null) {
 	    if (strict) {
-          ParseException pex = new ParseException(ampm.image + " found at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+          ParseException pex = new OpeningHoursParseException(ampm.image + " found", token.next);
 	      pex.currentToken = token;
           throw pex;
         }
@@ -411,7 +411,7 @@ int extendedtime() :
     m = < MINUTES >
     {
       if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
-        ParseException pex = new ParseException("Invalid minutes at " + token.next.beginLine + ", column " + token.next.beginColumn);
+        ParseException pex = new OpeningHoursParseException("Invalid minutes", token.next);
 	    pex.currentToken = token;
         throw pex;
 	  }
@@ -534,7 +534,7 @@ TimeSpan timespan() :
                 // non-strict, add 24h
                 end = end + 24*60;
               } else {
-                ParseException pex = new ParseException("End time earlier than start time at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+                ParseException pex = new OpeningHoursParseException("End time earlier than start time", token.next);
 			    pex.currentToken = token;
                 throw pex;
               }
@@ -548,7 +548,7 @@ TimeSpan timespan() :
         )
         {
           if (strict && to != null) {
-            throw new ParseException("'to' instead of '-' " + token.next.beginLine + ", column " + token.next.beginColumn);
+            throw new OpeningHoursParseException("'to' instead of '-'", token.next);
           }
         }
         (
@@ -609,7 +609,7 @@ String weekday() :
     )
     {
       if (strict) {
-        ParseException e = new ParseException("Three character weekday at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+        ParseException e = new OpeningHoursParseException("Three character weekday", token.next);
 		e.currentToken = token;
         throw e;
       }
@@ -644,7 +644,7 @@ WeekDayRange weekday_range() :
         endDay = weekday()
         {
           if (strict && to != null) {
-            throw new ParseException("'to' instead of '-' " + token.next.beginLine + ", column " + token.next.beginColumn);
+            throw new OpeningHoursParseException("'to' instead of '-'", token.next);
           }
           wdr.setEndDay(endDay);
         }
@@ -828,7 +828,7 @@ DateRange date_range() :
   )
   {
     if (strict && startDate.getVarDate()==null && startDate.getMonth()==null) {
-      throw new ParseException("Missing month " + token.next.beginLine);
+      throw new OpeningHoursParseException("Missing month", token.next);
     }
     mdr.startDate = startDate;
     startDate.openEnded = plus != null;
@@ -841,11 +841,11 @@ DateRange date_range() :
       endDate = datewithoffset(startDate.undefinedDay())
       {
         if (strict && to != null) {
-          throw new ParseException("'to' instead of '-' " + (token != null && token.next != null ? "line " + token.next.beginLine + ", column " + token.next.beginColumn : ""));
+          throw new OpeningHoursParseException("'to' instead of '-'", token != null ? token.next : null);
         }
         if ((startDate.undefinedDay() && !endDate.undefinedDay()) || (!startDate.undefinedDay() && endDate.undefinedDay())) {
           if (strict) { 
-            throw new ParseException("Missing month day in date range " + startDate.toString() + " " + endDate.toString() + " "  + (token != null && token.next != null ? "line " + token.next.beginLine + ", column " + token.next.beginColumn : ""));
+            throw new OpeningHoursParseException("Missing month day in date range" + startDate.toString() + " " + endDate.toString(), token != null ? token.next : null);
           } else {
             // fix this
             if (startDate.undefinedDay()) {
@@ -861,7 +861,7 @@ DateRange date_range() :
       	mdr.interval = interval()
       	{ 
       	  if (startDate.day != DateWithOffset.UNDEFINED_MONTH_DAY || endDate.day != DateWithOffset.UNDEFINED_MONTH_DAY || startDate.varDate!=null || endDate.varDate!=null) {
-      	  	throw new ParseException("Interval not allowed here "+ (token != null && token.next != null ? "line " + token.next.beginLine + ", column " + token.next.beginColumn : ""));
+      	  	throw new OpeningHoursParseException("Interval not allowed here", token != null ? token.next : null);
       	  }
      	}
       )?
@@ -1039,7 +1039,7 @@ ArrayList < DateRange > date_selector() :
           if (dwo.getMonth() == null)
           {
             if (strict) {
-              throw new ParseException("Missing start month " + token.next.beginLine);
+              throw new OpeningHoursParseException("Missing start month", token.next);
             }
             if (lastMonth == null)
             {
@@ -1048,7 +1048,7 @@ ArrayList < DateRange > date_selector() :
               if (lastMonth == null)
               {
                 // fail, can't fudge the month
-                throw new ParseException("Missing start month " + token.next.beginLine);
+                throw new OpeningHoursParseException("Missing start month", token.next);
               }
             }
             dwo.setMonth(lastMonth);
@@ -1101,7 +1101,7 @@ WeekRange week_range() :
     )
     {
       if (strict && to != null) {
-        throw new ParseException("'to' instead of '-' " + token.next.beginLine + ", column " + token.next.beginColumn);
+        throw new OpeningHoursParseException("'to' instead of '-'", token.next);
       } 
     }
     (
@@ -1151,7 +1151,7 @@ YearRange year_range() :
     )
     {
       if (strict && to != null) {
-        throw new ParseException("'to' instead of '-' " + token.next.beginLine + ", column " + token.next.beginColumn);
+        throw new OpeningHoursParseException("'to' instead of '-'", token.next);
       }
     }
     (
@@ -1258,7 +1258,7 @@ Rule rule() :
       {
         if (strict && (ys != null || ws != null || ms != null))
         {
-          ParseException e = new ParseException("24/7 with other selectors");
+          ParseException e = new OpeningHoursParseException("24/7 with other selectors");
           e.currentToken = token;
           throw e;
         }
@@ -1291,7 +1291,7 @@ Rule rule() :
         {
           if (strict)
           {
-            ParseException e = new ParseException("Holiday after weekday at line " + token.next.beginLine + ", column " + token.next.beginColumn);
+            ParseException e = new OpeningHoursParseException("Holiday after weekday", token.next);
             e.currentToken = token;
             throw e;
           }
@@ -1400,3 +1400,4 @@ ArrayList < Rule > rules(boolean strict) :
 {
   < UNEXPECTED_CHAR : ~[] >
 } 
+
