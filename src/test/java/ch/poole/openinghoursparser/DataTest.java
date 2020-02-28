@@ -111,7 +111,7 @@ public class DataTest {
                 }
                 try {
                     OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(line.getBytes()));
-                    ArrayList<Rule> rules = parser.rules(strict);
+                    List<Rule> rules = parser.rules(strict);
                     successful++;
                     if (debug) {
                         outputExpected.write("0\t" + Util.rulesToOpeningHoursDebugString(rules) + "\n");
@@ -136,7 +136,7 @@ public class DataTest {
                     } else {
                         System.out.println("Parser exception for " + line + " " + pex.toString());
                     }
-                    //pex.printStackTrace();
+                    // pex.printStackTrace();
                     errors++;
                     outputExpected.write("1\n");
                     outputFail.write(line + "\t" + pex.toString() + "\n");

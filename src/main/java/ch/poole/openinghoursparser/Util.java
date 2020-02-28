@@ -1,4 +1,5 @@
 package ch.poole.openinghoursparser;
+
 /**
  * Utility methods for ops on OH rules
  * 
@@ -44,16 +45,16 @@ public final class Util {
      * @param rules rules to check
      * @return list of list of rules that can be merged
      */
-    public static List<ArrayList<Rule>> getMergeableRules(List<Rule> rules) {
+    public static List<List<Rule>> getMergeableRules(List<Rule> rules) {
 
-        List<ArrayList<Rule>> result = new ArrayList<>();
+        List<List<Rule>> result = new ArrayList<>();
 
-        ArrayList<Rule> copy = new ArrayList<>(rules); // shallow copy for bookkeeping
+        List<Rule> copy = new ArrayList<>(rules); // shallow copy for bookkeeping
 
         while (!copy.isEmpty()) {
             Rule r = copy.get(0);
             boolean found = false;
-            for (ArrayList<Rule> mergeables : result) {
+            for (List<Rule> mergeables : result) {
                 if (!mergeables.isEmpty() && r.isMergeableWith(mergeables.get(0))) {
                     mergeables.add(r);
                     found = true;
@@ -61,7 +62,7 @@ public final class Util {
                 }
             }
             if (!found) {
-                ArrayList<Rule> m = new ArrayList<>();
+                List<Rule> m = new ArrayList<>();
                 m.add(r);
                 result.add(m);
             }

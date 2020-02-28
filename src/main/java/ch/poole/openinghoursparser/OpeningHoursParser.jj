@@ -44,6 +44,7 @@ PARSER_BEGIN(OpeningHoursParser)
 package ch.poole.openinghoursparser;
  
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 import java.util.Locale;
 import java.io.ByteArrayInputStream;
@@ -570,10 +571,10 @@ TimeSpan timespan() :
   )
 }
 
-ArrayList < TimeSpan > time_selector() :
+List < TimeSpan > time_selector() :
 {
   TimeSpan ts, ts1;
-  ArrayList < TimeSpan > result = new ArrayList < TimeSpan > ();
+  List < TimeSpan > result = new ArrayList < TimeSpan > ();
 }
 {
   (
@@ -730,10 +731,10 @@ Nth nth() :
   }
 }
 
-ArrayList < WeekDayRange > weekday_selector() :
+List < WeekDayRange > weekday_selector() :
 {
   WeekDayRange wdr, wdr1;
-  ArrayList < WeekDayRange > result = new ArrayList < WeekDayRange > ();
+  List < WeekDayRange > result = new ArrayList < WeekDayRange > ();
 }
 {
   wdr = weekday_range()
@@ -782,11 +783,11 @@ Holiday holiday() :
   }
 }
 
-ArrayList < Holiday > holiday_sequence() :
+List < Holiday > holiday_sequence() :
 {
   Holiday h = null;
   Holiday h1 = null;
-  ArrayList < Holiday > result = new ArrayList < Holiday > ();
+  List < Holiday > result = new ArrayList < Holiday > ();
 }
 {
   h = holiday()
@@ -1016,11 +1017,11 @@ DateWithOffset datewithoffset(boolean mo) :
   }
 }
 
-ArrayList < DateRange > date_selector() :
+List < DateRange > date_selector() :
 {
   DateRange mdr, mdr1;
   Month lastMonth = null;
-  ArrayList < DateRange > result = new ArrayList < DateRange > ();
+  List < DateRange > result = new ArrayList < DateRange > ();
 }
 {
    // the first date either need to be a vardate or have a month
@@ -1113,10 +1114,10 @@ WeekRange week_range() :
   }
 }
 
-ArrayList < WeekRange > week_selector() :
+List < WeekRange > week_selector() :
 {
   WeekRange wr, wr1;
-  ArrayList < WeekRange > result = new ArrayList < WeekRange > ();
+  List < WeekRange > result = new ArrayList < WeekRange > ();
 }
 {
   "week" wr = week_range()
@@ -1164,10 +1165,10 @@ YearRange year_range() :
 }
 
 
-ArrayList < YearRange > year_selector() :
+List < YearRange > year_selector() :
 {
   YearRange yr, yr1;
-  ArrayList < YearRange > result = new ArrayList < YearRange > ();
+  List < YearRange > result = new ArrayList < YearRange > ();
 }
 {
   LOOKAHEAD({getToken(2).kind != MONTH  && getToken(2).kind != VARDATE})
@@ -1217,12 +1218,12 @@ Rule rule() :
   Rule r = null;
   String comment = null;
   boolean always = false;
-  ArrayList < YearRange > ys = null;
-  ArrayList < WeekRange > ws = null;
-  ArrayList < DateRange > ms = null;
-  ArrayList < Holiday > hs = null;
-  ArrayList < WeekDayRange > ds = null;
-  ArrayList < TimeSpan > ts = null;
+  List < YearRange > ys = null;
+  List < WeekRange > ws = null;
+  List < DateRange > ms = null;
+  List < Holiday > hs = null;
+  List < WeekDayRange > ds = null;
+  List < TimeSpan > ts = null;
   RuleModifier rm = null;
   boolean colonForClarification = false;
 }
@@ -1346,10 +1347,10 @@ Rule rule() :
   }
 }
 
-ArrayList < Rule > rules(boolean strict) :
+List < Rule > rules(boolean strict) :
 {
   this.strict = strict;
-  ArrayList < Rule > result = new ArrayList < Rule > ();
+  List < Rule > result = new ArrayList < Rule > ();
   Rule r = null;
   Rule r1 = null;
 }

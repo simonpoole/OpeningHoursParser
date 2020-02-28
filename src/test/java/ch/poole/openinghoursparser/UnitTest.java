@@ -52,27 +52,26 @@ public class UnitTest {
     public void holidaysVsWeekdays() {
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("PH,Su 10:00-12:00; PH Su 11:00-13:00".getBytes()));
-            ArrayList<Rule> rules = parser.rules(false);
+            List<Rule> rules = parser.rules(false);
             assertEquals(2, rules.size());
         } catch (ParseException pex) {
             fail(pex.getMessage());
         }
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
-            ArrayList<Rule> rules = parser.rules(false);
+            List<Rule> rules = parser.rules(false);
             assertEquals(1, rules.size());
         } catch (ParseException pex) {
             fail(pex.getMessage());
         }
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
-            ArrayList<Rule> rules = parser.rules(true);
+            List<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
             assertEquals("Holiday after weekday at line 1, column 7", pex.getMessage());
         }
     }
-  
 
     @Test
     public void equalsTests() {
@@ -246,7 +245,7 @@ public class UnitTest {
         try {
             List<Rule> rules = parser.rules(false);
             assertEquals(2, rules.size());
-            List<ArrayList<Rule>> mergeableRules = Util.getMergeableRules(rules);
+            List<List<Rule>> mergeableRules = Util.getMergeableRules(rules);
             assertEquals(1, mergeableRules.size());
         } catch (ParseException pex) {
             fail(pex.getMessage());
