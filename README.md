@@ -43,6 +43,9 @@ try {
 }
 ```
 
+Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.18.0).
+
+
 ## Including in your project
 
 You can either download the *jar* from GitHub or add the following to your *build.gradle* file(s):
