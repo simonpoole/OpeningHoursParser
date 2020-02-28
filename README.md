@@ -58,7 +58,7 @@ repositories {
 
 ``` groovy
 dependencies {
-    compile "ch.poole:OpeningHoursParser:0.18.0"
+    compile "ch.poole:OpeningHoursParser:0.19.0"
 }
 ```
 
