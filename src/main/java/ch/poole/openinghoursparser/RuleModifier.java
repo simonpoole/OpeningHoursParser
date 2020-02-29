@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import static ch.poole.openinghoursparser.FeatureAdapter.tr;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -60,7 +62,7 @@ public class RuleModifier extends Element {
                     return m;
                 }
             }
-            return null;
+            throw new IllegalArgumentException(tr("{0} is not a valid modifier", modifier));
         }
 
         /**
@@ -162,8 +164,7 @@ public class RuleModifier extends Element {
      * @param modifier the modifier to set
      */
     public void setModifier(String modifier) {
-        Modifier m = Modifier.getValue(modifier);
-        this.modifier = m;
+        this.modifier = Modifier.getValue(modifier);
     }
 
     /**

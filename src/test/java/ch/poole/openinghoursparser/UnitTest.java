@@ -81,7 +81,7 @@ public class UnitTest {
             dwo1.setMonth("bla");
             fail("This should have caused an exception");
         } catch (IllegalArgumentException ex) {
-            assertEquals("null is not a valid Month", ex.getMessage());
+            assertEquals("bla is not a valid month", ex.getMessage());
         }
         dwo1.setMonth("Jan");
         // dwo1.nth = 1;
@@ -90,7 +90,7 @@ public class UnitTest {
             dwo1.setVarDate("bla");
             fail("This should have caused an exception");
         } catch (IllegalArgumentException ex) {
-            assertEquals("null is not a valid VarDate", ex.getMessage());
+            assertEquals("bla is not a valid variable date", ex.getMessage());
         }
         dwo1.setVarDate("easter");
         // try {

@@ -780,7 +780,7 @@ Holiday holiday() :
     }
   )?
   {
-    result.type = Holiday.Type.valueOf(h.image.toUpperCase()); // the enum values are in upper case
+    result.type = Holiday.Type.valueOf(h.image.toUpperCase(Locale.US)); // the enum values are in upper case
     return result;
   }
 }

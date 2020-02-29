@@ -183,11 +183,7 @@ public class WeekDayRange extends Element {
             this.startDay = null;
             return;
         }
-        WeekDay w = WeekDay.getValue(day);
-        if (w == null) {
-            throw new IllegalArgumentException(day + " is not a valid WeekDay");
-        }
-        this.startDay = w;
+        this.startDay = WeekDay.getValue(day);
     }
 
     /**
@@ -205,11 +201,7 @@ public class WeekDayRange extends Element {
      * @param day the day to set
      */
     public void setEndDay(String day) {
-        WeekDay w = WeekDay.getValue(day);
-        if (w == null) {
-            throw new IllegalArgumentException(day + " is not a valid WeekDay");
-        }
-        this.endDay = w;
+        this.endDay = WeekDay.getValue(day);
     }
 
     /**
