@@ -2,7 +2,6 @@ package ch.poole.openinghoursparser;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -178,15 +177,15 @@ public class Rule extends Element {
         if (other instanceof Rule) {
             Rule o = (Rule) other;
             return fallBack == o.fallBack && additive == o.additive
-                    && Objects.equals(comment, o.comment)
+                    && Util.equals(comment, o.comment)
                     && twentyfourseven == o.twentyfourseven
-                    && Objects.equals(years, o.years)
-                    && Objects.equals(weeks, o.weeks)
-                    && Objects.equals(dates, o.dates)
-                    && Objects.equals(holidays, o.holidays)
-                    && Objects.equals(days, o.days)
-                    && Objects.equals(times, o.times)
-                    && Objects.equals(modifier, o.modifier);
+                    && Util.equals(years, o.years)
+                    && Util.equals(weeks, o.weeks)
+                    && Util.equals(dates, o.dates)
+                    && Util.equals(holidays, o.holidays)
+                    && Util.equals(days, o.days)
+                    && Util.equals(times, o.times)
+                    && Util.equals(modifier, o.modifier);
         }
         return false;
     }
@@ -216,11 +215,11 @@ public class Rule extends Element {
      */
     public boolean isMergeableWith(Rule r) {
         return this.equals(r) || (!twentyfourseven
-                && Objects.equals(comment, r.comment)
-                && Objects.equals(years, r.years)
-                && Objects.equals(weeks, r.weeks)
-                && Objects.equals(dates, r.dates)
-                && Objects.equals(modifier, r.modifier));
+                && Util.equals(comment, r.comment)
+                && Util.equals(years, r.years)
+                && Util.equals(weeks, r.weeks)
+                && Util.equals(dates, r.dates)
+                && Util.equals(modifier, r.modifier));
     }
 
     /**
