@@ -83,4 +83,6 @@ Note: the project has no runtime dependencies and the jar file resulting from th
 
 Pull requests are welcome. 
 
-As this library is used in a number of Android projects please restrict the use of Java 8 features and APIs to the Android supported subset see https://developer.android.com/studio/write/java8-support and check that any APIs used are supported on all Android platform API version 10 and later. This will likely be relaxed for future versions. 
+As this library is used in a number of Android projects please restrict the use of Java 8 features and APIs to the Android supported subset see https://developer.android.com/studio/write/java8-support Check that any APIs used are supported on all Android platform API versions 10 and later, this is mainly an issue for APIs that were introduced with Java 7. This restriction will likely be relaxed for future versions. 
+
+Currently the library is self contained and doesn't have any runtime dependencies outside of basic Java support, it would be nice if we can keep it like that.
