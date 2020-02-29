@@ -452,4 +452,33 @@ public class UnitTest {
         }
     }
 
+    @Test
+    public void timeTest() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Sa-Su 10.00-20.00".getBytes()));
+        try {
+            assertEquals("Sa-Su 10:00-20:00", Util.rulesToOpeningHoursString(parser.rules(false)));
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        parser = new OpeningHoursParser(new ByteArrayInputStream("Sa-Su 10.00-20.00".getBytes()));
+        try {
+            Util.rulesToOpeningHoursString(parser.rules(true));
+            fail("Should throw an exception");
+        } catch (ParseException pex) {
+            assertEquals("Invalid minutes at line 1, column 12", pex.getMessage());
+        }
+        parser = new OpeningHoursParser(new ByteArrayInputStream("Mo,Tu 04-17".getBytes()));
+        try {
+            assertEquals("Mo,Tu 04:00-17:00", Util.rulesToOpeningHoursString(parser.rules(false)));
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        parser = new OpeningHoursParser(new ByteArrayInputStream("Mo,Tu 04-17".getBytes()));
+        try {
+            assertEquals("Mo,Tu 04:00-17:00", Util.rulesToOpeningHoursString(parser.rules(true)));
+            fail("Should throw an exception");
+        } catch (ParseException pex) {
+            assertEquals("Hours without minutes", pex.getMessage());
+        }
+    }
 }
