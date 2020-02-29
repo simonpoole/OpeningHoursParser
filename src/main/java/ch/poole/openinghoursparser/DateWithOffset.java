@@ -2,6 +2,8 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
 
+import static ch.poole.openinghoursparser.FeatureAdapter.tr;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -256,7 +258,7 @@ public class DateWithOffset extends Element {
      */
     public void setYear(int year) {
         if (year != YearRange.UNDEFINED_YEAR && year < YearRange.FIRST_VALID_YEAR) {
-            throw new IllegalArgumentException(year + " is earlier than " + YearRange.FIRST_VALID_YEAR);
+            throw new IllegalArgumentException(tr("{0} is earlier than {1}", Integer.toString(year), Integer.toString(YearRange.FIRST_VALID_YEAR)));
         }
         this.year = year;
     }
@@ -292,7 +294,7 @@ public class DateWithOffset extends Element {
      */
     public void setDay(int day) {
         if (day != UNDEFINED_MONTH_DAY && (day < MIN_MONTH_DAY || day > MAX_MONTH_DAY)) {
-            throw new IllegalArgumentException(day + " is not a valid month day number");
+            throw new IllegalArgumentException(tr("{0} is not a valid month day number", day));
         }
         this.day = day;
     }
@@ -317,7 +319,7 @@ public class DateWithOffset extends Element {
      */
     public void setNth(WeekDay day, int nth) {
         if (nth < -MAX_NTH || nth > MAX_NTH) {
-            throw new IllegalArgumentException(nth + " is not a valid occurrence number");
+            throw new IllegalArgumentException(tr("{0} is not a valid occurrence number", nth));
         }
         nthWeekDay = day;
         this.nth = nth;

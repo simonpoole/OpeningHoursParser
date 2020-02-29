@@ -2,6 +2,8 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
 
+import static ch.poole.openinghoursparser.FeatureAdapter.tr;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -121,7 +123,7 @@ public class YearRange extends Element {
      */
     public void setStartYear(int start) {
         if (start != UNDEFINED_YEAR && start < FIRST_VALID_YEAR) {
-            throw new IllegalArgumentException(start + " is earlier than 1900");
+            throw new IllegalArgumentException(tr("{0} is earlier than 1900", Integer.toString(start)));
         }
         this.startYear = start;
     }
@@ -133,7 +135,7 @@ public class YearRange extends Element {
      */
     public void setEndYear(int end) {
         if (end != UNDEFINED_YEAR && end < FIRST_VALID_YEAR) {
-            throw new IllegalArgumentException(end + " is earlier than 1900");
+            throw new IllegalArgumentException(tr("{0} is earlier than 1900", Integer.toString(end)));
         }
         this.endYear = end;
     }
