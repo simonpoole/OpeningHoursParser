@@ -2,8 +2,6 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -78,7 +76,7 @@ public class VariableTime extends Element {
         }
         if (other instanceof VariableTime) {
             VariableTime o = (VariableTime) other;
-            return Objects.equals(event, o.event) && offset == o.offset;
+            return Util.equals(event, o.event) && offset == o.offset;
         }
         return false;
     }

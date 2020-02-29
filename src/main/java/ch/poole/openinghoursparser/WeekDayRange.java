@@ -24,7 +24,6 @@ package ch.poole.openinghoursparser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -126,9 +125,9 @@ public class WeekDayRange extends Element {
         }
         if (other instanceof WeekDayRange) {
             WeekDayRange o = (WeekDayRange) other;
-            return Objects.equals(startDay, o.startDay)
-                    && Objects.equals(endDay, o.endDay)
-                    && Objects.equals(nths, o.nths)
+            return Util.equals(startDay, o.startDay)
+                    && Util.equals(endDay, o.endDay)
+                    && Util.equals(nths, o.nths)
                     && offset == o.offset;
         }
         return false;

@@ -3,8 +3,6 @@ package ch.poole.openinghoursparser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -102,8 +100,8 @@ public class DateRange extends Element {
         }
         if (other instanceof DateRange) {
             DateRange o = (DateRange) other;
-            return Objects.equals(startDate, o.startDate)
-                    && Objects.equals(endDate, o.endDate) && interval == o.interval;
+            return Util.equals(startDate, o.startDate)
+                    && Util.equals(endDate, o.endDate) && interval == o.interval;
         }
         return false;
     }

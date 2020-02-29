@@ -214,4 +214,18 @@ public final class Util {
             return false;
         }
     }
+
+    /**
+     * Returns {@code true} if the arguments are equal to each other
+     * and {@code false} otherwise.
+     * @param a the first object
+     * @param b the second object
+     * @return true if the arguments are equal
+     * @see java.util.Objects#equals
+     */
+    public static boolean equals(Object a, Object b) {
+        // Objects.equals might not be available on Android
+        return (a == b) || (a != null && a.equals(b));
+    }
+
 }
