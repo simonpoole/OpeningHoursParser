@@ -392,6 +392,29 @@ public class UnitTest {
     }
 
     @Test
+    public void collectionTimes() {
+        // common values from https://taginfo.openstreetmap.org/keys/collection_times#values
+        try {
+            new OpeningHoursParser(new ByteArrayInputStream("Mo-Fr 09:00; Sa 07:00".getBytes())).rules(true);
+            new OpeningHoursParser(new ByteArrayInputStream("Mo-Sa 09:00".getBytes())).rules(true);
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+
+    @Test
+    public void serviceTimes() {
+        // common values from https://taginfo.openstreetmap.org/keys/service_times#values
+        try {
+            new OpeningHoursParser(new ByteArrayInputStream("Su 10:00".getBytes())).rules(true);
+            new OpeningHoursParser(new ByteArrayInputStream("Su 08:00-10:00".getBytes())).rules(true);
+            new OpeningHoursParser(new ByteArrayInputStream("sunset,sunrise".getBytes())).rules(true);
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+
+    @Test
     public void weekRangeTest() {
 
         OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("10:00-12:00".getBytes()));
