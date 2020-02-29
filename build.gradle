@@ -11,6 +11,7 @@ plugins {
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "jacoco"
@@ -36,6 +37,11 @@ eclipse {
         }
     }
 }
+
+idea.module {
+    sourceDirs = [javaccSource, mainSource]
+}
+ideaModule.dependsOn compileJavacc
 
 compileJavacc {
     inputDirectory = mainSource
