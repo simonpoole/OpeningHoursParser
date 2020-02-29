@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-import static ch.poole.openinghoursparser.FeatureAdapter.tr;
+import static ch.poole.openinghoursparser.I18n.tr;
 
 /**
  * Container for objects from the opening_hours specification
@@ -62,7 +62,7 @@ public class RuleModifier extends Element {
                     return m;
                 }
             }
-            throw new IllegalArgumentException(tr("{0} is not a valid modifier", modifier));
+            throw new IllegalArgumentException(tr("invalid_modifier", modifier));
         }
 
         /**

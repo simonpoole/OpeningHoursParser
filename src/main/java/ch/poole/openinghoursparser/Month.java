@@ -3,7 +3,7 @@ package ch.poole.openinghoursparser;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.poole.openinghoursparser.FeatureAdapter.tr;
+import static ch.poole.openinghoursparser.I18n.tr;
 
 /**
  * Container for objects from the opening_hours specification
@@ -60,7 +60,7 @@ public enum Month {
                 return m;
             }
         }
-        throw new IllegalArgumentException(tr("{0} is not a valid month", month));
+        throw new IllegalArgumentException(tr("invalid_month", month));
     }
 
     /**
@@ -89,7 +89,7 @@ public enum Month {
             return LASTDAY[month.ordinal()];
         } else {
             if (year == YearRange.UNDEFINED_YEAR) {
-                throw new OpeningHoursParseException("Missing month day in date range for February");
+                throw new OpeningHoursParseException(tr("missing_day_for_February"));
             }
             if ((year / 4) * 4 == year && year / 100 * 100 != year) {
                 return 29;

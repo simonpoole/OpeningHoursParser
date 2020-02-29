@@ -2,7 +2,7 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.Nullable;
 
-import static ch.poole.openinghoursparser.FeatureAdapter.tr;
+import static ch.poole.openinghoursparser.I18n.tr;
 
 /**
  * Represents an exception when parsing the opening hour string
@@ -46,7 +46,7 @@ public class OpeningHoursParseException extends ParseException {
     @Override
     public String getMessage() {
         if (line >= 0 && column >= 0) {
-            return tr("{0} at line {1}, column {2}", super.getMessage(), line, column);
+            return tr("exception_line_column", super.getMessage(), line, column);
         } else {
             return super.getMessage();
         }

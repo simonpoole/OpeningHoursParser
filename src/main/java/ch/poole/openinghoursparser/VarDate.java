@@ -3,7 +3,7 @@ package ch.poole.openinghoursparser;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.poole.openinghoursparser.FeatureAdapter.tr;
+import static ch.poole.openinghoursparser.I18n.tr;
 
 /**
  * Container for objects from the opening_hours specification
@@ -58,7 +58,7 @@ public enum VarDate {
                 return v;
             }
         }
-        throw new IllegalArgumentException(tr("{0} is not a valid variable date", varDate));
+        throw new IllegalArgumentException(tr("invalid_variable_date", varDate));
     }
 
     /**

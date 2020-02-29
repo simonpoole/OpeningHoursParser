@@ -27,9 +27,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class UnitTest {
 
     @Before
     public void setUp() {
-        FeatureAdapter.registerTranslationAdapter(MessageFormat::format);
+        I18n.setLocale(Locale.ROOT);
     }
 
     @Test
@@ -506,11 +506,7 @@ public class UnitTest {
 
     @Test
     public void translationSupport() {
-        FeatureAdapter.registerTranslationAdapter((text, objects) -> "Holiday after weekday".equals(text)
-                ? "Feiertag nach Wochentag"
-                : "{0} at line {1}, column {2}".equals(text)
-                ? MessageFormat.format("{0} in Zeile {1}, Zeichen {2}", objects)
-                : null);
+        I18n.setLocale(Locale.GERMAN);
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
             List<Rule> rules = parser.rules(true);
