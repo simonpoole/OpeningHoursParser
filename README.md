@@ -78,3 +78,9 @@ The project uses [gradle](https://gradle.org/) for building. Standard gradle tas
 ``gradlew jar`` to create the jar archive. 
 
 Note: the project has no runtime dependencies and the jar file resulting from the build process is self sufficient.
+
+## Contributing
+
+Pull requests are welcome. 
+
+As this library is used in a number of Android projects please restrict the use of Java 8 features and APIs to the Android supported subset see https://developer.android.com/studio/write/java8-support and check that any APIs used are supported on all Android platform API version 10 and later. This will likely be relaxed for future versions. 
