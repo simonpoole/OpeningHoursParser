@@ -2,6 +2,8 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -137,11 +139,15 @@ public class DateWithOffset extends Element {
     public boolean equals(Object other) {
         if (other instanceof DateWithOffset) {
             DateWithOffset o = (DateWithOffset) other;
-            return openEnded == o.openEnded && year == o.year && (month == o.month || (month != null && month.equals(o.month)))
-                    && (nthWeekDay == o.nthWeekDay || (nthWeekDay != null && nthWeekDay.equals(o.nthWeekDay))) && nth == o.nth && day == o.day
+            return openEnded == o.openEnded && year == o.year
+                    && Objects.equals(month, o.month)
+                    && Objects.equals(nthWeekDay, o.nthWeekDay)
+                    && nth == o.nth
+                    && day == o.day
                     && weekDayOffsetPositive == o.weekDayOffsetPositive
-                    && (weekDayOffset == o.weekDayOffset || (weekDayOffset != null && weekDayOffset.equals(o.weekDayOffset))) && dayOffset == o.dayOffset
-                    && (varDate == o.varDate || (varDate != null && varDate.equals(o.varDate)));
+                    && Objects.equals(weekDayOffset, o.weekDayOffset)
+                    && dayOffset == o.dayOffset
+                    && Objects.equals(varDate, o.varDate);
         }
         return false;
     }
