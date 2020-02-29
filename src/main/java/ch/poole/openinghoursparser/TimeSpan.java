@@ -2,6 +2,8 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -100,10 +102,8 @@ public class TimeSpan extends Element {
         }
         if (other instanceof TimeSpan) {
             TimeSpan o = (TimeSpan) other;
-            if (start == o.start && (startEvent == o.startEvent || (startEvent != null && startEvent.equals(o.startEvent))) && end == o.end
-                    && (endEvent == o.endEvent || (endEvent != null && endEvent.equals(o.endEvent))) && openEnded == o.openEnded && interval == o.interval) {
-                return true;
-            }
+            return start == o.start && Objects.equals(startEvent, o.startEvent) && end == o.end
+                    && Objects.equals(endEvent, o.endEvent) && openEnded == o.openEnded && interval == o.interval;
         }
         return false;
     }

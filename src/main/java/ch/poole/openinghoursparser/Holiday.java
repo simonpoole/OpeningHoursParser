@@ -2,6 +2,7 @@ package ch.poole.openinghoursparser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -91,9 +92,7 @@ public class Holiday extends Element {
         }
         if (other instanceof Holiday) {
             Holiday o = (Holiday) other;
-            if ((type == o.type || (type != null && type.equals(o.type))) && offset == o.offset) {
-                return true;
-            }
+            return Objects.equals(type, o.type) && offset == o.offset;
         }
         return false;
     }

@@ -2,6 +2,7 @@ package ch.poole.openinghoursparser;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -176,12 +177,16 @@ public class Rule extends Element {
     public boolean equals(Object other) {
         if (other instanceof Rule) {
             Rule o = (Rule) other;
-            return fallBack == o.fallBack && additive == o.additive && (comment == o.comment || (comment != null && comment.equals(o.comment)))
-                    && twentyfourseven == o.twentyfourseven && (years == o.years || (years != null && years.equals(o.years)))
-                    && (weeks == o.weeks || (weeks != null && weeks.equals(o.weeks))) && (dates == o.dates || (dates != null && dates.equals(o.dates)))
-                    && (holidays == o.holidays || (holidays != null && holidays.equals(o.holidays)))
-                    && (days == o.days || (days != null && days.equals(o.days))) && (times == o.times || (times != null && times.equals(o.times)))
-                    && (modifier == o.modifier || (modifier != null && modifier.equals(o.modifier)));
+            return fallBack == o.fallBack && additive == o.additive
+                    && Objects.equals(comment, o.comment)
+                    && twentyfourseven == o.twentyfourseven
+                    && Objects.equals(years, o.years)
+                    && Objects.equals(weeks, o.weeks)
+                    && Objects.equals(dates, o.dates)
+                    && Objects.equals(holidays, o.holidays)
+                    && Objects.equals(days, o.days)
+                    && Objects.equals(times, o.times)
+                    && Objects.equals(modifier, o.modifier);
         }
         return false;
     }
@@ -210,11 +215,12 @@ public class Rule extends Element {
      * @return true if r can be merged with this rule
      */
     public boolean isMergeableWith(Rule r) {
-        return this.equals(r) || (!twentyfourseven && ((comment == null && r.comment == null) || (comment != null && comment.equals(r.comment)))
-                && ((years == null && r.years == null) || (years != null && years.equals(r.years)))
-                && ((weeks == null && r.weeks == null) || (weeks != null && weeks.equals(r.weeks)))
-                && ((dates == null && r.dates == null) || (dates != null && dates.equals(r.dates)))
-                && ((modifier == null && r.modifier == null) || (modifier != null && modifier.equals(r.modifier))));
+        return this.equals(r) || (!twentyfourseven
+                && Objects.equals(comment, r.comment)
+                && Objects.equals(years, r.years)
+                && Objects.equals(weeks, r.weeks)
+                && Objects.equals(dates, r.dates)
+                && Objects.equals(modifier, r.modifier));
     }
 
     /**

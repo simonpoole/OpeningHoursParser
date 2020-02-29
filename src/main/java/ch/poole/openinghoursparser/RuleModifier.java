@@ -2,6 +2,7 @@ package ch.poole.openinghoursparser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -119,10 +120,8 @@ public class RuleModifier extends Element {
         }
         if (other instanceof RuleModifier) {
             RuleModifier o = (RuleModifier) other;
-            if ((modifier == o.modifier || (modifier != null && modifier.equals(o.modifier)))
-                    && (comment == o.comment || (comment != null && comment.equals(o.comment)))) {
-                return true;
-            }
+            return Objects.equals(modifier, o.modifier)
+                    && Objects.equals(comment, o.comment);
         }
         return false;
     }
