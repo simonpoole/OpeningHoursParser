@@ -125,11 +125,10 @@ public class WeekDayRange extends Element {
         }
         if (other instanceof WeekDayRange) {
             WeekDayRange o = (WeekDayRange) other;
-            if ((startDay == o.startDay || (startDay != null && startDay.equals(o.startDay)))
-                    && (endDay == o.endDay || (endDay != null && endDay.equals(o.endDay))) && (nths == o.nths || (nths != null && nths.equals(o.nths)))
-                    && offset == o.offset) {
-                return true;
-            }
+            return Util.equals(startDay, o.startDay)
+                    && Util.equals(endDay, o.endDay)
+                    && Util.equals(nths, o.nths)
+                    && offset == o.offset;
         }
         return false;
     }

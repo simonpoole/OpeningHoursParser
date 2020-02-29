@@ -176,12 +176,16 @@ public class Rule extends Element {
     public boolean equals(Object other) {
         if (other instanceof Rule) {
             Rule o = (Rule) other;
-            return fallBack == o.fallBack && additive == o.additive && (comment == o.comment || (comment != null && comment.equals(o.comment)))
-                    && twentyfourseven == o.twentyfourseven && (years == o.years || (years != null && years.equals(o.years)))
-                    && (weeks == o.weeks || (weeks != null && weeks.equals(o.weeks))) && (dates == o.dates || (dates != null && dates.equals(o.dates)))
-                    && (holidays == o.holidays || (holidays != null && holidays.equals(o.holidays)))
-                    && (days == o.days || (days != null && days.equals(o.days))) && (times == o.times || (times != null && times.equals(o.times)))
-                    && (modifier == o.modifier || (modifier != null && modifier.equals(o.modifier)));
+            return fallBack == o.fallBack && additive == o.additive
+                    && Util.equals(comment, o.comment)
+                    && twentyfourseven == o.twentyfourseven
+                    && Util.equals(years, o.years)
+                    && Util.equals(weeks, o.weeks)
+                    && Util.equals(dates, o.dates)
+                    && Util.equals(holidays, o.holidays)
+                    && Util.equals(days, o.days)
+                    && Util.equals(times, o.times)
+                    && Util.equals(modifier, o.modifier);
         }
         return false;
     }
@@ -210,11 +214,12 @@ public class Rule extends Element {
      * @return true if r can be merged with this rule
      */
     public boolean isMergeableWith(Rule r) {
-        return this.equals(r) || (!twentyfourseven && ((comment == null && r.comment == null) || (comment != null && comment.equals(r.comment)))
-                && ((years == null && r.years == null) || (years != null && years.equals(r.years)))
-                && ((weeks == null && r.weeks == null) || (weeks != null && weeks.equals(r.weeks)))
-                && ((dates == null && r.dates == null) || (dates != null && dates.equals(r.dates)))
-                && ((modifier == null && r.modifier == null) || (modifier != null && modifier.equals(r.modifier))));
+        return this.equals(r) || (!twentyfourseven
+                && Util.equals(comment, r.comment)
+                && Util.equals(years, r.years)
+                && Util.equals(weeks, r.weeks)
+                && Util.equals(dates, r.dates)
+                && Util.equals(modifier, r.modifier));
     }
 
     /**

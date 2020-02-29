@@ -100,10 +100,8 @@ public class TimeSpan extends Element {
         }
         if (other instanceof TimeSpan) {
             TimeSpan o = (TimeSpan) other;
-            if (start == o.start && (startEvent == o.startEvent || (startEvent != null && startEvent.equals(o.startEvent))) && end == o.end
-                    && (endEvent == o.endEvent || (endEvent != null && endEvent.equals(o.endEvent))) && openEnded == o.openEnded && interval == o.interval) {
-                return true;
-            }
+            return start == o.start && Util.equals(startEvent, o.startEvent) && end == o.end
+                    && Util.equals(endEvent, o.endEvent) && openEnded == o.openEnded && interval == o.interval;
         }
         return false;
     }

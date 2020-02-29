@@ -91,9 +91,7 @@ public class Holiday extends Element {
         }
         if (other instanceof Holiday) {
             Holiday o = (Holiday) other;
-            if ((type == o.type || (type != null && type.equals(o.type))) && offset == o.offset) {
-                return true;
-            }
+            return Util.equals(type, o.type) && offset == o.offset;
         }
         return false;
     }

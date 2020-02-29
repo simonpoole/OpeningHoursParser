@@ -100,10 +100,8 @@ public class DateRange extends Element {
         }
         if (other instanceof DateRange) {
             DateRange o = (DateRange) other;
-            if ((startDate == o.startDate || (startDate != null && startDate.equals(o.startDate)))
-                    && (endDate == o.endDate || (endDate != null && endDate.equals(o.endDate))) && interval == o.interval) {
-                return true;
-            }
+            return Util.equals(startDate, o.startDate)
+                    && Util.equals(endDate, o.endDate) && interval == o.interval;
         }
         return false;
     }
