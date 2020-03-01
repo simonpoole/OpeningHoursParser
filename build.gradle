@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "jacoco"
 
-version = '0.19.0'
+version = '0.20.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -88,6 +88,16 @@ task replaceVersion {
     }
 }
 build.dependsOn replaceVersion
+
+task updateTranslations(type: Exec) {
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'cmd', '/c', 'tx.exe', 'pull', '-a'
+    } else {
+        commandLine 'tx', 'pull', '-a'
+    }
+}
+updateTranslations.group = 'translation'
+updateTranslations.description = 'Update translations by executing the transifex tx utility'
 
 // test input may change and require rerunning the tests
 test.inputs.files("test-data/oh.txt")

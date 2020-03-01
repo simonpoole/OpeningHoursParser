@@ -43,7 +43,7 @@ try {
 }
 ```
 
-Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.19.0).
+Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.20.0).
 
 
 ## Including in your project
@@ -58,7 +58,7 @@ repositories {
 
 ``` groovy
 dependencies {
-    compile "ch.poole:OpeningHoursParser:0.19.0"
+    compile "ch.poole:OpeningHoursParser:0.20.0"
 }
 ```
 
@@ -86,3 +86,7 @@ Pull requests are welcome.
 As this library is used in a number of Android projects please restrict the use of Java 8 features and APIs to the Android supported subset see https://developer.android.com/studio/write/java8-support Check that any APIs used are supported on all Android platform API versions 10 and later, this is mainly an issue for APIs that were introduced with Java 7. This restriction will likely be relaxed for future versions. 
 
 Currently the library is self contained and doesn't have any runtime dependencies outside of basic Java support, it would be nice if we can keep it like that.
+
+## Translation
+
+The error messages produced by the library are translated on [transifex](https://transifex.com/), see [https://www.transifex.com/openstreetmap/openinghoursparser/](https://www.transifex.com/openstreetmap/openinghoursparser/).
