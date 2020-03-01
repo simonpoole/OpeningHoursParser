@@ -60,6 +60,16 @@ public class OpeningHoursParser
   boolean strict = false;
   enum AMPM { AM, PM };
   boolean monthOnly = false;
+
+    List<Rule> rules(boolean strict) throws OpeningHoursParseException {
+      try {
+        return rules0(strict);
+      } catch (OpeningHoursParseException ex) {
+        throw ex;
+      } catch (ParseException ex) {
+        throw new OpeningHoursParseException(ex);
+      }
+    }
 }
 
 PARSER_END(OpeningHoursParser)
@@ -1349,7 +1359,7 @@ Rule rule() :
   }
 }
 
-List < Rule > rules(boolean strict) :
+private List < Rule > rules0(boolean strict) :
 {
   this.strict = strict;
   List < Rule > result = new ArrayList < Rule > ();

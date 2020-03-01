@@ -514,5 +514,12 @@ public class UnitTest {
         } catch (ParseException pex) {
             assertEquals("Feiertag nach Wochentag in Zeile 1, Zeichen 7", pex.getMessage());
         }
+        try {
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("10:00-12:00 Su".getBytes()));
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertEquals("Vorgefunden wurde:  <WEEKDAY> \"Su \" in Zeile 1, Zeichen 9\nErwartet wurde: <EOF>", pex.getMessage());
+        }
     }
 }
