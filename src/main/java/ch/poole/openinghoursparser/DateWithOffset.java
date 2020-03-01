@@ -2,6 +2,8 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
 
+import static ch.poole.openinghoursparser.I18n.tr;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -235,11 +237,7 @@ public class DateWithOffset extends Element {
      * @param date the var date
      */
     public void setVarDate(@NotNull String date) {
-        VarDate v = VarDate.getValue(date);
-        if (v == null) {
-            throw new IllegalArgumentException(v + " is not a valid VarDate");
-        }
-        this.varDate = v;
+        this.varDate = VarDate.getValue(date);
     }
 
     /**
@@ -256,7 +254,7 @@ public class DateWithOffset extends Element {
      */
     public void setYear(int year) {
         if (year != YearRange.UNDEFINED_YEAR && year < YearRange.FIRST_VALID_YEAR) {
-            throw new IllegalArgumentException(year + " is earlier than " + YearRange.FIRST_VALID_YEAR);
+            throw new IllegalArgumentException(tr("earlier_than", Integer.toString(year), Integer.toString(YearRange.FIRST_VALID_YEAR)));
         }
         this.year = year;
     }
@@ -278,11 +276,7 @@ public class DateWithOffset extends Element {
             this.month = null;
             return;
         }
-        Month m = Month.getValue(month);
-        if (m == null) {
-            throw new IllegalArgumentException(m + " is not a valid Month");
-        }
-        this.month = m;
+        this.month = Month.getValue(month);
     }
 
     /**
@@ -292,7 +286,7 @@ public class DateWithOffset extends Element {
      */
     public void setDay(int day) {
         if (day != UNDEFINED_MONTH_DAY && (day < MIN_MONTH_DAY || day > MAX_MONTH_DAY)) {
-            throw new IllegalArgumentException(day + " is not a valid month day number");
+            throw new IllegalArgumentException(tr("invalid_month_day", day));
         }
         this.day = day;
     }
@@ -317,7 +311,7 @@ public class DateWithOffset extends Element {
      */
     public void setNth(WeekDay day, int nth) {
         if (nth < -MAX_NTH || nth > MAX_NTH) {
-            throw new IllegalArgumentException(nth + " is not a valid occurrence number");
+            throw new IllegalArgumentException(tr("invalid_occurrence", nth));
         }
         nthWeekDay = day;
         this.nth = nth;
@@ -359,11 +353,7 @@ public class DateWithOffset extends Element {
      * @param weekDayOffset the weekDayOffset to set
      */
     public void setWeekDayOffset(String weekDayOffset) {
-        WeekDay w = WeekDay.getValue(weekDayOffset);
-        if (w == null) {
-            throw new IllegalArgumentException(day + " is not a valid WeekDay");
-        }
-        this.weekDayOffset = w;
+        this.weekDayOffset = WeekDay.getValue(weekDayOffset);
     }
 
     /**

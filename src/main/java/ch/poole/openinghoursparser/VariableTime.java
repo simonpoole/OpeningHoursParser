@@ -118,11 +118,7 @@ public class VariableTime extends Element {
      * @param event the event to set
      */
     public void setEvent(String event) {
-        Event e = Event.getValue(event);
-        if (e == null) {
-            throw new IllegalArgumentException(e + " is not a valid Event");
-        }
-        this.event = e;
+        this.event = Event.getValue(event);
     }
 
     /**

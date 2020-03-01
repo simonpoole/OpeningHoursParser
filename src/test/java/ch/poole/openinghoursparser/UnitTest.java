@@ -26,18 +26,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -47,6 +41,11 @@ import org.junit.Test;
  *
  */
 public class UnitTest {
+
+    @Before
+    public void setUp() {
+        I18n.setLocale(Locale.ROOT);
+    }
 
     @Test
     public void holidaysVsWeekdays() {
@@ -82,7 +81,7 @@ public class UnitTest {
             dwo1.setMonth("bla");
             fail("This should have caused an exception");
         } catch (IllegalArgumentException ex) {
-            assertEquals("null is not a valid Month", ex.getMessage());
+            assertEquals("bla is not a valid month", ex.getMessage());
         }
         dwo1.setMonth("Jan");
         // dwo1.nth = 1;
@@ -91,7 +90,7 @@ public class UnitTest {
             dwo1.setVarDate("bla");
             fail("This should have caused an exception");
         } catch (IllegalArgumentException ex) {
-            assertEquals("null is not a valid VarDate", ex.getMessage());
+            assertEquals("bla is not a valid variable date", ex.getMessage());
         }
         dwo1.setVarDate("easter");
         // try {
@@ -442,7 +441,7 @@ public class UnitTest {
                 wr.setEndWeek(55);
                 fail("Should throw an exception");
             } catch (IllegalArgumentException ex) {
-                assertEquals("1 is outside of the 1-53 range", ex.getMessage());
+                assertEquals("55 is outside of the 1-53 range", ex.getMessage());
             }
         } catch (ParseException pex) {
             fail(pex.getMessage());
@@ -502,6 +501,25 @@ public class UnitTest {
             fail("Should throw an exception");
         } catch (ParseException pex) {
             assertEquals("Hours without minutes", pex.getMessage());
+        }
+    }
+
+    @Test
+    public void translationSupport() {
+        I18n.setLocale(Locale.GERMAN);
+        try {
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertEquals("Feiertag nach Wochentag in Zeile 1, Zeichen 7", pex.getMessage());
+        }
+        try {
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("10:00-12:00 Su".getBytes()));
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertEquals("Vorgefunden wurde:  <WEEKDAY> \"Su \" in Zeile 1, Zeichen 9\nErwartet wurde: <EOF>", pex.getMessage());
         }
     }
 }

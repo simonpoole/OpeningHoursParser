@@ -2,6 +2,8 @@ package ch.poole.openinghoursparser;
 
 import org.jetbrains.annotations.NotNull;
 
+import static ch.poole.openinghoursparser.I18n.tr;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -167,7 +169,7 @@ public class TimeSpan extends Element {
      */
     public void setStart(int s) {
         if (s != UNDEFINED_TIME && (s < MIN_TIME || s > MAX_EXTENDED_TIME)) {
-            throw new IllegalArgumentException(s + " is not a valid time");
+            throw new IllegalArgumentException(tr("invalid_time", s));
         }
         this.start = s;
     }
@@ -186,7 +188,7 @@ public class TimeSpan extends Element {
      */
     public void setEnd(int e) {
         if (e != UNDEFINED_TIME && (e < MIN_TIME || e > MAX_EXTENDED_TIME)) {
-            throw new IllegalArgumentException(e + " is not a valid time");
+            throw new IllegalArgumentException(tr("invalid_time", e));
         }
         this.end = e;
     }

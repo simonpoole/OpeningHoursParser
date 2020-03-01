@@ -1,5 +1,7 @@
 package ch.poole.openinghoursparser;
 
+import static ch.poole.openinghoursparser.I18n.tr;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -116,7 +118,7 @@ public class WeekRange extends Element {
      */
     public void setStartWeek(int start) {
         if (start != UNDEFINED_WEEK && (start < MIN_WEEK || start > MAX_WEEK)) {
-            throw new IllegalArgumentException(start + " is outside of the 1-53 range");
+            throw new IllegalArgumentException(tr("invalid_week_number", start));
         }
         this.startWeek = start;
     }
@@ -126,7 +128,7 @@ public class WeekRange extends Element {
      */
     public void setEndWeek(int end) {
         if (end != UNDEFINED_WEEK && (end < MIN_WEEK || end > MAX_WEEK)) {
-            throw new IllegalArgumentException(startWeek + " is outside of the 1-53 range");
+            throw new IllegalArgumentException(tr("invalid_week_number", end));
         }
         this.endWeek = end;
     }

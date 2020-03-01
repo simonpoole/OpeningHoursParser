@@ -154,7 +154,7 @@ public class DateRange extends Element {
      */
     public void setStartDate(@NotNull DateWithOffset startDate) {
         if (startDate == null) {
-            throw new IllegalArgumentException("start date cannot be null");
+            throw new NullPointerException("startDate");
         }
         this.startDate = startDate;
     }
