@@ -64,7 +64,7 @@ public class DataTest {
      * Compare strict mode output
      */
     @Test
-    public void () {
+    public void regressionTestStrict() {
         parseData("test-data/oh.txt", true, false, "test-data/oh.txt-result-strict");
         parseData("test-data/oh.txt", true, true, "test-data/oh.txt-debug-result-strict");
     }
