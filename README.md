@@ -8,9 +8,9 @@ It parses 146'825 (91%) of 161'268 unique test strings in non-strict mode. The r
 
 Deviations from the grammar as of [this version of the opening hours specification][opening-hours-grammar-specification] in all modes:
 
- * case insensitive
+ * case-insensitive
  * leading 0s in times optional
- * unicode EN DASH character is allowed for hyphen
+ * unicode EN DASH (U+2013) character is allowed for hyphen
  * various unicode whitespace characters are ignored
 
 In non-strict mode the following further differences are allowed:
@@ -43,12 +43,13 @@ try {
 }
 ```
 
-Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.20.0).
+Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.19.0).
 
 
 ## Including in your project
 
-You can either download the *jar* from GitHub or add the following to your *build.gradle* file(s):
+We publish releases to [Bintray/JCenter](https://bintray.com/simonpoole/osm/OpeningHoursParser).
+The following snippets for `build.gradle` will make OpeningHoursParser available in your Gradle project:
 
 ``` groovy
 repositories {
@@ -77,15 +78,15 @@ to your gradle.properties to force correct use of the UTF-8 encoded test input.
 The project uses [gradle](https://gradle.org/) for building. Standard gradle tasks for the java plugin can be found here [https://docs.gradle.org/current/userguide/java_plugin.html](https://docs.gradle.org/current/userguide/java_plugin.html). They can be invoked on the command line by running ``gradlew`` or ``gradlew.bat`` with the name of the task, for example
 ``gradlew jar`` to create the jar archive. 
 
-Note: the project has no runtime dependencies and the jar file resulting from the build process is self sufficient.
+Note: the project has no runtime dependencies, and the jar file resulting from the build process is self-sufficient.
 
 ## Contributing
 
 Pull requests are welcome. 
 
-As this library is used in a number of Android projects please restrict the use of Java 8 features and APIs to the Android supported subset see https://developer.android.com/studio/write/java8-support Check that any APIs used are supported on all Android platform API versions 10 and later, this is mainly an issue for APIs that were introduced with Java 7. This restriction will likely be relaxed for future versions. 
+As this library is used in a number of Android projects please restrict the use of Java 8 features and APIs to the Android supported subset see https://developer.android.com/studio/write/java8-support. Check that any APIs used are supported on all Android platform API versions 10 and later, this is mainly an issue for APIs that were introduced with Java 7. This restriction will likely be relaxed for future versions. 
 
-Currently the library is self contained and doesn't have any runtime dependencies outside of basic Java support, it would be nice if we can keep it like that.
+Currently, the library is self-contained and doesn't have any runtime dependencies outside of basic Java support, it would be nice if we can keep it like that.
 
 ## Translation
 
