@@ -414,6 +414,36 @@ public class UnitTest {
     }
 
     @Test
+    public void weekdayThree() {
+        try {
+            new OpeningHoursParser(new ByteArrayInputStream("Tue-Thu 09:00-18:00".getBytes())).rules(false);
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        try {
+            new OpeningHoursParser(new ByteArrayInputStream("Tue-Thu 09:00-18:00".getBytes())).rules(true);
+            fail("should throw a ParseException");
+        } catch (ParseException pex) {
+            assertEquals("Three character weekday at line 1, column 4", pex.getMessage());
+        }
+    }
+
+    @Test
+    public void weekdayDe() {
+        try {
+            new OpeningHoursParser(new ByteArrayInputStream("Di-Do 09:00-18:00".getBytes())).rules(false);
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        try {
+            new OpeningHoursParser(new ByteArrayInputStream("Di-Do 09:00-18:00".getBytes())).rules(true);
+            fail("should throw a ParseException");
+        } catch (ParseException pex) {
+            assertEquals("German weekday abbreviation at line 1, column 3", pex.getMessage());
+        }
+    }
+
+    @Test
     public void weekRangeTest() {
 
         OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("10:00-12:00".getBytes()));

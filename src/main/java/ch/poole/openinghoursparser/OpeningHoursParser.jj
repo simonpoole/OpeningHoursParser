@@ -629,7 +629,8 @@ String weekday() :
     )
     {
       if (strict) {
-        ParseException e = new OpeningHoursParseException(tr("invalid_week_day_three"), token.next);
+        String msg = w.kind == OpeningHoursParserConstants.WEEKDAY3 ? tr("invalid_week_day_three") : tr("invalid_week_day_german");
+        ParseException e = new OpeningHoursParseException(msg, token.next);
 		e.currentToken = token;
         throw e;
       }
