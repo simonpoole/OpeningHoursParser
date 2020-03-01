@@ -519,7 +519,7 @@ public class UnitTest {
             List<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
-            assertEquals("Vorgefunden wurde:  <WEEKDAY> \"Su \" in Zeile 1, Zeichen 9\nErwartet wurde: <EOF>", pex.getMessage());
+            assertEquals("Vorgefunden wurde:  <WEEKDAY> \"Su \" in Zeile 1, Zeichen 9" + System.lineSeparator() + "Erwartet wurde: <EOF>", pex.getMessage());
         }
     }
 }
