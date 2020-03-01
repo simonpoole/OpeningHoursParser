@@ -38,6 +38,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -47,6 +48,8 @@ import org.junit.Test;
  *
  */
 public class DataTest {
+
+    boolean quiet = true; // stops large amounts of not very helpful output
 
     /**
      * Compare non-strict mode output
@@ -61,7 +64,7 @@ public class DataTest {
      * Compare strict mode output
      */
     @Test
-    public void regressionTestStrict() {
+    public void () {
         parseData("test-data/oh.txt", true, false, "test-data/oh.txt-result-strict");
         parseData("test-data/oh.txt", true, true, "test-data/oh.txt-debug-result-strict");
     }
@@ -133,10 +136,9 @@ public class DataTest {
                 } catch (ParseException pex) {
                     if (pex.toString().contains("Lexical")) {
                         lexical++;
-                    } else {
+                    } else if (!quiet) {
                         System.out.println("Parser exception for " + line + " " + pex.toString());
                     }
-                    // pex.printStackTrace();
                     errors++;
                     outputExpected.write("1\n");
                     outputFail.write(line + "\t" + pex.toString() + "\n");
@@ -144,8 +146,9 @@ public class DataTest {
                         assertEquals("1", expectedResultCode);
                     }
                 } catch (NumberFormatException nfx) {
-                    System.out.println("Parser exception for " + line + " " + nfx.toString());
-                    // pex.printStackTrace();
+                    if (!quiet) {
+                        System.out.println("Parser exception for " + line + " " + nfx.toString());
+                    }
                     lexical++;
                     errors++;
                     outputExpected.write("2\n");
@@ -156,9 +159,8 @@ public class DataTest {
                 } catch (Error err) {
                     if (err.toString().contains("Lexical")) {
                         lexical++;
-                    } else {
+                    } else if (!quiet) {
                         System.out.println("Parser err for " + line + " " + err.toString());
-                        // err.printStackTrace();
                     }
                     errors++;
                     outputExpected.write("3\n");
