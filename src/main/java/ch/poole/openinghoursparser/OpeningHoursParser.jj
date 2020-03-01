@@ -61,7 +61,14 @@ public class OpeningHoursParser
   enum AMPM { AM, PM };
   boolean monthOnly = false;
 
-    List<Rule> rules(boolean strict) throws OpeningHoursParseException {
+    /**
+     * Get the output of the parser
+     *
+     * @param strict if true the parser will run in strict mode
+     * @return a List of Rule elements
+     * @throws OpeningHoursParseException on parse errors
+     */
+    public List<Rule> rules(boolean strict) throws OpeningHoursParseException {
       try {
         return rules0(strict);
       } catch (OpeningHoursParseException ex) {
