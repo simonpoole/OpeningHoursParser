@@ -141,7 +141,8 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compile 'org.jetbrains:annotations:15.0'
+    compileOnly 'org.jetbrains:annotations:15.0'
+    testCompileOnly 'org.jetbrains:annotations:15.0'
     testCompile 'junit:junit:4.12'
 }
 
