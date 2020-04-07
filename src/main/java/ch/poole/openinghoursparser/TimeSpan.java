@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static ch.poole.openinghoursparser.I18n.tr;
 
+import java.util.Locale;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -68,9 +70,9 @@ public class TimeSpan extends Element {
         if (startEvent != null) {
             b.append(startEvent.toString());
         } else {
-            b.append(String.format("%02d", start / 60));
+            b.append(String.format(Locale.US, "%02d", start / 60));
             b.append(":");
-            b.append(String.format("%02d", start % 60));
+            b.append(String.format(Locale.US, "%02d", start % 60));
         }
         if (endEvent != null) {
             b.append("-");
@@ -79,18 +81,18 @@ public class TimeSpan extends Element {
             b.append("-");
             // output as normal time if time span is less than 24 hours
             int tempEnd = start != UNDEFINED_TIME && (end - start) < HOURS_24 && end > HOURS_24 ? end - HOURS_24 : end;
-            b.append(String.format("%02d", tempEnd / 60));
+            b.append(String.format(Locale.US, "%02d", tempEnd / 60));
             b.append(":");
-            b.append(String.format("%02d", end % 60));
+            b.append(String.format(Locale.US, "%02d", end % 60));
         }
         if (openEnded) {
             b.append("+");
         }
         if (interval != 0) { // output only the full format
             b.append("/");
-            b.append(String.format("%02d", interval / 60));
+            b.append(String.format(Locale.US, "%02d", interval / 60));
             b.append(":");
-            b.append(String.format("%02d", interval % 60));
+            b.append(String.format(Locale.US, "%02d", interval % 60));
         }
         return b.toString();
     }
@@ -102,8 +104,8 @@ public class TimeSpan extends Element {
         }
         if (other instanceof TimeSpan) {
             TimeSpan o = (TimeSpan) other;
-            return start == o.start && Util.equals(startEvent, o.startEvent) && end == o.end
-                    && Util.equals(endEvent, o.endEvent) && openEnded == o.openEnded && interval == o.interval;
+            return start == o.start && Util.equals(startEvent, o.startEvent) && end == o.end && Util.equals(endEvent, o.endEvent) && openEnded == o.openEnded
+                    && interval == o.interval;
         }
         return false;
     }

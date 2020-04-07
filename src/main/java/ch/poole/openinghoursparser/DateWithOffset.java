@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static ch.poole.openinghoursparser.I18n.tr;
 
+import java.util.Locale;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -123,7 +125,7 @@ public class DateWithOffset extends Element {
         }
         if (dayOffset != 0) {
             b.append(dayOffset > 0 ? " +" : " -");
-            b.append(String.format("%d", Math.abs(dayOffset)));
+            b.append(String.format(Locale.US, "%d", Math.abs(dayOffset)));
             b.append(" day");
             if (Math.abs(dayOffset) > 1) {
                 b.append("s");
@@ -139,15 +141,9 @@ public class DateWithOffset extends Element {
     public boolean equals(Object other) {
         if (other instanceof DateWithOffset) {
             DateWithOffset o = (DateWithOffset) other;
-            return openEnded == o.openEnded && year == o.year
-                    && Util.equals(month, o.month)
-                    && Util.equals(nthWeekDay, o.nthWeekDay)
-                    && nth == o.nth
-                    && day == o.day
-                    && weekDayOffsetPositive == o.weekDayOffsetPositive
-                    && Util.equals(weekDayOffset, o.weekDayOffset)
-                    && dayOffset == o.dayOffset
-                    && Util.equals(varDate, o.varDate);
+            return openEnded == o.openEnded && year == o.year && Util.equals(month, o.month) && Util.equals(nthWeekDay, o.nthWeekDay) && nth == o.nth
+                    && day == o.day && weekDayOffsetPositive == o.weekDayOffsetPositive && Util.equals(weekDayOffset, o.weekDayOffset)
+                    && dayOffset == o.dayOffset && Util.equals(varDate, o.varDate);
         }
         return false;
     }

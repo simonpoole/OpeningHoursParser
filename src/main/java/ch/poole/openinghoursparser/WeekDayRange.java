@@ -24,6 +24,7 @@ package ch.poole.openinghoursparser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -75,7 +76,7 @@ public class WeekDayRange extends Element {
                 } else {
                     b.append(" -");
                 }
-                b.append(String.format("%d", Math.abs(offset)));
+                b.append(String.format(Locale.US, "%d", Math.abs(offset)));
                 b.append(" day");
                 if (Math.abs(offset) > 1) {
                     b.append("s");
@@ -108,7 +109,7 @@ public class WeekDayRange extends Element {
                 } else {
                     b.append(" -");
                 }
-                b.append(String.format("%d", Math.abs(offset)));
+                b.append(String.format(Locale.US, "%d", Math.abs(offset)));
                 b.append(" day");
                 if (Math.abs(offset) > 1) {
                     b.append("s");

@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static ch.poole.openinghoursparser.I18n.tr;
 
+import java.util.Locale;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -60,10 +62,10 @@ public class YearRange extends Element {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(String.format("%04d", startYear));
+        b.append(String.format(Locale.US, "%04d", startYear));
         if (endYear != UNDEFINED_YEAR) {
             b.append("-");
-            b.append(String.format("%04d", endYear));
+            b.append(String.format(Locale.US, "%04d", endYear));
             if (interval > 0) {
                 b.append("/");
                 b.append(interval);

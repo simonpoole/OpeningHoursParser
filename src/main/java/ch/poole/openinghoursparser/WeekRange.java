@@ -2,6 +2,8 @@ package ch.poole.openinghoursparser;
 
 import static ch.poole.openinghoursparser.I18n.tr;
 
+import java.util.Locale;
+
 /**
  * Container for objects from the opening_hours specification
  * 
@@ -57,10 +59,10 @@ public class WeekRange extends Element {
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(String.format("%02d", startWeek));
+        b.append(String.format(Locale.US, "%02d", startWeek));
         if (endWeek != UNDEFINED_WEEK) {
             b.append("-");
-            b.append(String.format("%02d", endWeek));
+            b.append(String.format(Locale.US, "%02d", endWeek));
             if (interval > 0) {
                 b.append("/");
                 b.append(interval);
