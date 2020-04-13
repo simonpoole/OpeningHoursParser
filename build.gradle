@@ -94,9 +94,9 @@ test.inputs.files("test-data/oh.txt")
 publishing {
     publications {
         MyPublication(MavenPublication) {
-            from components.java
             groupId 'ch.poole'
             artifactId 'OpeningHoursParser'
+            artifact jar
             artifact sourcesJar
             artifact javadocJar
         }
