@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "jacoco"
 
-version = '0.21.2'
+version = '0.21.3'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
