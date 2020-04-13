@@ -17,8 +17,13 @@ apply plugin: 'maven-publish'
 apply plugin: "jacoco"
 
 version = '0.21.2'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
+}
 
 ext {
     javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/')
@@ -54,22 +59,6 @@ compileJava {
 
 compileTestJava {
     source javaccSource,mainSource,testSource
-}
-
-javadoc {
-    source mainSource, testSource
-    exclude '**/*.jj'
-}
-
-task sourcesJar(type: Jar) {
-    from mainSource, testSource
-    classifier = 'sources'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-    //	options.encoding = 'UTF-8'
 }
 
 sonarqube {
