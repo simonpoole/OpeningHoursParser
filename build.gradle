@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "jacoco"
 
-version = '0.21.3'
+version = '0.21.4'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -91,6 +91,11 @@ updateTranslations.description = 'Update translations by executing the transifex
 // test input may change and require rerunning the tests
 test.inputs.files("test-data/oh.txt")
 
+ext {
+    repoUrl = 'https://github.com/simonpoole/OpeningHoursParser.git'
+    spdxId = 'MIT'
+}
+
 publishing {
     publications {
         MyPublication(MavenPublication) {
@@ -99,6 +104,23 @@ publishing {
             artifact jar
             artifact sourcesJar
             artifact javadocJar
+            pom {
+                url = 'https://github.com/simonpoole/OpeningHoursParser'
+                scm {
+                    url = repoUrl
+                }
+                licenses {
+                    license {
+                        name = spdxId
+                        url = 'https://raw.githubusercontent.com/simonpoole/OpeningHoursParser/master/LICENCE.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Simon Poole'
+                    }
+                }
+            }
         }
     }
 }
@@ -110,8 +132,8 @@ bintray {
     pkg {
         repo = 'osm'
         name = 'OpeningHoursParser'
-        licenses = ['BSD 3-Clause']
-        vcsUrl = 'https://github.com/simonpoole/OpeningHoursParser.git'
+        licenses = [spdxId]
+        vcsUrl = repoUrl
         version {
             name = "${project.version}"
             released  = new Date()
