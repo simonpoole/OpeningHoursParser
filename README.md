@@ -22,7 +22,7 @@ In non-strict mode the following further differences are allowed:
  * minutes in times optional
  * "." and "h" as minutes separators
  * AM and PM time specifications are allowed (plus A.M. and P.M.) 
- * holidays following weekdays
+ * holidays in weekday range
  * 24/7 rules with preceding selectors are corrected to 00:00-24:00 time spans
  * list of month days after months ( Jan 1,4,5 )
  * " to " in lieu of a hyphen for ranges
@@ -43,7 +43,7 @@ try {
 }
 ```
 
-Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.21.4).
+Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.22.0).
 
 
 ## Including in your project
@@ -59,7 +59,7 @@ repositories {
 
 ``` groovy
 dependencies {
-    compile "ch.poole:OpeningHoursParser:0.21.4"
+    compile "ch.poole:OpeningHoursParser:0.22.0"
 }
 ```
 
