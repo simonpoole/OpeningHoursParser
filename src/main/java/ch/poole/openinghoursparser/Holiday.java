@@ -46,9 +46,10 @@ public class Holiday extends Element {
         }
     }
 
-    Type    type         = null;
-    int     offset       = 0;
-    boolean useAsWeekDay = true;
+    Type    type          = null;
+    int     offset        = 0;
+    boolean useAsWeekDay  = true;
+    boolean afterWeekDays = false;
 
     /**
      * Default constructor
@@ -149,6 +150,26 @@ public class Holiday extends Element {
      */
     public boolean getUseAsWeekDay() {
         return useAsWeekDay;
+    }
+    
+    /**
+     * Set the flag that the holidays should be shown after the weekdays
+     * 
+     * This is necessary due to a specification change
+     * 
+     * @param afterWeekDays the value to set
+     */
+    public void setAfterWeekDays(boolean afterWeekDays) {
+        this.afterWeekDays = afterWeekDays;
+    }
+    
+    /**
+     * Check if the holiday was originally after the week days
+     * 
+     * @return true if the holiday was after the week days
+     */
+    public boolean getAfterWeekDays() {
+        return afterWeekDays;
     }
 
     @Override

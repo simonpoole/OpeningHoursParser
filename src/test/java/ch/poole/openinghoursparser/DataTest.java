@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,16 +90,16 @@ public class DataTest {
         String line = null;
         try {
 
-            inputRules = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF8"));
+            inputRules = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), StandardCharsets.UTF_8));
             try {
-                inputExpected = new BufferedReader(new InputStreamReader(new FileInputStream(resultsFile), "UTF8"));
+                inputExpected = new BufferedReader(new InputStreamReader(new FileInputStream(resultsFile), StandardCharsets.UTF_8));
             } catch (FileNotFoundException fnfex) {
                 System.out.println("File not found " + fnfex.toString());
             }
             outputExpected = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(inputFile + "-result" + (strict ? "-strict" : "") + (debug ? "-debug" : "") + "-temp"), "UTF8"));
+                    new FileOutputStream(inputFile + "-result" + (strict ? "-strict" : "") + (debug ? "-debug" : "") + "-temp"), StandardCharsets.UTF_8));
             outputFail = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(inputFile + "-fail" + (strict ? "-strict" + (debug ? "-debug" : "") : "")), "UTF8"));
+                    new OutputStreamWriter(new FileOutputStream(inputFile + "-fail" + (strict ? "-strict" + (debug ? "-debug" : "") : "")), StandardCharsets.UTF_8));
 
             String expectedResultCode = null;
             String expectedResult = null;
