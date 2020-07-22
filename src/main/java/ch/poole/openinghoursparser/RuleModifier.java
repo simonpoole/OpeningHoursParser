@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static ch.poole.openinghoursparser.I18n.tr;
 
@@ -121,8 +122,7 @@ public class RuleModifier extends Element {
         }
         if (other instanceof RuleModifier) {
             RuleModifier o = (RuleModifier) other;
-            return Util.equals(modifier, o.modifier)
-                    && Util.equals(comment, o.comment);
+            return Util.equals(modifier, o.modifier) && Util.equals(comment, o.comment);
         }
         return false;
     }
@@ -136,15 +136,17 @@ public class RuleModifier extends Element {
     }
 
     /**
-     * @return the modifier
+     * @return the modifier, null if not set
      */
+    @Nullable
     public Modifier getModifier() {
         return modifier;
     }
 
     /**
-     * @return the comment
+     * @return the comment, null if not set
      */
+    @Nullable
     public String getComment() {
         return comment;
     }
@@ -154,23 +156,27 @@ public class RuleModifier extends Element {
      * 
      * @param modifier the modifier to set
      */
-    public void setModifier(Modifier modifier) {
+    public void setModifier(@Nullable Modifier modifier) {
         this.modifier = modifier;
     }
 
     /**
      * Set the rule modifier
      * 
-     * @param modifier the modifier to set
+     * @param modifier the modifier to set, an empty string, or null will unset the modifier
      */
-    public void setModifier(String modifier) {
+    public void setModifier(@Nullable String modifier) {
+        if (modifier == null || "".equals(modifier)) {
+            this.modifier = null;
+            return;
+        }
         this.modifier = Modifier.getValue(modifier);
     }
 
     /**
      * @param comment the comment to set
      */
-    public void setComment(String comment) {
+    public void setComment(@Nullable String comment) {
         this.comment = comment;
     }
 

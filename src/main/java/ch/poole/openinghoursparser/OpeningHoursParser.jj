@@ -1214,10 +1214,11 @@ RuleModifier rule_modifier() :
   String c = null;
 }
 {
-  (m = < MODIFIER >
-  {
-    rm.setModifier(m.image);
-  }
+  (
+    m = < MODIFIER >
+    {
+      rm.setModifier(m.image);
+    }
   )?
   (
     c = comment()

@@ -24,6 +24,8 @@ package ch.poole.openinghoursparser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -550,6 +552,37 @@ public class UnitTest {
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
             assertEquals("Vorgefunden wurde:  <WEEKDAY> \"Su \" in Zeile 1, Zeichen 9" + System.lineSeparator() + "Erwartet wurde: <EOF>", pex.getMessage());
+        }
+    }
+
+    @Test
+    public void modifiers() {
+        try {
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH closed \"test\"".getBytes()));
+            List<Rule> rules = parser.rules(true);
+            assertEquals(1, rules.size());
+            RuleModifier modifier = rules.get(0).getModifier();
+            assertNotNull(modifier);
+            assertEquals(RuleModifier.Modifier.CLOSED, modifier.getModifier());
+            assertEquals("test", modifier.getComment());
+            //
+            parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH \"test\"".getBytes()));
+            rules = parser.rules(true);
+            assertEquals(1, rules.size());
+            modifier = rules.get(0).getModifier();
+            assertNotNull(modifier);
+            assertNull(modifier.getModifier());
+            assertEquals("test", modifier.getComment());
+            //
+            parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH unknown".getBytes()));
+            rules = parser.rules(true);
+            assertEquals(1, rules.size());
+            modifier = rules.get(0).getModifier();
+            assertNotNull(modifier);
+            assertEquals(RuleModifier.Modifier.UNKNOWN, modifier.getModifier());
+            assertNull(modifier.getComment());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
         }
     }
 }
