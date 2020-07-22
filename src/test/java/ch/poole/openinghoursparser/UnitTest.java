@@ -58,17 +58,17 @@ public class UnitTest {
         }
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
-            List<Rule> rules = parser.rules(false);
+            List<Rule> rules = parser.rules(true);
             assertEquals(1, rules.size());
         } catch (ParseException pex) {
             fail(pex.getMessage());
         }
         try {
-            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH,Mo 10:00-12:00".getBytes()));
             List<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
-            assertEquals("Holiday after weekday at line 1, column 7", pex.getMessage());
+            assertEquals("Holiday in weekday range at line 1, column 10", pex.getMessage());
         }
     }
 
@@ -538,11 +538,11 @@ public class UnitTest {
     public void translationSupport() {
         I18n.setLocale(Locale.GERMAN);
         try {
-            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH 10:00-12:00".getBytes()));
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH,Mo 10:00-12:00".getBytes()));
             List<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
-            assertEquals("Feiertag nach Wochentag in Zeile 1, Zeichen 7", pex.getMessage());
+            assertEquals("Feiertag in Wochentagbereich in Zeile 1, Zeichen 10", pex.getMessage());
         }
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("10:00-12:00 Su".getBytes()));

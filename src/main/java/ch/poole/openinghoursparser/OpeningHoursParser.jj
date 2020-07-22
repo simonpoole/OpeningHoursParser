@@ -1243,6 +1243,7 @@ Rule rule() :
   List < DateRange > ms = null;
   List < Holiday > hs = null;
   List < WeekDayRange > ds = null;
+  List < WeekDayRange > ds2 = null;
   List < TimeSpan > ts = null;
   RuleModifier rm = null;
   boolean colonForClarification = false;
@@ -1308,13 +1309,23 @@ Rule rule() :
           ds = weekday_selector() 
           < COMMA > 
           hs = holiday_sequence()
+          (
+            < COMMA >
+            ds2 = weekday_selector()
+          )?
         )
         {
-          if (strict)
-          {
-            ParseException e = new OpeningHoursParseException(tr("holiday_after_weekday"), token.next);
-            e.currentToken = token;
-            throw e;
+          if (ds2 != null) {
+            if (strict)
+            {
+              ParseException e = new OpeningHoursParseException(tr("holiday_in_weekday_range"), token.next);
+              e.currentToken = token;
+              throw e;
+            }
+            ds.addAll(ds2);
+          }
+          for (Holiday h:hs) {
+            h.setAfterWeekDays(true);  
           }
         }
       |

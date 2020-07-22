@@ -1,5 +1,6 @@
 package ch.poole.openinghoursparser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -95,13 +96,53 @@ public class Rule extends Element {
             if (colonForClarification) {
                 b.append(":");
             }
-            printList(false, true, b, "", holidays);
-            boolean holidaysAsWeekDays = false;
-            if (holidays != null && !holidays.isEmpty() && holidays.get(holidays.size() - 1).getUseAsWeekDay() && days != null && !days.isEmpty()) {
-                b.append(",");
-                holidaysAsWeekDays = true;
+            boolean addSpace = true;
+            // holiday handling is painful
+            List<Holiday> holidaysTemp = new ArrayList<>();
+            if (holidays != null) {
+                // first those that are not WD equivalent
+                for (Holiday h : holidays) {
+                    if (!h.getUseAsWeekDay()) {
+                        holidaysTemp.add(h);
+                    }
+                }
+                if (!holidaysTemp.isEmpty()) {
+                    printList(false, b.length() > 0, b, "", holidaysTemp);
+                    holidaysTemp.clear();
+                }
+                // now equivalent to WD that are before the WDs
+                for (Holiday h : holidays) {
+                    if (!h.getAfterWeekDays()) {
+                        holidaysTemp.add(h);
+                    }
+                }
+
+                if (!holidaysTemp.isEmpty()) {
+                    printList(false, b.length() > 0, b, "", holidaysTemp);
+                    if (days != null && !days.isEmpty()) {
+                        b.append(",");
+                        addSpace = false;
+                    }
+                    holidaysTemp.clear();
+                }
             }
-            printList(false, !holidaysAsWeekDays, b, "", days);
+            // print the week days
+            printList(false, addSpace, b, "", days);
+            if (holidays != null) {
+                // now holidays that were after the weekdays
+                for (Holiday h : holidays) {
+                    if (h.getAfterWeekDays()) {
+                        holidaysTemp.add(h);
+                    }
+                }
+                if (!holidaysTemp.isEmpty()) {
+                    if (days != null && !days.isEmpty()) {
+                        b.append(",");
+                        addSpace = false;
+                    }
+                    printList(false, addSpace, b, "", holidaysTemp);
+                }
+            }
             printList(false, true, b, "", times);
         }
         if (modifier != null) {
@@ -176,16 +217,9 @@ public class Rule extends Element {
     public boolean equals(Object other) {
         if (other instanceof Rule) {
             Rule o = (Rule) other;
-            return fallBack == o.fallBack && additive == o.additive
-                    && Util.equals(comment, o.comment)
-                    && twentyfourseven == o.twentyfourseven
-                    && Util.equals(years, o.years)
-                    && Util.equals(weeks, o.weeks)
-                    && Util.equals(dates, o.dates)
-                    && Util.equals(holidays, o.holidays)
-                    && Util.equals(days, o.days)
-                    && Util.equals(times, o.times)
-                    && Util.equals(modifier, o.modifier);
+            return fallBack == o.fallBack && additive == o.additive && Util.equals(comment, o.comment) && twentyfourseven == o.twentyfourseven
+                    && Util.equals(years, o.years) && Util.equals(weeks, o.weeks) && Util.equals(dates, o.dates) && Util.equals(holidays, o.holidays)
+                    && Util.equals(days, o.days) && Util.equals(times, o.times) && Util.equals(modifier, o.modifier);
         }
         return false;
     }
@@ -214,12 +248,8 @@ public class Rule extends Element {
      * @return true if r can be merged with this rule
      */
     public boolean isMergeableWith(Rule r) {
-        return this.equals(r) || (!twentyfourseven
-                && Util.equals(comment, r.comment)
-                && Util.equals(years, r.years)
-                && Util.equals(weeks, r.weeks)
-                && Util.equals(dates, r.dates)
-                && Util.equals(modifier, r.modifier));
+        return this.equals(r) || (!twentyfourseven && Util.equals(comment, r.comment) && Util.equals(years, r.years) && Util.equals(weeks, r.weeks)
+                && Util.equals(dates, r.dates) && Util.equals(modifier, r.modifier));
     }
 
     /**
