@@ -73,6 +73,18 @@ public class UnitTest {
             assertEquals("Holiday in weekday range at line 1, column 10", pex.getMessage());
         }
     }
+    
+    @Test
+    public void holidays() {
+        try {
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("PH Su 10:00-12:00".getBytes()));
+            List<Rule> rules = parser.rules(false);
+            assertEquals(1, rules.size());
+            assertEquals("PH Su 10:00-12:00", rules.get(0).toString());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
 
     @Test
     public void equalsTests() {

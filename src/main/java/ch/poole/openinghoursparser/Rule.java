@@ -112,7 +112,7 @@ public class Rule extends Element {
                 }
                 // now equivalent to WD that are before the WDs
                 for (Holiday h : holidays) {
-                    if (!h.getAfterWeekDays()) {
+                    if (h.getUseAsWeekDay() && !h.getAfterWeekDays()) {
                         holidaysTemp.add(h);
                     }
                 }
