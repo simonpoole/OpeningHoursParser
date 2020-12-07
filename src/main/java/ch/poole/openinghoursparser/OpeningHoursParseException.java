@@ -43,6 +43,13 @@ public class OpeningHoursParseException extends ParseException {
         this(message, token != null ? token.beginLine : -1, token != null ? token.beginColumn : -1);
     }
 
+    /**
+     * Construct a new exception from an optional message and indication of where the error was
+     * 
+     * @param message an optional message
+     * @param line the line where the exceptions was thrown
+     * @param column the column where the exception was thrown
+     */
     private OpeningHoursParseException(@Nullable String message, int line, int column) {
         super(message);
         this.line = line;
@@ -83,13 +90,27 @@ public class OpeningHoursParseException extends ParseException {
     }
 
     /**
+     * If we have multiple exceptions return the first one
+     * 
+     * @return the first exception or null
+     */
+    @Nullable
+    private OpeningHoursParseException getFirstException() {
+        if (exceptions != null && !exceptions.isEmpty()) {
+            return exceptions.get(0);
+        }
+        return null;
+    }
+
+    /**
      * Returns the line number
      * 
      * @return the line number
      */
     public int getLine() {
-        if (exceptions != null && !exceptions.isEmpty()) {
-            return exceptions.get(0).getLine();
+        OpeningHoursParseException first = getFirstException();
+        if (first != null) {
+            return first.getLine();
         }
         return line;
     }
@@ -100,16 +121,18 @@ public class OpeningHoursParseException extends ParseException {
      * @return the column number
      */
     public int getColumn() {
-        if (exceptions != null && !exceptions.isEmpty()) {
-            return exceptions.get(0).getColumn();
+        OpeningHoursParseException first = getFirstException();
+        if (first != null) {
+            return first.getColumn();
         }
         return column;
     }
 
     @Override
     public String getMessage() {
-        if (exceptions != null && !exceptions.isEmpty()) {
-            return exceptions.get(0).getMessage();
+        OpeningHoursParseException first = getFirstException();
+        if (first != null) {
+            return first.getMessage();
         }
         final String message = encountered == null || encountered.isEmpty() ? super.getMessage() : tr("exception_encountered", encountered);
         final String string = line >= 0 && column >= 0 ? tr("exception_line_column", message, line, column) : message;
