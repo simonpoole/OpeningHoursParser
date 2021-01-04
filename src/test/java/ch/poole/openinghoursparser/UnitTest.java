@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -73,7 +74,7 @@ public class UnitTest {
             assertEquals("Holiday in weekday range at line 1, column 10", pex.getMessage());
         }
     }
-    
+
     @Test
     public void holidays() {
         try {
@@ -595,6 +596,29 @@ public class UnitTest {
             assertNull(modifier.getComment());
         } catch (ParseException pex) {
             fail(pex.getMessage());
+        }
+    }
+
+    /**
+     * Check that restarting and reporting more than just the first error worked
+     */
+    @Test
+    public void multipleErrorsReporting() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Fx-Sa 02:00-01.00".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertTrue(pex instanceof OpeningHoursParseException);
+            assertEquals(2, ((OpeningHoursParseException) pex).getExceptions().size());
+            OpeningHoursParseException ex = ((OpeningHoursParseException) pex).getExceptions().get(0);
+            assertTrue(ex.getMessage().startsWith("Encountered:  <UNEXPECTED_CHAR> \"F \" at line 0, column 0"));
+            assertEquals(0, ex.getLine());
+            assertEquals(0, ex.getColumn());
+            ex = ((OpeningHoursParseException) pex).getExceptions().get(1);
+            assertEquals(1, ex.getLine());
+            assertEquals(17, ex.getColumn());
+            assertEquals("Invalid minutes at line 1, column 17", ex.getMessage());
         }
     }
 }

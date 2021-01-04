@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Collections;
 import java.util.Locale;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import ch.poole.openinghoursparser.Util;
 
@@ -60,26 +61,53 @@ public class OpeningHoursParser
   boolean strict = false;
   enum AMPM { AM, PM };
   boolean monthOnly = false;
+  List < ParseException > exceptions = new ArrayList < ParseException > ();
 
-    /**
-     * Get the output of the parser
-     *
-     * @param strict if true the parser will run in strict mode
-     * @return a List of Rule elements
-     * @throws OpeningHoursParseException on parse errors
-     */
-    public List<Rule> rules(boolean strict) throws OpeningHoursParseException {
-      try {
-        return rules0(strict);
-      } catch (OpeningHoursParseException ex) {
-        throw ex;
-      } catch (ParseException ex) {
-        throw new OpeningHoursParseException(ex);
+  /**
+   * Get the output of the parser
+   *
+   * @param strict if true the parser will run in strict mode
+   * @return a List of Rule elements
+   * @throws OpeningHoursParseException on parse errors
+   */
+  public List < Rule > rules(boolean strict) throws OpeningHoursParseException
+  {
+    try
+    {
+      List < Rule > r = rules0(strict);
+      if (exceptions.size() > 1)
+      {
+        throw new OpeningHoursParseException(exceptions);
       }
+      else if (exceptions.size() == 1)
+      {
+        ParseException t = exceptions.get(0);
+        if (t instanceof OpeningHoursParseException)
+        {
+          throw (OpeningHoursParseException) t;
+        }
+        throw new OpeningHoursParseException(t);
+      }
+      return r;
     }
+    catch (ParseException pex)
+    { // signature requires this
+      throw (OpeningHoursParseException) pex;
+    }
+  }
 }
 
 PARSER_END(OpeningHoursParser)
+
+JAVACODE
+
+void error_skip(ParseException e) {
+  exceptions.add(e);
+  Token t;
+  do {
+    t = getNextToken();
+  } while (t.kind != SEMICOLON && t.kind != COMMA && t.kind != FALLBACKSEPERATOR && t.kind != WS && t.kind != HYPHEN && t.kind != EOF);
+}
 
 SKIP :
 {
@@ -616,7 +644,7 @@ String weekday() :
 {
   Token w = null;
 }
-{
+{  
   (w = < WEEKDAY >
   {
     return w.image;
@@ -654,7 +682,7 @@ WeekDayRange weekday_range() :
   Token to = null;
   WeekDayRange wdr = new WeekDayRange();
 }
-{
+{ 
   startDay = weekday()
   (
     (
@@ -1387,39 +1415,57 @@ private List < Rule > rules0(boolean strict) :
   Rule r1 = null;
 }
 {
-  r = rule()
-  (
+  try
+  {
     (
-      < COMMA >
-      (
-        r1 = rule()
-    	{
-    	  r1.additive = true;
-    	  r1.fallBack = false;
-      	  result.add(0, r1);
-    	}
-      )
-    | < SEMICOLON >
-      (
-        r1 = rule()
-    	{
-    	  r1.additive = false;
-    	  r1.fallBack = false;
-      	  result.add(0, r1);
-    	}
-      )
-    | < FALLBACKSEPERATOR >
-      (
-        r1 = rule()
-    	{
-    	  r1.additive = false;
-    	  r1.fallBack = true;
-      	  result.add(0, r1);
-    	}
-      )
+    r = rule()
     )
-  )*
-  < EOF >
+  }
+  catch (ParseException e)
+  {
+    error_skip(e);
+    return rules0(strict);
+  }
+  try
+  {
+    (
+      (
+        < COMMA > 
+        (
+          r1 = rule()
+          {
+            r1.additive = true;
+            r1.fallBack = false;
+            result.add(0, r1);
+          }
+        )
+      | < SEMICOLON > 
+        (
+          r1 = rule()
+          {
+            r1.additive = false;
+            r1.fallBack = false;
+            result.add(0, r1);
+          }
+        )
+      | < FALLBACKSEPERATOR > 
+        (
+          r1 = rule()
+          {
+            r1.additive = false;
+            r1.fallBack = true;
+            result.add(0, r1);
+          }
+        )
+      )
+    ) * 
+    < EOF >
+  }
+  catch (ParseException e)
+  {
+    error_skip(e);
+    return rules0(strict);
+  }
   {
     r.additive = false;
     r.fallBack = false;
@@ -1431,6 +1477,5 @@ private List < Rule > rules0(boolean strict) :
 
 < * > TOKEN :
 {
-  < UNEXPECTED_CHAR : ~[] >
-} 
-
+  < UNEXPECTED_CHAR : ~[ ] >
+}
