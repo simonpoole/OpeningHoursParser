@@ -1477,5 +1477,5 @@ private List < Rule > rules0(boolean strict) :
 
 < * > TOKEN :
 {
-    < UNEXPECTED_CHAR : ~[ ] >
+  < UNEXPECTED_CHAR : ~[ ] >
 }
