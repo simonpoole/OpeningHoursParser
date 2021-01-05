@@ -26,7 +26,7 @@ public class Diff {
      * @param args reference file - new file - input file - optional output file
      */
     public static void main(String[] args) {
-        if (args.length != 3) {
+        if (args.length < 3) {
             System.err.println("Wrong number of arguments");
             System.exit(1);
         }
