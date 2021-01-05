@@ -109,23 +109,15 @@ void error_skip(ParseException e) {
   } while (t.kind != SEMICOLON && t.kind != COMMA && t.kind != FALLBACKSEPERATOR && t.kind != WS && t.kind != HYPHEN && t.kind != EOF);
 }
 
-SKIP :
+JAVACODE
+
+boolean precedingWs(Token t) {
+  return t.specialToken != null && t.specialToken.kind == WS;
+}
+
+SPECIAL_TOKEN :
 {
-  "\r"
-| "\n"
-| " "
-| "\t"
-| "\u200A"
-| "\u2009"
-| "\u00A0"
-| "\u2008"
-| "\u2002"
-| "\u2007"
-| "\u3000"
-| "\u2003"
-| "\u2006"
-| "\u2005"
-| "\u2004"
+  < WS : ["\r", "\n", " ", "\t", "\u200A", "\u2009", "\u00A0", "\u2008", "\u2002", "\u2007", "\u3000", "\u2003", "\u2006", "\u2005", "\u2004"] >
 }
 
 TOKEN :
@@ -161,11 +153,6 @@ TOKEN :
 TOKEN :
 {
   < DIGIT : [ "0"-"9" ] >
-}
-
-TOKEN :
-{
-  < WS : [ " ", "\t" ] >
 }
 
 TOKEN :
@@ -367,7 +354,7 @@ Token minutes() :
     m = < NUMBER >
   )
   {
-    if (strict && (m.image.length() !=  2 || !delimiter.image.startsWith(":"))) {
+    if (strict && (m.image.length() !=  2 || !delimiter.image.startsWith(":") || precedingWs(m) || precedingWs(delimiter))) {
       ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
       pex.currentToken = token;
       throw pex;
