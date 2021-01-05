@@ -137,6 +137,7 @@ TOKEN :
 | < HYPHEN : [ "-", "\u2013" ] >
 | < SLASH : "/" >
 | < STOP : "." >
+| < H  : "h" >
 }
 
 TOKEN :
@@ -155,11 +156,6 @@ TOKEN :
 TOKEN :
 {
   < NUMBER : (< DIGIT >)+ >
-}
-
-TOKEN :
-{
-  < MINUTES : ( < COLON > | < STOP > | "h" ) ("0" | ([ "0"-"5" ] < DIGIT >))>
 }
 
 TOKEN :
@@ -358,6 +354,28 @@ Token hours() :
     return h;
   }
 }
+
+Token minutes() :
+{
+  Token delimiter = null;
+  Token m = null;
+}
+{
+  (      (      (delimiter =  < COLON > ) | (delimiter = < STOP > ) | (delimiter= < H >)
+    )
+    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 59) })
+    m = < NUMBER >
+  )
+  {
+    if (strict && (m.image.length() !=  2 || !delimiter.image.startsWith(":"))) {
+      ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
+      pex.currentToken = token;
+      throw pex;
+    } 
+    return m;
+  }
+}
+
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh
  *
@@ -381,17 +399,8 @@ int time() :
     h = hours()
   )
   (
-    (
-      m = < MINUTES >
-    )
-    {
-      if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
-        ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
-	    pex.currentToken = token;
-        throw pex;
-	  } 
-      result = Integer.parseInt(m.image.substring(1));
-    }
+    LOOKAHEAD(minutes(), { h!=null })
+    m = minutes()
   )?
   (
     ampm = ampm()
@@ -401,6 +410,9 @@ int time() :
         ParseException pex = new OpeningHoursParseException(tr("hours_without_minutes"));
 	    pex.currentToken = token;
         throw pex;
+    }
+    if (m != null) {
+      result = Integer.parseInt(m.image);
     }
     result = result + Integer.parseInt(h.image) * 60;
     if (ampm == AMPM.PM && result < TWELVEHOURS) { // only use add 12h if the time is less than 12 h
@@ -456,20 +468,21 @@ int extendedtime() :
     h = < NUMBER >
   )
   (
-    m = < MINUTES >
-    {
-      if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
-        ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
-	    pex.currentToken = token;
-        throw pex;
-	  }
-      result = Integer.parseInt(m.image.substring(1));
-    }
+    LOOKAHEAD(minutes(), { h!=null })
+    m = minutes()
   )?
   (
     ampm = ampm()
   )?
   {
+    if (strict && m == null) {
+        ParseException pex = new OpeningHoursParseException(tr("hours_without_minutes"));
+        pex.currentToken = token;
+        throw pex;
+    }
+    if (m != null) {
+      result = Integer.parseInt(m.image);
+    }
     result = result + Integer.parseInt(h.image) * 60;
     if (ampm == AMPM.PM && result < TWELVEHOURS) {
       result = result + TWELVEHOURS;
@@ -531,7 +544,7 @@ int interval() :
     )
   |
     (
-      hours = hours() number = < MINUTES >
+      hours = hours() number = minutes()
       {
         interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(number.image.substring(1));
       }
@@ -927,7 +940,8 @@ int daynum() :
 }
 {
   (
-    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 1, 31) })
+    // FIXME
+    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 1, 31) && !(getToken(2).kind == COLON && getToken(3).kind == NUMBER && getToken(4).kind != COLON)})
     n = < NUMBER >
   )
   {
@@ -979,7 +993,8 @@ DateWithOffset datewithoffset(boolean mo) :
         ( 
 		  // check that the daynum is not the hour part of a time, month should really only be optional if this is the end of a range
           LOOKAHEAD(((< MONTH >)? daynum()),
-          	{!monthOnly && (getToken(1).kind == NUMBER && getToken(2).kind != MINUTES) || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && getToken(3).kind != MINUTES) })  
+          	{!monthOnly && (getToken(1).kind == NUMBER && (getToken(2).kind != COLON ||  getToken(2).kind != STOP || getToken(2).kind != H))
+          	  || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && (getToken(2).kind != COLON ||  getToken(2).kind != STOP || getToken(2).kind != H)) })  
           (
             (
               m = < MONTH >
