@@ -99,6 +99,22 @@ task updateTranslations(type: Exec) {
 updateTranslations.group = 'translation'
 updateTranslations.description = 'Update translations by executing the transifex tx utility'
 
+task showDifferences(type: JavaExec) {
+    main = "ch.poole.openinghoursparser.Diff"
+    classpath = sourceSets.test.runtimeClasspath
+    args('test-data/oh.txt-result', 'test-data/oh.txt-result-temp', 'test-data/oh.txt')
+}
+showDifferences.group = 'verification'
+showDifferences.description = "Extract differences between reference test results and current results"
+
+task showDifferencesStrict(type: JavaExec) {
+    main = "ch.poole.openinghoursparser.Diff"
+    classpath = sourceSets.test.runtimeClasspath
+    args('test-data/oh.txt-result-strict', 'test-data/oh.txt-result-strict-temp', 'test-data/oh.txt')
+}
+showDifferencesStrict.group = 'verification'
+showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
+
 // test input may change and require rerunning the tests
 test.inputs.files("test-data/oh.txt")
 

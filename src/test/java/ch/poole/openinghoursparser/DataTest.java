@@ -22,24 +22,20 @@
 
 package ch.poole.openinghoursparser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -80,6 +76,7 @@ public class DataTest {
      * @param resultsFile file to write results to
      */
     private void parseData(String inputFile, boolean strict, boolean debug, String resultsFile) {
+        int differences = 0;
         int successful = 0;
         int errors = 0;
         int lexical = 0;
@@ -89,7 +86,6 @@ public class DataTest {
         BufferedWriter outputFail = null;
         String line = null;
         try {
-
             inputRules = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), StandardCharsets.UTF_8));
             try {
                 inputExpected = new BufferedReader(new InputStreamReader(new FileInputStream(resultsFile), StandardCharsets.UTF_8));
@@ -98,11 +94,12 @@ public class DataTest {
             }
             outputExpected = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(inputFile + "-result" + (strict ? "-strict" : "") + (debug ? "-debug" : "") + "-temp"), StandardCharsets.UTF_8));
-            outputFail = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(inputFile + "-fail" + (strict ? "-strict" + (debug ? "-debug" : "") : "")), StandardCharsets.UTF_8));
+            outputFail = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(inputFile + "-fail" + (strict ? "-strict" + (debug ? "-debug" : "") : "")), StandardCharsets.UTF_8));
 
             String expectedResultCode = null;
             String expectedResult = null;
+            int lineNumber = 1;
             while ((line = inputRules.readLine()) != null) {
                 if (inputExpected != null) {
                     String[] expected = inputExpected.readLine().split("\t");
@@ -115,24 +112,12 @@ public class DataTest {
                 }
                 try {
                     OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(line.getBytes()));
-                    List<Rule> rules = parser.rules(strict);
+                    List<ch.poole.openinghoursparser.Rule> rules = parser.rules(strict);
+                    String result = debug ? Util.rulesToOpeningHoursDebugString(rules) : Util.rulesToOpeningHoursString(rules);
                     successful++;
-                    if (debug) {
-                        outputExpected.write("0\t" + Util.rulesToOpeningHoursDebugString(rules) + "\n");
-                        if (expectedResultCode != null) {
-                            assertEquals("0", expectedResultCode);
-                            if (expectedResult != null) {
-                                assertEquals(expectedResult, Util.rulesToOpeningHoursDebugString(rules));
-                            }
-                        }
-                    } else {
-                        outputExpected.write("0\t" + Util.rulesToOpeningHoursString(rules) + "\n");
-                        if (expectedResultCode != null) {
-                            assertEquals("0", expectedResultCode);
-                            if (expectedResult != null) {
-                                assertEquals(expectedResult, Util.rulesToOpeningHoursString(rules));
-                            }
-                        }
+                    outputExpected.write("0\t" + result + "\n");
+                    if (expectedResultCode != null && (!"0".equals(expectedResultCode) || (expectedResult != null && !expectedResult.equals(result)))) {
+                        differences++;
                     }
                 } catch (ParseException pex) {
                     if (pex.toString().contains("Lexical")) {
@@ -142,9 +127,9 @@ public class DataTest {
                     }
                     errors++;
                     outputExpected.write("1\n");
-                    outputFail.write(line + "\t" + pex.toString() + "\n");
-                    if (expectedResultCode != null) {
-                        assertEquals("1", expectedResultCode);
+                    outputFail.write(lineNumber + "\t" + line + "\t" + pex.toString() + "\n");
+                    if (expectedResultCode != null && !"1".equals(expectedResultCode)) {
+                        differences++;
                     }
                 } catch (NumberFormatException nfx) {
                     if (!quiet) {
@@ -153,9 +138,8 @@ public class DataTest {
                     lexical++;
                     errors++;
                     outputExpected.write("2\n");
-                    outputFail.write(line + "\t" + nfx.toString() + "\n");
-                    if (expectedResultCode != null) {
-                        assertEquals("2", expectedResultCode);
+                    if (expectedResultCode != null && !"2".equals(expectedResultCode)) {
+                        differences++;
                     }
                 } catch (Error err) {
                     if (err.toString().contains("Lexical")) {
@@ -165,11 +149,12 @@ public class DataTest {
                     }
                     errors++;
                     outputExpected.write("3\n");
-                    outputFail.write(line + "\t" + err.toString() + "\n");
-                    if (expectedResultCode != null) {
-                        assertEquals("3", expectedResultCode);
+                    outputFail.write(lineNumber + "\t" + line + "\t" + err.toString() + "\n");
+                    if (expectedResultCode != null && !"3".equals(expectedResultCode)) {
+                        differences++;
                     }
                 }
+                lineNumber++;
             }
         } catch (FileNotFoundException fnfex) {
             System.out.println("File not found " + fnfex.toString());
@@ -201,6 +186,9 @@ public class DataTest {
                     e.printStackTrace();
                 }
             }
+        }
+        if (differences > 0) {
+            fail(Integer.toString(differences) + " differences found.");
         }
         System.out.println("Successful " + successful + " errors " + errors + " of which " + lexical + " are lexical errors");
     }
