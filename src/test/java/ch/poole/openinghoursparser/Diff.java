@@ -54,7 +54,7 @@ public class Diff {
             final String s1 = o1.get(i);
             final String s2 = o2.get(i);
             if (!s1.equals(s2)) {
-                os.println("Line " + i + "\t" + s1 + "\t" + s2 + "\t" + in.get(i));
+                os.println("Line " + (i + 1) + "\t" + s1 + "\t" + s2 + "\t" + in.get(i));
             }
         }
     }
