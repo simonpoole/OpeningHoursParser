@@ -350,11 +350,11 @@ Token minutes() :
 {
   (      (      (delimiter =  < COLON > ) | (delimiter = < STOP > ) | (delimiter= < H >)
     )
-    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 59) })
+    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 59) && (getToken(1).image.length() >= 2 || "0".equals(getToken(1).image))})
     m = < NUMBER >
   )
   {
-    if (strict && (m.image.length() !=  2 || !delimiter.image.startsWith(":") || precedingWs(m) || precedingWs(delimiter))) {
+    if (strict && (m.image.length() !=  2 || delimiter.kind != COLON || precedingWs(m) || precedingWs(delimiter))) {
       ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
       pex.currentToken = token;
       throw pex;
