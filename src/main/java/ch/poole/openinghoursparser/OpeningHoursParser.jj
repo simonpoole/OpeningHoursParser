@@ -327,7 +327,7 @@ void getChar(StringBuilder builder) :
 }
 
 /**
- * returns a number if between 0 and 24
+ * returns a number Token if between 0 and 24
  * uses semantic lookahead
  */
 Token hours() :
@@ -342,6 +342,10 @@ Token hours() :
   }
 }
 
+/**
+ * returns a number Token if between 0 and 59 and starts with a suitable delimiter
+ * uses semantic lookahead
+ */
 Token minutes() :
 {
   Token delimiter = null;
@@ -1287,6 +1291,7 @@ Rule rule() :
       < COLON >
     )
   |
+    LOOKAHEAD( (year_selector() | week_selector() | date_selector())? ) 
     (
       (
         ys = year_selector()
