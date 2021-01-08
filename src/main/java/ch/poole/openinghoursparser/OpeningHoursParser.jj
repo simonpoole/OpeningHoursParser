@@ -109,23 +109,15 @@ void error_skip(ParseException e) {
   } while (t.kind != SEMICOLON && t.kind != COMMA && t.kind != FALLBACKSEPERATOR && t.kind != WS && t.kind != HYPHEN && t.kind != EOF);
 }
 
-SKIP :
+JAVACODE
+
+boolean precedingWs(Token t) {
+  return t.specialToken != null && t.specialToken.kind == WS;
+}
+
+SPECIAL_TOKEN :
 {
-  "\r"
-| "\n"
-| " "
-| "\t"
-| "\u200A"
-| "\u2009"
-| "\u00A0"
-| "\u2008"
-| "\u2002"
-| "\u2007"
-| "\u3000"
-| "\u2003"
-| "\u2006"
-| "\u2005"
-| "\u2004"
+  < WS : ["\r", "\n", " ", "\t", "\u200A", "\u2009", "\u00A0", "\u2008", "\u2002", "\u2007", "\u3000", "\u2003", "\u2006", "\u2005", "\u2004"] >
 }
 
 TOKEN :
@@ -137,6 +129,7 @@ TOKEN :
 | < HYPHEN : [ "-", "\u2013" ] >
 | < SLASH : "/" >
 | < STOP : "." >
+| < H  : "h" >
 }
 
 TOKEN :
@@ -159,17 +152,7 @@ TOKEN :
 
 TOKEN :
 {
-  < MINUTES : ( < COLON > | < STOP > | "h" ) ("0" | ([ "0"-"5" ] < DIGIT >))>
-}
-
-TOKEN :
-{
   < DIGIT : [ "0"-"9" ] >
-}
-
-TOKEN :
-{
-  < WS : [ " ", "\t" ] >
 }
 
 TOKEN :
@@ -344,7 +327,7 @@ void getChar(StringBuilder builder) :
 }
 
 /**
- * returns a number if between 0 and 24
+ * returns a number Token if between 0 and 24
  * uses semantic lookahead
  */
 Token hours() :
@@ -358,6 +341,32 @@ Token hours() :
     return h;
   }
 }
+
+/**
+ * returns a number Token if between 0 and 59 and starts with a suitable delimiter
+ * uses semantic lookahead
+ */
+Token minutes() :
+{
+  Token delimiter = null;
+  Token m = null;
+}
+{
+  (      (      (delimiter =  < COLON > ) | (delimiter = < STOP > ) | (delimiter= < H >)
+    )
+    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 59) && (getToken(1).image.length() >= 2 || "0".equals(getToken(1).image))})
+    m = < NUMBER >
+  )
+  {
+    if (strict && (m.image.length() !=  2 || delimiter.kind != COLON || precedingWs(m) || precedingWs(delimiter))) {
+      ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
+      pex.currentToken = token;
+      throw pex;
+    } 
+    return m;
+  }
+}
+
 /**
  * returns the total number of minutes for a time of the form hh:00 or just hh
  *
@@ -381,17 +390,8 @@ int time() :
     h = hours()
   )
   (
-    (
-      m = < MINUTES >
-    )
-    {
-      if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
-        ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
-	    pex.currentToken = token;
-        throw pex;
-	  } 
-      result = Integer.parseInt(m.image.substring(1));
-    }
+    LOOKAHEAD(minutes(), { h!=null })
+    m = minutes()
   )?
   (
     ampm = ampm()
@@ -401,6 +401,9 @@ int time() :
         ParseException pex = new OpeningHoursParseException(tr("hours_without_minutes"));
 	    pex.currentToken = token;
         throw pex;
+    }
+    if (m != null) {
+      result = Integer.parseInt(m.image);
     }
     result = result + Integer.parseInt(h.image) * 60;
     if (ampm == AMPM.PM && result < TWELVEHOURS) { // only use add 12h if the time is less than 12 h
@@ -456,20 +459,21 @@ int extendedtime() :
     h = < NUMBER >
   )
   (
-    m = < MINUTES >
-    {
-      if (strict && (m.image.length() < 3 || !m.image.startsWith(":"))) {
-        ParseException pex = new OpeningHoursParseException(tr("invalid_minutes"), token.next);
-	    pex.currentToken = token;
-        throw pex;
-	  }
-      result = Integer.parseInt(m.image.substring(1));
-    }
+    LOOKAHEAD(minutes(), { h!=null })
+    m = minutes()
   )?
   (
     ampm = ampm()
   )?
   {
+    if (strict && m == null) {
+        ParseException pex = new OpeningHoursParseException(tr("hours_without_minutes"));
+        pex.currentToken = token;
+        throw pex;
+    }
+    if (m != null) {
+      result = Integer.parseInt(m.image);
+    }
     result = result + Integer.parseInt(h.image) * 60;
     if (ampm == AMPM.PM && result < TWELVEHOURS) {
       result = result + TWELVEHOURS;
@@ -531,7 +535,7 @@ int interval() :
     )
   |
     (
-      hours = hours() number = < MINUTES >
+      hours = hours() number = minutes()
       {
         interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(number.image.substring(1));
       }
@@ -927,7 +931,8 @@ int daynum() :
 }
 {
   (
-    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 1, 31) })
+    // FIXME
+    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 1, 31) && !(getToken(2).kind == COLON && getToken(3).kind == NUMBER && getToken(4).kind != COLON)})
     n = < NUMBER >
   )
   {
@@ -979,7 +984,8 @@ DateWithOffset datewithoffset(boolean mo) :
         ( 
 		  // check that the daynum is not the hour part of a time, month should really only be optional if this is the end of a range
           LOOKAHEAD(((< MONTH >)? daynum()),
-          	{!monthOnly && (getToken(1).kind == NUMBER && getToken(2).kind != MINUTES) || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && getToken(3).kind != MINUTES) })  
+          	{!monthOnly && (getToken(1).kind == NUMBER && (getToken(2).kind != COLON ||  getToken(2).kind != STOP || getToken(2).kind != H))
+          	  || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && (getToken(2).kind != COLON ||  getToken(2).kind != STOP || getToken(2).kind != H)) })  
           (
             (
               m = < MONTH >
@@ -1285,6 +1291,7 @@ Rule rule() :
       < COLON >
     )
   |
+    LOOKAHEAD( (year_selector() | week_selector() | date_selector())? ) 
     (
       (
         ys = year_selector()

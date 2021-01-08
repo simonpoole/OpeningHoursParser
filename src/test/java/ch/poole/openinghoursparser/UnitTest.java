@@ -564,7 +564,7 @@ public class UnitTest {
             List<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
-            assertEquals("Vorgefunden wurde:  <WEEKDAY> \"Su \" in Zeile 1, Zeichen 9" + System.lineSeparator() + "Erwartet wurde: <EOF>", pex.getMessage());
+            assertEquals("Vorgefunden wurde:  <WEEKDAY> \"Su \" in Zeile 1, Zeichen 10" + System.lineSeparator() + "Erwartet wurde: <EOF>", pex.getMessage());
         }
     }
 
@@ -620,5 +620,16 @@ public class UnitTest {
             assertEquals(17, ex.getColumn());
             assertEquals("Invalid minutes at line 1, column 17", ex.getMessage());
         }
+    }
+    
+    @Test
+    public void noSpaceAfterColon() {       
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Oct-Mar:07:00-20:00; Apr:07:00-22:00; May-Sep:07:00-23:00".getBytes()));   
+        try {
+            List<Rule> rules = parser.rules(true);            
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        
     }
 }

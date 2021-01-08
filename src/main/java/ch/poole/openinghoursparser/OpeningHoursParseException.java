@@ -24,6 +24,8 @@ public class OpeningHoursParseException extends ParseException {
     private String                           expected    = null; // NOSONAR
     private List<OpeningHoursParseException> exceptions  = null; // NOSONAR
 
+    private static String EOL = System.getProperty("line.separator", "\n");
+
     /**
      * Construct a new exception from an optional message
      * 
