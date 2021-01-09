@@ -2,7 +2,8 @@
 
 # OpeningHoursParser
 
-This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification].
+This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification]. It is used in a number of OpenStreetMap projects, for example
+in [Vespucci](https://github.com/MarcusWolschon/osmeditor4android). As the opening hours specification is currently reasonably stable you shouldn't expect lots of activity in this repository.
 
 It parses 146'993 (91%) of 161'268 unique test strings in non-strict mode. The remaining 14'275 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 15'802 fail (total 30'077).
 
@@ -40,8 +41,10 @@ try {
 		new ByteArrayInputStream(line.getBytes()));
 	List<Rule> rules = parser.rules(strict);
 	// ...
-} catch(ParseException e) {
+} catch(OpeningHoursParseException e) {
 	// ...
+	// e.getExceptions() will return a List<OpeningHoursParseException> 
+	// containing more than one Exception if more than one issue was found 
 }
 ```
 
