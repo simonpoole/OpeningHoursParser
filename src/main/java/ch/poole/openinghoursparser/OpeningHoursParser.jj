@@ -126,7 +126,7 @@ TOKEN :
 | < SEMICOLON : ";" >
 | < COLON : ":" >
 | < PLUS : "+" >
-| < HYPHEN : [ "-", "\u2013" ] >
+| < HYPHEN : [ "-", "\u2013", "\u2014" ] >
 | < SLASH : "/" >
 | < STOP : "." >
 | < H  : "h" >
