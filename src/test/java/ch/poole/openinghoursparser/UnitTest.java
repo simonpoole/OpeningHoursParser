@@ -630,6 +630,16 @@ public class UnitTest {
         } catch (ParseException pex) {
             fail(pex.getMessage());
         }
-        
+    }
+    
+    @Test
+    public void dateRangeWithOccurance() {       
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Jan 1-Mar Mo[1], Jun 1-Jul Tu[1]".getBytes()));   
+        try {
+            List<Rule> rules = parser.rules(true);      
+            assertEquals(1, rules.size());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
     }
 }

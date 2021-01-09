@@ -130,6 +130,8 @@ TOKEN :
 | < SLASH : "/" >
 | < STOP : "." >
 | < H  : "h" >
+| < BRACKET_LEFT : "[" >
+| < BRACKET_RIGHT : "]" >
 }
 
 TOKEN :
@@ -163,6 +165,12 @@ TOKEN :
 TOKEN :
 {
   < ALWAYS : "24/7" >
+}
+
+TOKEN :
+{
+  < DAYS : "day" ("s")? >
+| < WEEK : "week" > 
 }
 
 TOKEN :
@@ -706,7 +714,7 @@ WeekDayRange weekday_range() :
   |
     (
       (
-        "[" nth = nth()
+        < BRACKET_LEFT > nth = nth()
         (
           < COMMA > nth1 = nth()
           {
@@ -717,7 +725,7 @@ WeekDayRange weekday_range() :
           wdr.add(nth);
           Collections.reverse(wdr.getNths());
         }
-        "]"
+        < BRACKET_RIGHT >
       )
       (
         (
@@ -727,7 +735,7 @@ WeekDayRange weekday_range() :
           )
           n = number()
         )
-        "day" ("s")?
+        < DAYS >
         {
           wdr.offset = Integer.parseInt(n.image);
           if (m != null)
@@ -820,7 +828,7 @@ Holiday holiday() :
       )
       n = number()
     )
-    "day" ("s")?
+    < DAYS >
     {
       result.offset = Integer.parseInt(n.image);
       if (m != null)
@@ -970,6 +978,7 @@ DateWithOffset datewithoffset(boolean mo) :
   String nthWd = null;
   Token sign = null;
   monthOnly = mo; // hack we can't pass an argument to semantic lookahead
+  
 }
 { 
   (
@@ -985,7 +994,7 @@ DateWithOffset datewithoffset(boolean mo) :
 		  // check that the daynum is not the hour part of a time, month should really only be optional if this is the end of a range
           LOOKAHEAD(((< MONTH >)? daynum()),
           	{!monthOnly && (getToken(1).kind == NUMBER && (getToken(2).kind != COLON ||  getToken(2).kind != STOP || getToken(2).kind != H))
-          	  || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && (getToken(2).kind != COLON ||  getToken(2).kind != STOP || getToken(2).kind != H)) })  
+          	  || ( getToken(1).kind == MONTH && getToken(2).kind == NUMBER && (getToken(3).kind != COLON ||  getToken(3).kind != STOP || getToken(3).kind != H)) })  
           (
             (
               m = < MONTH >
@@ -997,25 +1006,26 @@ DateWithOffset datewithoffset(boolean mo) :
           )
         |
           // check that the occurrence spec is not actually part of a weekday range, the OH specification is ambiguous on how this should be handled if it is not a range
-          LOOKAHEAD(13, < MONTH > weekday()"[" (< HYPHEN >)? one2five() "]" ( (< HYPHEN > | < PLUS >) number() "day" ("s")?)?,
-          	{!monthOnly && !(
-				(getToken(4).kind != HYPHEN
-					&& (getToken(6).kind == COMMA || (getToken(8).image.equals("day") && (getToken(9).kind == COMMA || (getToken(10).image.equals("s") && getToken(11).kind == COMMA && getToken(12).kind == WEEKDAY)))))
-              ||(getToken(4).kind == HYPHEN 
-					&& (getToken(7).kind == COMMA || (getToken(9).image.equals("day") && (getToken(10).kind == COMMA || (getToken(11).image.equals("s") && getToken(13).kind == COMMA && getToken(12).kind == WEEKDAY)))))
-          	  )})  
+          // examples
+          // Jan,Feb Sa[-2] -1 day,Sa[-2],Sa[-2] +1 day,Sa[-1] -1 day,Sa[-1],Sa[-1] +1 day ....
+          // Jan,Feb Sa[-2],Sa[-2],Sa[-1] -1 day,Sa[-1],Sa[-1] +1 day 
+          LOOKAHEAD(11, < MONTH > weekday() < BRACKET_LEFT > (< HYPHEN >)? one2five() < BRACKET_RIGHT > ( (< HYPHEN > | < PLUS >) number() < DAYS >)?,
+            { !monthOnly && ((getToken( getToken(4).kind == HYPHEN ? 9 : 8).kind == DAYS && getToken( getToken(4).kind == HYPHEN ? 10 : 9).kind != COMMA)
+                          || (getToken( getToken(4).kind == HYPHEN ? 9 : 8).kind != DAYS && getToken( getToken(4).kind == HYPHEN ? 7 : 6).kind != COMMA)
+                          || (getToken( getToken(4).kind == HYPHEN ? 9 : 8).kind == DAYS && getToken( getToken(4).kind == HYPHEN ? 10 : 9).kind == COMMA && getToken( getToken(4).kind == HYPHEN ? 11 : 10).kind != WEEKDAY)
+                          || (getToken( getToken(4).kind == HYPHEN ? 9 : 8).kind != DAYS && getToken( getToken(4).kind == HYPHEN ? 7 : 6).kind == COMMA && getToken( getToken(4).kind == HYPHEN ? 8 : 7).kind != WEEKDAY))} )    
           (
             m = < MONTH >
             {
               dwo.setMonth(m.image);
             }
             nthWd = weekday()
-            "["
+            < BRACKET_LEFT >
             (
               sign = < HYPHEN >
             )?
             nth = one2five()
-            "]"
+            < BRACKET_RIGHT >
           )
           {
             dwo.nthWeekDay = WeekDay.getValue(nthWd);
@@ -1051,7 +1061,7 @@ DateWithOffset datewithoffset(boolean mo) :
           | < PLUS >
           )
           num = number() 
-          "day" ("s")?
+          < DAYS >
         )
         {
           dwo.dayOffset = Integer.parseInt(num.image) * (minus != null ? - 1 : 1);
@@ -1174,7 +1184,7 @@ List < WeekRange > week_selector() :
   List < WeekRange > result = new ArrayList < WeekRange > ();
 }
 {
-  "week" wr = week_range()
+  < WEEK > wr = week_range()
   (
     < COMMA > wr1 = week_range()
     {
