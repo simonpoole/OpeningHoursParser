@@ -6,7 +6,7 @@ package ch.poole.openinghoursparser;
  * @author Simon Poole
  *
  */
-abstract class Element implements Copy {
+abstract class Element implements Copy<Element> {
     // put other methods from interface here
 
     @Override
