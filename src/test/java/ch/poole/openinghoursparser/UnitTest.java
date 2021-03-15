@@ -23,7 +23,7 @@
 package ch.poole.openinghoursparser;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -142,15 +142,15 @@ public class UnitTest {
         assertEquals(dwo1.hashCode(), dwo2.hashCode());
 
         dwo2.day = 2;
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
         dwo2.day = 1;
         assertEquals(dwo1, dwo2);
         dwo2.dayOffset = 2;
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
         dwo2.dayOffset = 1;
         assertEquals(dwo1, dwo2);
         dwo2.setMonth("Feb");
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
         dwo2.setMonth("Jan");
         assertEquals(dwo1, dwo2);
         // dwo2.nth=2;
@@ -158,11 +158,11 @@ public class UnitTest {
         // dwo2.nth=1;
         assertEquals(dwo1, dwo2);
         dwo2.openEnded = false;
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
         dwo2.openEnded = true;
         assertEquals(dwo1, dwo2);
         dwo2.varDate = null;
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
         dwo2.setVarDate("easter");
         assertEquals(dwo1, dwo2);
         // dwo2.setWeekDay("Tu");
@@ -170,15 +170,15 @@ public class UnitTest {
         // dwo2.setWeekDay("Mo");
         assertEquals(dwo1, dwo2);
         dwo2.setWeekDayOffset("Tu");
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
         dwo2.setWeekDayOffset("Mo");
         assertEquals(dwo1, dwo2);
         dwo2.weekDayOffsetPositive = false;
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
         dwo2.weekDayOffsetPositive = true;
         assertEquals(dwo1, dwo2);
         dwo2.setYear(2000);
-        assertFalse(dwo1.equals(dwo2));
+        assertNotEquals(dwo1, dwo2);
 
         TimeSpan ts1 = new TimeSpan();
         ts1.start = 1;
@@ -217,23 +217,23 @@ public class UnitTest {
 
         assertEquals(ts1, ts2);
         ts2.start = 2;
-        assertFalse(ts1.equals(ts2));
+        assertNotEquals(ts1, ts2);
         ts2.start = 1;
         assertEquals(ts1, ts2);
         vt2.setEvent("sunset");
-        assertFalse(ts1.equals(ts2));
+        assertNotEquals(ts1, ts2);
         vt2.setEvent("sunrise");
         assertEquals(ts1, ts2);
         ts2.end = 4;
-        assertFalse(ts1.equals(ts2));
+        assertNotEquals(ts1, ts2);
         ts2.end = 3;
         assertEquals(ts1, ts2);
         ts2.openEnded = false;
-        assertFalse(ts1.equals(ts2));
+        assertNotEquals(ts1, ts2);
         ts2.openEnded = true;
         assertEquals(ts1, ts2);
         ts2.interval = 1;
-        assertFalse(ts1.equals(ts2));
+        assertNotEquals(ts1, ts2);
 
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("2010-2011 PH Mo,Tu 10:00-11:00".getBytes()));
@@ -247,7 +247,7 @@ public class UnitTest {
             assertEquals(rules1.get(0).hashCode(), rules2.get(0).hashCode());
             parser = new OpeningHoursParser(new ByteArrayInputStream("2010-2011 SH Mo,Tu 10:00-11:00".getBytes()));
             List<Rule> rules3 = parser.rules(false);
-            assertFalse(rules1.get(0).equals(rules3.get(0)));
+            assertNotEquals(rules1.get(0), rules3.get(0));
         } catch (ParseException pex) {
             fail(pex.getMessage());
         }
@@ -621,22 +621,22 @@ public class UnitTest {
             assertEquals("Invalid minutes at line 1, column 17", ex.getMessage());
         }
     }
-    
+
     @Test
-    public void noSpaceAfterColon() {       
-        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Oct-Mar:07:00-20:00; Apr:07:00-22:00; May-Sep:07:00-23:00".getBytes()));   
+    public void noSpaceAfterColon() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Oct-Mar:07:00-20:00; Apr:07:00-22:00; May-Sep:07:00-23:00".getBytes()));
         try {
-            List<Rule> rules = parser.rules(true);            
+            List<Rule> rules = parser.rules(true);
         } catch (ParseException pex) {
             fail(pex.getMessage());
         }
     }
-    
+
     @Test
-    public void dateRangeWithOccurance() {       
-        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Jan 1-Mar Mo[1], Jun 1-Jul Tu[1]".getBytes()));   
+    public void dateRangeWithOccurance() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Jan 1-Mar Mo[1], Jun 1-Jul Tu[1]".getBytes()));
         try {
-            List<Rule> rules = parser.rules(true);      
+            List<Rule> rules = parser.rules(true);
             assertEquals(1, rules.size());
         } catch (ParseException pex) {
             fail(pex.getMessage());
