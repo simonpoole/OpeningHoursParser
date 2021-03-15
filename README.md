@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/simonpoole/OpeningHoursParser.svg?branch=master)](https://travis-ci.org/simonpoole/OpeningHoursParser)
+![build status](https://github.com/simonpoole/OpeningHoursParser/actions) ![Quality Gate Status](https://sonarcloud.io/dashboard?id=OpeningHoursParser) ![Coverage](https://sonarcloud.io/dashboard?id=OpeningHoursParser) ![sonarcloud bugs](https://sonarcloud.io/component_measures?id=OpeningHoursParser&metric=bugs) ![sonarcould maintainability](https://sonarcloud.io/component_measures?id=OpeningHoursParser&metric=Maintainability) ![sonarcloud security](https://sonarcloud.io/component_measures?id=OpeningHoursParser&metric=Security) ![sonarcloud reliability](https://sonarcloud.io/component_measures?id=OpeningHoursParser&metric=Reliability)
 
 # OpeningHoursParser
 
