@@ -23,7 +23,7 @@ jobs:
       shell: bash
       run: |
          mkdir -p ~/.gradle/
-         echo "::set-env name=GRADLE_USER_HOME::$HOME/.gradle"
+         echo "GRADLE_USER_HOME=$HOME/.gradle" >> $GITHUB_ENV
          echo ossrhUsername=dummy > ~/.gradle/gradle.properties
          echo ossrhPassword=dummy >> ~/.gradle/gradle.properties  
     - name: Build with Gradle
