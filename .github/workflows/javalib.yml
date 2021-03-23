@@ -19,6 +19,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Dummy gradle.properties
+      shell: bash
+      run: |
+         mkdir -p ~/.gradle/
+         echo "::set-env name=GRADLE_USER_HOME::$HOME/.gradle"
+         echo ossrhUsername=dummy > ~/.gradle/gradle.properties
+         echo ossrhPassword=dummy >> ~/.gradle/gradle.properties  
     - name: Build with Gradle
       run: ./gradlew assemble
     - name: Run unit tests
