@@ -48,7 +48,7 @@ try {
 }
 ```
 
-Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.23.0).
+Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.23.1).
 
 
 ## Including in your project
@@ -58,13 +58,13 @@ The following snippets for `build.gradle` will make OpeningHoursParser available
 
 ``` groovy
 repositories {
-    jcenter()
+    mavenCentral()
 }
 ```
 
 ``` groovy
 dependencies {
-    compile "ch.poole:OpeningHoursParser:0.23.0"
+    compile "ch.poole:OpeningHoursParser:0.23.1"
 }
 ```
 
