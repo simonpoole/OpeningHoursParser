@@ -53,7 +53,7 @@ Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/c
 
 ## Including in your project
 
-We publish releases to [Bintray/JCenter](https://bintray.com/simonpoole/osm/OpeningHoursParser).
+We publish releases to [Maven Central](https://repo1.maven.org/maven2/ch/poole/OpeningHoursParser/).
 The following snippets for `build.gradle` will make OpeningHoursParser available in your Gradle project:
 
 ``` groovy
