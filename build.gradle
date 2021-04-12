@@ -16,6 +16,7 @@ apply plugin: "jacoco"
 
 version = '0.23.2'
 
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -106,6 +107,14 @@ task showDifferencesStrict(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     args('test-data/oh.txt-result-strict', 'test-data/oh.txt-result-strict-temp', 'test-data/oh.txt', 'test-data/diff-strict.txt')
 }
+
+task individualTesting(type: JavaExec) {
+    main = "ch.poole.openinghoursparser.IndividualTest"
+    classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
+    args()
+}
+
 showDifferencesStrict.group = 'verification'
 showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
 
