@@ -115,6 +115,7 @@ task individualTesting(type: JavaExec) {
     args()
 }
 
+
 showDifferencesStrict.group = 'verification'
 showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
 
