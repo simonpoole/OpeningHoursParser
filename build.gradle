@@ -112,9 +112,15 @@ task individualTesting(type: JavaExec) {
     main = "ch.poole.openinghoursparser.IndividualTest"
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    args()
+    args('false')
 }
 
+task individualTestingStrict(type: JavaExec) {
+    main = "ch.poole.openinghoursparser.IndividualTest"
+    classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
+    args('true')
+}
 
 showDifferencesStrict.group = 'verification'
 showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
