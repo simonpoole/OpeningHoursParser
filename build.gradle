@@ -109,6 +109,25 @@ task showDifferencesStrict(type: JavaExec) {
 showDifferencesStrict.group = 'verification'
 showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
 
+task individualTesting(type: JavaExec) {
+    main = "ch.poole.openinghoursparser.IndividualTest"
+    classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
+    args('false')
+}
+individualTesting.group = 'verification'
+individualTesting.description = "Individually parsing input strings received directly from terminal for on-the-fly testing"
+
+task individualTestingStrict(type: JavaExec) {
+    main = "ch.poole.openinghoursparser.IndividualTest"
+    classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
+    args('true')
+}
+individualTestingStrict.group = 'verification'
+individualTestingStrict.description = "Individually parsing input strings received directly from terminal for on-the-fly testing in strict mode"
+
+
 // test input may change and require rerunning the tests
 test.inputs.files("test-data/oh.txt")
 
