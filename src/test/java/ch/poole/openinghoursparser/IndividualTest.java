@@ -14,41 +14,26 @@ import java.util.Scanner;
  */
 
 public class IndividualTest {
-    
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in); 
-        
-        Boolean isStrict = (args[0].equals("true")) ? true : false;
-
+        Boolean isStrict = args[0].equals("true");
         while(true) {
             System.out.print("Please enter your input: ");
             String input = sc.nextLine();
-
             try {
                 OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(input.getBytes()));
                 List<ch.poole.openinghoursparser.Rule> rules = parser.rules(isStrict);
-                
                 System.out.println("Legal input string");
                 System.out.println("Detected rules in input string listed below");
                 for(ch.poole.openinghoursparser.Rule rule : rules) {
                     System.out.println(rule.toDebugString());
                 }
-                System.out.println();
-                System.out.println("------------------------------");
-                System.out.println();
-    
+                System.out.println("\n------------------------------\n");
             } catch (OpeningHoursParseException e) {
                 System.out.println("Illegal input string");
                 e.printStackTrace();
-                System.out.println();
-                System.out.println("------------------------------");
-                System.out.println();
+                System.out.println("\n------------------------------\n");
             }
         }
-        
-
     }
-
- 
 }

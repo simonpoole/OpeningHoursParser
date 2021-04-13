@@ -16,7 +16,6 @@ apply plugin: "jacoco"
 
 version = '0.23.2'
 
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -107,6 +106,8 @@ task showDifferencesStrict(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     args('test-data/oh.txt-result-strict', 'test-data/oh.txt-result-strict-temp', 'test-data/oh.txt', 'test-data/diff-strict.txt')
 }
+showDifferencesStrict.group = 'verification'
+showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
 
 task individualTesting(type: JavaExec) {
     main = "ch.poole.openinghoursparser.IndividualTest"
@@ -114,6 +115,8 @@ task individualTesting(type: JavaExec) {
     standardInput = System.in
     args('false')
 }
+individualTesting.group = 'verification'
+individualTesting.description = "Individually parsing input strings received directly from terminal for on-the-fly testing"
 
 task individualTestingStrict(type: JavaExec) {
     main = "ch.poole.openinghoursparser.IndividualTest"
@@ -121,9 +124,9 @@ task individualTestingStrict(type: JavaExec) {
     standardInput = System.in
     args('true')
 }
+individualTestingStrict.group = 'verification'
+individualTestingStrict.description = "Individually parsing input strings received directly from terminal for on-the-fly testing in strict mode"
 
-showDifferencesStrict.group = 'verification'
-showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
 
 // test input may change and require rerunning the tests
 test.inputs.files("test-data/oh.txt")
