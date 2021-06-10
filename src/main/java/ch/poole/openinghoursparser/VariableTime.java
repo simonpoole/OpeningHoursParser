@@ -57,12 +57,11 @@ public class VariableTime extends Element {
             if (offset != 0) {
                 b.append("(");
                 b.append(event);
-                if (offset > 0) {
-                    b.append("+");
-                }
-                b.append(String.format(Locale.US, "%02d", offset / 60));
+                b.append(offset >= 0 ? '+' : '-');
+                int absOffset = Math.abs(offset);
+                b.append(String.format(Locale.US, "%02d", absOffset / 60));
                 b.append(":");
-                b.append(String.format(Locale.US, "%02d", Math.abs(offset) % 60));
+                b.append(String.format(Locale.US, "%02d", absOffset % 60));
                 b.append(")");
             } else {
                 b.append(event);
