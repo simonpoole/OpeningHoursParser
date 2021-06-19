@@ -642,4 +642,49 @@ public class UnitTest {
             fail(pex.getMessage());
         }
     }
+    
+    @Test
+    public void intervalMinutesOnly() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-20:00/99".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            assertEquals(1,r.times.size());
+            TimeSpan ts = r.times.get(0);
+            assertEquals(99, ts.getInterval());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+    
+    @Test
+    public void intervalHourMinutes() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-20:00/01:39".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            assertEquals(1,r.times.size());
+            TimeSpan ts = r.times.get(0);
+            assertEquals(99, ts.getInterval());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+    
+    @Test
+    public void intervalHourMinutesNoLeading0() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-20:00/1:39".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            assertEquals(1,r.times.size());
+            TimeSpan ts = r.times.get(0);
+            assertEquals(99, ts.getInterval());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
 }

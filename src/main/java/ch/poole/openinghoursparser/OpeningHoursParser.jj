@@ -533,19 +533,20 @@ int interval() :
 {
   < SLASH >
   (
+    LOOKAHEAD(hours() minutes())
+    (
+      hours = hours() number = minutes()
+      {
+        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(number.image);
+      }
+    )
+  | 
     (
       (
         number = number()
       )
       {
         interval = Integer.parseInt(number.image);
-      }
-    )
-  |
-    (
-      hours = hours() number = minutes()
-      {
-        interval = Integer.parseInt(hours.image) * 60 + Integer.parseInt(number.image.substring(1));
       }
     )
   )
