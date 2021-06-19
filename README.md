@@ -5,7 +5,7 @@
 This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification]. It is used in a number of OpenStreetMap projects, for example
 in [Vespucci](https://github.com/MarcusWolschon/osmeditor4android). As the opening hours specification is currently reasonably stable you shouldn't expect lots of activity in this repository.
 
-It parses 147'002 (91%) of 161'268 unique test strings in non-strict mode. The remaining 14'266 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 15'807 fail (total 30'073).
+It parses 147'004 (91%) of 161'268 unique test strings in non-strict mode. The remaining 14'264 are likely valid errors, spot checking shows that they have obvious issues. In strict mode further 15'806 fail (total 30'072).
 
 Deviations from the grammar as of [this version of the opening hours specification][opening-hours-grammar-specification] in all modes:
 
@@ -48,7 +48,7 @@ try {
 }
 ```
 
-Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.23.3).
+Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.23.4).
 
 
 ## Including in your project
@@ -64,7 +64,7 @@ repositories {
 
 ``` groovy
 dependencies {
-    compile "ch.poole:OpeningHoursParser:0.23.3"
+    compile "ch.poole:OpeningHoursParser:0.23.4"
 }
 ```
 
