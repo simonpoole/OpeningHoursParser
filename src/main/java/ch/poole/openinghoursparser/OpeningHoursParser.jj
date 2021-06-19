@@ -265,7 +265,7 @@ TOKEN :
 
 TOKEN :
 {
-  < TO : " to " >
+  < TO : " to " | " a " | " à " | " до " | " bis " >
 }
 
 /**
