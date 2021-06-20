@@ -101,6 +101,9 @@ public class DataTest {
             String expectedResult = null;
             int lineNumber = 1;
             while ((line = inputRules.readLine()) != null) {
+                if ("".equals(line.trim())) {
+                    continue;
+                }
                 if (inputExpected != null) {
                     String[] expected = inputExpected.readLine().split("\t");
                     expectedResultCode = expected[0];
