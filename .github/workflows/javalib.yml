@@ -30,6 +30,12 @@ jobs:
       run: ./gradlew assemble
     - name: Run unit tests
       run: ./gradlew test
+    - name: Upload Test Results
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v2
+      with:
+         name: Test output
+         path: /home/runner/work/OpeningHoursParser/OpeningHoursParser/build/reports/tests/test/
     - name: Run coverage gen
       run: ./gradlew jacocoTestReport
     - name: SonarCloud Scan
