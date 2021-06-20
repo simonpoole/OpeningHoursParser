@@ -120,6 +120,7 @@ public class DataTest {
                     successful++;
                     outputExpected.write("0\t" + result + "\n");
                     if (expectedResultCode != null && (!"0".equals(expectedResultCode) || (expectedResult != null && !expectedResult.equals(result)))) {
+                        System.out.println("Line " + lineNumber + " expected " + expectedResult + " got " + result);
                         differences++;
                     }
                 } catch (ParseException pex) {
@@ -132,6 +133,7 @@ public class DataTest {
                     outputExpected.write("1\n");
                     outputFail.write(lineNumber + "\t" + line + "\t" + pex.toString() + "\n");
                     if (expectedResultCode != null && !"1".equals(expectedResultCode)) {
+                        System.out.println("Line " + lineNumber + " expected " + expectedResultCode + " got 1");
                         differences++;
                     }
                 } catch (NumberFormatException nfx) {
@@ -142,6 +144,7 @@ public class DataTest {
                     errors++;
                     outputExpected.write("2\n");
                     if (expectedResultCode != null && !"2".equals(expectedResultCode)) {
+                        System.out.println("Line " + lineNumber + " expected " + expectedResultCode + " got 2");
                         differences++;
                     }
                 } catch (Error err) {
@@ -154,6 +157,7 @@ public class DataTest {
                     outputExpected.write("3\n");
                     outputFail.write(lineNumber + "\t" + line + "\t" + err.toString() + "\n");
                     if (expectedResultCode != null && !"3".equals(expectedResultCode)) {
+                        System.out.println("Line " + lineNumber + " expected " + expectedResultCode + " got 3");
                         differences++;
                     }
                 }
