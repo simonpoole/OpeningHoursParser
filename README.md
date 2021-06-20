@@ -5,7 +5,7 @@
 This is a very simplistic parser for string values according to the [OSM opening hours specification][opening-hours-specification]. It is used in a number of OpenStreetMap projects, for example
 in [Vespucci](https://github.com/MarcusWolschon/osmeditor4android). As the opening hours specification is currently reasonably stable you shouldn't expect lots of activity in this repository.
 
-It parses 147'189 (91%) of 161'268 unique test strings in non-strict mode. The remaining 14'079 are likely valid errors, spot checking shows that they have obvious issues. In strict mode a further 15'993 fail (total 30'072).
+It parses 147'628 (92%) of 161'268 unique test strings in non-strict mode. The remaining 13'640 are likely valid errors, spot checking shows that they have obvious issues. In strict mode a further 16'432 fail (total 30'072).
 
 Deviations from the grammar as of [this version of the opening hours specification][opening-hours-grammar-specification] in all modes:
 
@@ -24,6 +24,7 @@ In non-strict mode the following further differences are allowed:
  * ignore spaces and more than one leading zeros in minutes
  * "." and "h" as minutes separators
  * AM and PM time specifications are allowed (plus A.M. and P.M.) 
+ * 4 digit times in some circumstances
  * holidays in weekday range
  * superfluous ":" after weekday range
  * 24/7 rules with preceding selectors are corrected to 00:00-24:00 time spans

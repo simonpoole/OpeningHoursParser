@@ -97,7 +97,7 @@ updateTranslations.description = 'Update translations by executing the transifex
 task showDifferences(type: JavaExec) {
     main = "ch.poole.openinghoursparser.Diff"
     classpath = sourceSets.test.runtimeClasspath
-    args('test-data/oh.txt-result', 'test-data/oh.txt-result-temp', 'test-data/oh.txt', 'test-data/diff.txt')
+    args('test-data/oh.txt-result.ocs', 'test-data/oh.txt-result-temp', 'test-data/oh.txt', 'test-data/diff.txt')
 }
 showDifferences.group = 'verification'
 showDifferences.description = "Extract differences between reference test results and current results"
@@ -105,7 +105,7 @@ showDifferences.description = "Extract differences between reference test result
 task showDifferencesStrict(type: JavaExec) {
     main = "ch.poole.openinghoursparser.Diff"
     classpath = sourceSets.test.runtimeClasspath
-    args('test-data/oh.txt-result-strict', 'test-data/oh.txt-result-strict-temp', 'test-data/oh.txt', 'test-data/diff-strict.txt')
+    args('test-data/oh.txt-result-strict.ocs', 'test-data/oh.txt-result-strict-temp', 'test-data/oh.txt', 'test-data/diff-strict.txt')
 }
 showDifferencesStrict.group = 'verification'
 showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"

@@ -47,10 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 import java.util.Locale;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import ch.poole.openinghoursparser.Util;
 
 import static ch.poole.openinghoursparser.I18n.tr;
 
@@ -390,30 +386,42 @@ int time() :
 {
   Token h = null;
   Token m = null;
+  Token t = null;
   int result = 0;
   AMPM ampm = null;
 }
 {
   (
-    h = hours()
+    // 4 digit times: years have to be >= 1900, so we can avoid conflicts by only fixing up things that are smaller than that    LOOKAHEAD({ getToken(1).image.length() == 4 && getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 1859) && Util.between(getToken(1).image.substring(2), 0, 59)})
+    t = < NUMBER >
+  |
+    (
+      (
+        h = hours()
+      )
+      (
+        LOOKAHEAD(minutes(), { h!=null })
+        m = minutes()
+      )?
+    )
   )
-  (
-    LOOKAHEAD(minutes(), { h!=null })
-    m = minutes()
-  )?
   (
     ampm = ampm()
   )?
   {
-    if (strict && m == null) {
-        ParseException pex = new OpeningHoursParseException(tr("hours_without_minutes"));
+    if (strict && (t != null || m == null)) {
+        ParseException pex = new OpeningHoursParseException(tr(t == null ? "hours_without_minutes" : "four_digit_time_value"));
 	    pex.currentToken = token;
         throw pex;
     }
-    if (m != null) {
-      result = Integer.parseInt(m.image);
+    if (t != null) {
+        result = Integer.parseInt(t.image.substring(2)) + Integer.parseInt(t.image.substring(0,2)) * 60;
+    } else { 
+        if (m != null) {
+            result = Integer.parseInt(m.image);
+        }
+        result = result + Integer.parseInt(h.image) * 60;
     }
-    result = result + Integer.parseInt(h.image) * 60;
     if (ampm == AMPM.PM && result < TWELVEHOURS) { // only use add 12h if the time is less than 12 h
       result = result + TWELVEHOURS;               // 12:01 pm to 12:59 pm are already correct 24h times
     } else if (ampm == AMPM.AM && result >= TWELVEHOURS && result < TWELVEHOURS + 60) {
@@ -458,31 +466,44 @@ int extendedtime() :
 {
   Token h = null;
   Token m = null;
+  Token t = null;
   int result = 0;
   AMPM ampm = null;
 }
 {
   (
-    LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 48) })
-    h = < NUMBER >
+    // 4 digit time value
+    LOOKAHEAD({ getToken(1).image.length() == 4 && getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 4800) && Util.between(getToken(1).image.substring(2), 0, 59)}) 
+    t = < NUMBER >
+  |
+    (  
+      (
+        LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 48) })
+        h = < NUMBER >
+      )
+      (
+        LOOKAHEAD(minutes(), { h!=null })
+        m = minutes()
+      )?
+    )
   )
-  (
-    LOOKAHEAD(minutes(), { h!=null })
-    m = minutes()
-  )?
   (
     ampm = ampm()
   )?
   {
-    if (strict && m == null) {
-        ParseException pex = new OpeningHoursParseException(tr("hours_without_minutes"));
+    if (strict && (t != null || m == null)) {
+        ParseException pex = new OpeningHoursParseException(tr(t == null ? "hours_without_minutes" : "four_digit_time_value"));
         pex.currentToken = token;
         throw pex;
     }
-    if (m != null) {
-      result = Integer.parseInt(m.image);
+    if (t != null) {
+      result = Integer.parseInt(t.image.substring(2)) + Integer.parseInt(t.image.substring(0,2)) * 60;
+    } else { 
+      if (m != null) {
+        result = Integer.parseInt(m.image);
+      }
+      result = result + Integer.parseInt(h.image) * 60;
     }
-    result = result + Integer.parseInt(h.image) * 60;
     if (ampm == AMPM.PM && result < TWELVEHOURS) {
       result = result + TWELVEHOURS;
     } else if (ampm == AMPM.AM && result >= TWELVEHOURS && result < TWELVEHOURS + 60) {
