@@ -1210,31 +1210,35 @@ YearRange year_range() :
   Token to = null;
 }
 {
-  ( 
-    yr.startYear = year() (plus = < PLUS >)?
-  )
-  {
-    yr.openEnded = plus != null;
-  } 
   (
+    ( 
+      yr.startYear = year()
+    ) 
     (
-      < HYPHEN > | (to = < TO >)
-    )
-    (
-      yr.endYear = year()
-    )
-    {
-      if (strict && to != null) {
-        throw new OpeningHoursParseException(tr("to_instead_of_dash"), token.next);
-      }
-    }
-    (
-      yr.interval = interval()
+      plus = < PLUS >
+      |
+      (
+        (
+          < HYPHEN > | (to = < TO >)
+        )
+        (
+          yr.endYear = year()
+        )
+        {
+          if (strict && to != null) {
+            throw new OpeningHoursParseException(tr("to_instead_of_dash"), token.next);
+          }
+        }
+        (
+          yr.interval = interval()
+        )?
+      )
     )?
-  )?
-  {
-    return yr;
-  }
+    {
+      yr.openEnded = plus != null;
+      return yr;
+    }
+  )
 }
 
 
