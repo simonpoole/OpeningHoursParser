@@ -360,7 +360,9 @@ Token minutes() :
   Token m = null;
 }
 {
-  (      (      (delimiter =  < COLON > ) | (delimiter = < STOP > ) | (delimiter= < H >)
+  (  
+    (
+      (delimiter =  < COLON > ) | (delimiter = < STOP > ) | (delimiter= < H >)
     )
     LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 59) && (getToken(1).image.length() >= 2 || "0".equals(getToken(1).image))})
     m = < NUMBER >
@@ -1204,10 +1206,16 @@ YearRange year_range() :
   YearRange yr = new YearRange();
   Token y = null;
   Token y1 = null;
+  Token plus = null;
   Token to = null;
 }
 {
-  yr.startYear = year()
+  ( 
+    yr.startYear = year() (plus = < PLUS >)?
+  )
+  {
+    yr.openEnded = plus != null;
+  } 
   (
     (
       < HYPHEN > | (to = < TO >)

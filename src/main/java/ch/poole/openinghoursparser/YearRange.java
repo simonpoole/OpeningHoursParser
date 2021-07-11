@@ -37,9 +37,11 @@ public class YearRange extends Element {
      * one day
      */
     public static final int UNDEFINED_YEAR   = Integer.MIN_VALUE;
-    int                     startYear        = UNDEFINED_YEAR;
-    int                     endYear          = UNDEFINED_YEAR;
-    int                     interval         = 0;
+    
+    boolean openEnded           = false;
+    int     startYear           = UNDEFINED_YEAR;
+    int     endYear             = UNDEFINED_YEAR;
+    int     interval            = 0;
 
     /**
      * Default constructor
@@ -54,6 +56,7 @@ public class YearRange extends Element {
      * @param yr original YearRange
      */
     public YearRange(@NotNull YearRange yr) {
+        openEnded = yr.openEnded;
         startYear = yr.startYear;
         endYear = yr.endYear;
         interval = yr.interval;
@@ -63,6 +66,9 @@ public class YearRange extends Element {
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append(String.format(Locale.US, "%04d", startYear));
+        if (openEnded) {
+            b.append("+");
+        }
         if (endYear != UNDEFINED_YEAR) {
             b.append("-");
             b.append(String.format(Locale.US, "%04d", endYear));
@@ -81,7 +87,7 @@ public class YearRange extends Element {
         }
         if (other instanceof YearRange) {
             YearRange o = (YearRange) other;
-            if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
+            if (startYear == o.startYear && endYear == o.endYear && interval == o.interval && openEnded == o.openEnded) {
                 return true;
             }
         }
@@ -91,10 +97,19 @@ public class YearRange extends Element {
     @Override
     public int hashCode() {
         int result = 1;
+        result = 37 * result + (openEnded ? 0 : 1);
         result = 37 * result + startYear;
         result = 37 * result + endYear;
         result = 37 * result + interval;
         return result;
+    }
+
+    
+    /**
+     * @return the openEnded
+     */
+    public boolean isOpenEnded() {
+        return openEnded;
     }
 
     /**
@@ -116,6 +131,13 @@ public class YearRange extends Element {
      */
     public int getInterval() {
         return interval;
+    }
+
+    /**
+     * @param openEnded the openEnded to set
+     */
+    public void setOpenEnded(boolean openEnded) {
+        this.openEnded = openEnded;
     }
 
     /**
