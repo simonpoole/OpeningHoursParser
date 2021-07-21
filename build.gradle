@@ -142,9 +142,6 @@ publishing {
         Release(MavenPublication) {
             groupId 'ch.poole'
             artifactId 'OpeningHoursParser'
-            artifact jar
-            artifact sourcesJar
-            artifact javadocJar
             from components.java
             pom {
                 name = artifactId
