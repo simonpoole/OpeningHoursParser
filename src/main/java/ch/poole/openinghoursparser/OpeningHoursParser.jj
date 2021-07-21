@@ -1209,20 +1209,27 @@ YearRange year_range() :
 {
   yr.startYear = year()
   (
-    (
-      < HYPHEN > | (to = < TO >)
-    )
-    (
-      yr.endYear = year()
-    )
-    {
-      if (strict && to != null) {
-        throw new OpeningHoursParseException(tr("to_instead_of_dash"), token.next);
+    (      
+      (
+        < HYPHEN > | (to = < TO >)
+      )
+      (
+        yr.endYear = year()
+      )
+      {
+        if (strict && to != null) {
+          throw new OpeningHoursParseException(tr("to_instead_of_dash"), token.next);
+        }
       }
+      (
+        yr.interval = interval()
+      )?
+    )
+  |
+    < PLUS >
+    {
+      yr.openEnded = true;
     }
-    (
-      yr.interval = interval()
-    )?
   )?
   {
     return yr;

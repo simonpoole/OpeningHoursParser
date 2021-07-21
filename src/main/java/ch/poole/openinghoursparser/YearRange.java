@@ -40,6 +40,7 @@ public class YearRange extends Element {
     int                     startYear        = UNDEFINED_YEAR;
     int                     endYear          = UNDEFINED_YEAR;
     int                     interval         = 0;
+    boolean                 openEnded        = false;
 
     /**
      * Default constructor
@@ -57,6 +58,7 @@ public class YearRange extends Element {
         startYear = yr.startYear;
         endYear = yr.endYear;
         interval = yr.interval;
+        openEnded = yr.openEnded;
     }
 
     @Override
@@ -70,6 +72,8 @@ public class YearRange extends Element {
                 b.append("/");
                 b.append(interval);
             }
+        } else if (openEnded) {
+            b.append("+");
         }
         return b.toString();
     }
@@ -81,7 +85,7 @@ public class YearRange extends Element {
         }
         if (other instanceof YearRange) {
             YearRange o = (YearRange) other;
-            if (startYear == o.startYear && endYear == o.endYear && interval == o.interval) {
+            if (startYear == o.startYear && endYear == o.endYear && interval == o.interval && openEnded == o.openEnded) {
                 return true;
             }
         }
@@ -94,6 +98,7 @@ public class YearRange extends Element {
         result = 37 * result + startYear;
         result = 37 * result + endYear;
         result = 37 * result + interval;
+        result = 37 * result + (openEnded ? 0 : 1);
         return result;
     }
 
@@ -147,6 +152,15 @@ public class YearRange extends Element {
      */
     public void setInterval(int interval) {
         this.interval = interval;
+    }
+
+    /**
+     * Check if this is open ended
+     * 
+     * @return true if open ended
+     */
+    public boolean isOpenEnded() {
+        return openEnded;
     }
 
     @Override

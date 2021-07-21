@@ -165,7 +165,9 @@ public class DateWithOffset extends Element {
     }
 
     /**
-     * @return the openEnded
+     * Check if this is open ended
+     * 
+     * @return true if open ended
      */
     public boolean isOpenEnded() {
         return openEnded;
