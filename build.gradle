@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: "jacoco"
 
-version = '0.23.4'
+version = '0.24.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -145,6 +145,7 @@ publishing {
             artifact jar
             artifact sourcesJar
             artifact javadocJar
+            from components.java
             pom {
                 name = artifactId
                 description = 'This is a simple parser for OSM "opening_hours" tags'    
@@ -161,6 +162,17 @@ publishing {
                 developers {
                     developer {
                         name = 'Simon Poole'
+                    }
+                }
+            }
+            // hack to make debian happy
+            //
+            // this makes the org.jetbrains:annotations dependency optional as it is actually only used
+            // at compile time this would be a bit simpler if versionMapping worked as expected
+            pom.withXml {
+                asNode().depthFirst().collect() { node ->
+                    if ("annotations".equals(node.text())) {
+                        node.parent().appendNode('optional','true')
                     }
                 }
             }
@@ -191,7 +203,9 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compileOnly 'org.jetbrains:annotations:19.0.0'
+    // the annotations dependency is really compileOnly, but maven-publish can't be convinced to
+    // use compileOnly in versionMapping
+    implementation 'org.jetbrains:annotations:19.0.0'
     testCompileOnly 'org.jetbrains:annotations:19.0.0'
     testCompile 'junit:junit:4.12'
 }
