@@ -781,5 +781,5 @@ public class UnitTest {
         } catch (ParseException pex) {
             assertEquals("Encountered:  <HYPHEN> \"- \" at line 1, column 11" + System.lineSeparator() + "Was expecting: <EOF>", pex.getMessage());
         }
-    }st
+    }
 }
