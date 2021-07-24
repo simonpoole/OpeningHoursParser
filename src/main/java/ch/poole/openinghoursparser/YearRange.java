@@ -162,10 +162,18 @@ public class YearRange extends Element {
     public boolean isOpenEnded() {
         return openEnded;
     }
+    
+    /**
+     * Set if this range is open ended
+     * 
+     * @param openEnded if true the range is open ended
+     */
+    public void setOpenEnded(boolean openEnded) {
+        this.openEnded = openEnded;
+    }
 
     @Override
     public YearRange copy() {
         return new YearRange(this);
     }
-
 }
