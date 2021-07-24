@@ -747,4 +747,39 @@ public class UnitTest {
             fail(pex.getMessage());
         }
     }
+
+    @Test
+    public void dateRange() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun 1-2001 Jul 2".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            assertEquals(1, r.dates.size());
+            DateRange range = r.dates.get(0);
+            DateWithOffset start = range.getStartDate();
+            assertNotNull(start);
+            assertEquals(1999, start.getYear());
+            assertEquals(Month.JUN, start.getMonth());
+            assertEquals(1, start.getDay());
+            DateWithOffset end = range.getEndDate();
+            assertNotNull(end);
+            assertEquals(2001, end.getYear());
+            assertEquals(Month.JUL, end.getMonth());
+            assertEquals(2, end.getDay());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+
+    @Test
+    public void invalidDateRange() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun 1+-2001 Jul 2".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertEquals("Encountered:  <HYPHEN> \"- \" at line 1, column 11" + System.lineSeparator() + "Was expecting: <EOF>", pex.getMessage());
+        }
+    }st
 }

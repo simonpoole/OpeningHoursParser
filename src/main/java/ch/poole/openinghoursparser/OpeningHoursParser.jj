@@ -360,7 +360,9 @@ Token minutes() :
   Token m = null;
 }
 {
-  (      (      (delimiter =  < COLON > ) | (delimiter = < STOP > ) | (delimiter= < H >)
+  (  
+    (
+      (delimiter =  < COLON > ) | (delimiter = < STOP > ) | (delimiter= < H >)
     )
     LOOKAHEAD({ getToken(1).kind == NUMBER && Util.between(getToken(1).image, 0, 59) && (getToken(1).image.length() >= 2 || "0".equals(getToken(1).image))})
     m = < NUMBER >
@@ -885,9 +887,7 @@ DateRange date_range() :
   Token to = null;
 }
 {
-  (
-    startDate = datewithoffset(false) (plus = < PLUS >)?
-  )
+  startDate = datewithoffset(false)
   {
     if (strict && startDate.getVarDate()==null && startDate.getMonth()==null) {
       throw new OpeningHoursParseException(tr("missing_month"), token.next);
@@ -928,6 +928,11 @@ DateRange date_range() :
      	}
       )?
     )
+  |
+    < PLUS >
+    {
+      startDate.openEnded = true;
+    }
   )?
   {
     return mdr;
