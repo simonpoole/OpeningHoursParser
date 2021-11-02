@@ -77,7 +77,8 @@ dependencies {
 
 ## Tests
 
-Besides some unit tests, we run the parser on ~160'000 and compare with previous output to detect any changes in behaviour. If you are running these on windows, you may need to add
+Besides unit tests, we run the parser on ~160'000 opening hours values from the 
+OSM database and compare with previous output to detect any changes in behaviour. If you are running these on windows, you may need to add
 ``org.gradle.jvmargs=-Dfile.encoding=UTF-8``
 to your gradle.properties to force correct use of the UTF-8 encoded test input. 
 
