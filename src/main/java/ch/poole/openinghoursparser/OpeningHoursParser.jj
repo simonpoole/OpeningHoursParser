@@ -59,6 +59,7 @@ public class OpeningHoursParser
   static int TWELVEHOURS = 12*60;
   
   boolean strict = false;
+  boolean strictTime = false;
   enum AMPM { AM, PM };
   boolean monthOnly = false;
   List < ParseException > exceptions = new ArrayList < ParseException > ();
@@ -72,9 +73,22 @@ public class OpeningHoursParser
    */
   public List < Rule > rules(boolean strict) throws OpeningHoursParseException
   {
+    return rules(strict, true);
+  }
+
+  /**
+   * Get the output of the parser
+   *
+   * @param strict if true the parser will run in strict mode
+   * @param strictTime if false and strict is true, earlier than the start time endings will be fixed up silently
+   * @return a List of Rule elements
+   * @throws OpeningHoursParseException on parse errors
+   */
+  public List < Rule > rules(boolean strict, boolean strictTime) throws OpeningHoursParseException
+  {
     try
     {
-      List < Rule > r = rules0(strict);
+      List < Rule > r = rules0(strict, strictTime);
       if (exceptions.size() > 1)
       {
         throw new OpeningHoursParseException(exceptions);
@@ -592,7 +606,7 @@ TimeSpan timespan() :
           end = extendedtime()
           {
             if (end < start) {  
-              if (!strict)  
+              if (!strict || !strictTime)  
               {
                 // non-strict, add 24h
                 end = end + 24*60;
@@ -1437,9 +1451,10 @@ Rule rule() :
   }
 }
 
-private List < Rule > rules0(boolean strict) :
+private List < Rule > rules0(boolean strict, boolean strictTime) :
 {
   this.strict = strict;
+  this.strictTime = strictTime;
   List < Rule > result = new ArrayList < Rule > ();
   Rule r = null;
   Rule r1 = null;
@@ -1454,7 +1469,7 @@ private List < Rule > rules0(boolean strict) :
   catch (ParseException e)
   {
     error_skip(e);
-    return rules0(strict);
+    return rules0(strict, strictTime);
   }
   try
   {
@@ -1494,7 +1509,7 @@ private List < Rule > rules0(boolean strict) :
   catch (ParseException e)
   {
     error_skip(e);
-    return rules0(strict);
+    return rules0(strict, strictTime);
   }
   {
     r.additive = false;

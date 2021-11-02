@@ -782,4 +782,71 @@ public class UnitTest {
             assertEquals("Encountered:  <HYPHEN> \"- \" at line 1, column 11" + System.lineSeparator() + "Was expecting: <EOF>", pex.getMessage());
         }
     }
+
+    @Test
+    public void timeStrict() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-06:00".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertEquals("End time earlier than start time at line 1, column 11", pex.getMessage());
+        }
+        parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-06:00".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true, false);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            List<TimeSpan> spans = r.getTimes();
+            assertEquals(1, spans.size());
+            assertEquals(7 * 60, spans.get(0).getStart());
+            assertEquals(30 * 60, spans.get(0).getEnd());
+            assertEquals("07:00-06:00", Util.rulesToOpeningHoursString(rules));
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+
+    @Test
+    public void midnight() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-24:00".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true, true);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            List<TimeSpan> spans = r.getTimes();
+            assertEquals(1, spans.size());
+            assertEquals(7 * 60, spans.get(0).getStart());
+            assertEquals(24 * 60, spans.get(0).getEnd());
+            assertEquals("07:00-24:00", Util.rulesToOpeningHoursString(rules));
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-24:00".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true, false);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            List<TimeSpan> spans = r.getTimes();
+            assertEquals(1, spans.size());
+            assertEquals(7 * 60, spans.get(0).getStart());
+            assertEquals(24 * 60, spans.get(0).getEnd());
+            assertEquals("07:00-24:00", Util.rulesToOpeningHoursString(rules));
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        parser = new OpeningHoursParser(new ByteArrayInputStream("07:00-00:00".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true, false);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            List<TimeSpan> spans = r.getTimes();
+            assertEquals(1, spans.size());
+            assertEquals(7 * 60, spans.get(0).getStart());
+            assertEquals(24 * 60, spans.get(0).getEnd());
+            assertEquals("07:00-24:00", Util.rulesToOpeningHoursString(rules));
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
 }

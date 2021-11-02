@@ -53,17 +53,26 @@ public class DataTest {
      */
     @Test
     public void regressionTest() {
-        parseData("test-data/oh.txt", false, false, "test-data/oh.txt-result");
-        parseData("test-data/oh.txt", false, true, "test-data/oh.txt-debug-result");
+        parseData("test-data/oh.txt", false, false, false, "test-data/oh.txt-result");
+        parseData("test-data/oh.txt", false, false, true, "test-data/oh.txt-debug-result");
     }
 
     /**
-     * Compare strict mode output
+     * Compare strict mode output (time strict false)
      */
     @Test
     public void regressionTestStrict() {
-        parseData("test-data/oh.txt", true, false, "test-data/oh.txt-result-strict");
-        parseData("test-data/oh.txt", true, true, "test-data/oh.txt-debug-result-strict");
+        parseData("test-data/oh.txt", true, false, false, "test-data/oh.txt-result-strict");
+        parseData("test-data/oh.txt", true, false, true, "test-data/oh.txt-debug-result-strict");
+    }
+    
+    /**
+     * Compare strict mode output with time strict set to true
+     */
+    @Test
+    public void regressionTestTimeStrict() {
+        parseData("test-data/oh.txt", true, true, false, "test-data/oh.txt-result-time-strict");
+        parseData("test-data/oh.txt", true, true, true, "test-data/oh.txt-debug-result-time-strict");
     }
 
     /**
@@ -72,10 +81,11 @@ public class DataTest {
      * 
      * @param inputFile input data file
      * @param strict if true use strict mode
+     * @param strict if true use strict time interpretation in strict mode
      * @param debug if true produce debug output
      * @param resultsFile file to write results to
      */
-    private void parseData(String inputFile, boolean strict, boolean debug, String resultsFile) {
+    private void parseData(String inputFile, boolean strict, boolean timeStrict, boolean debug, String resultsFile) {
         int differences = 0;
         int successful = 0;
         int errors = 0;
@@ -92,10 +102,11 @@ public class DataTest {
             } catch (FileNotFoundException fnfex) {
                 System.out.println("File not found " + fnfex.toString());
             }
+            String mode = (strict && !timeStrict ? "-strict" : "") + (strict && timeStrict ? "-time-strict" : "") + (debug ? "-debug" : "");
             outputExpected = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(inputFile + "-result" + (strict ? "-strict" : "") + (debug ? "-debug" : "") + "-temp"), StandardCharsets.UTF_8));
+                    new FileOutputStream(inputFile + "-result" + mode + "-temp"), StandardCharsets.UTF_8));
             outputFail = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(inputFile + "-fail" + (strict ? "-strict" + (debug ? "-debug" : "") : "")), StandardCharsets.UTF_8));
+                    new FileOutputStream(inputFile + "-fail" + mode), StandardCharsets.UTF_8));
 
             String expectedResultCode = null;
             String expectedResult = null;
@@ -115,7 +126,7 @@ public class DataTest {
                 }
                 try {
                     OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream(line.getBytes()));
-                    List<ch.poole.openinghoursparser.Rule> rules = parser.rules(strict);
+                    List<ch.poole.openinghoursparser.Rule> rules = parser.rules(strict, timeStrict);
                     String result = debug ? Util.rulesToOpeningHoursDebugString(rules) : Util.rulesToOpeningHoursString(rules);
                     successful++;
                     outputExpected.write("0\t" + result + "\n");
