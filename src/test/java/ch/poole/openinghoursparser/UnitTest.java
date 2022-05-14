@@ -299,6 +299,20 @@ public class UnitTest {
     }
 
     @Test
+    public void openEndedDateRange() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Jan 31+ Mo".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(false);
+            assertEquals(1, rules.size());
+            List<DateRange> dateRanges = rules.get(0).getDates();
+            assertEquals(1, dateRanges.size());
+            assertTrue(dateRanges.get(0).getStartDate().isOpenEnded());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+
+    @Test
     /**
      * This doesn't seem to turn up in our test data
      */
