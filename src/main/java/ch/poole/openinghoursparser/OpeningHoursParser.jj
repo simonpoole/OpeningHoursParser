@@ -1064,6 +1064,8 @@ DateWithOffset datewithoffset(boolean mo) :
         )
       )
       (
+        // This tries to, as lax as possible, differentiate between Jan 31+ Mo and Jan 31+Mo, that is an open ended date vs date with an offset  
+        LOOKAHEAD(5, ( < HYPHEN > | < PLUS > ) < WEEKDAY >, { getToken(1).kind == HYPHEN || !precedingWs(getToken(2)) || getToken(5).kind == DAYS }) 
         (
           minus = < HYPHEN >
         | < PLUS >
