@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: "jacoco"
 
-version = '0.26.0'
+version = '0.27.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
