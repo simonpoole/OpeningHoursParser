@@ -1,8 +1,9 @@
 [main]
 host = https://www.transifex.com
 
-[openinghoursparser.messagesproperties]
-file_filter = src/main/resources/ch/poole/openinghoursparser/Messages_<lang>.properties
-source_file = src/main/resources/ch/poole/openinghoursparser/Messages.properties
-source_lang = en
+[o:openstreetmap:p:openinghoursparser:r:messagesproperties]
+file_filter  = src/main/resources/ch/poole/openinghoursparser/Messages_<lang>.properties
+source_file  = src/main/resources/ch/poole/openinghoursparser/Messages.properties
+source_lang  = en
 minimum_perc = 100
+
