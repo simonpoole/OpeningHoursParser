@@ -3,7 +3,7 @@
 
 plugins {
     id "ca.coglinc.javacc" version "2.4.0"
-    id "org.sonarqube" version "3.0"
+    id "org.sonarqube" version "4.0.0.2929"
 }
 
 // Apply the java plugin to add support for Java
@@ -61,7 +61,7 @@ compileTestJava {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.required.set(true)
     }
 }
 
@@ -75,16 +75,16 @@ sonarqube {
     }
 }
 
-task replaceVersion {
+def replaceVersion = tasks.register('replaceVersion') {
     doLast {
-        ant.replaceregexp(match:'ch\\.poole([\\:/])OpeningHoursParser([\\:/])([0-9\\.]+)', replace:"ch.poole\\1OpeningHoursParser\\2${version}", flags:'g', byline:true) {
+        ant.replaceregexp(match: 'ch\\.poole([\\:/])OpeningHoursParser([\\:/])([0-9\\.]+)', replace: "ch.poole\\1OpeningHoursParser\\2${version}", flags: 'g', byline: true) {
             fileset(dir: '.', includes: 'README.md')
         }
     }
 }
-build.dependsOn replaceVersion
+tasks.assemble.dependsOn(replaceVersion)
 
-task updateTranslations(type: Exec) {
+tasks.register('updateTranslations', Exec) {
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
         commandLine 'cmd', '/c', 'tx.exe', 'pull', '-a'
     } else {
@@ -94,24 +94,24 @@ task updateTranslations(type: Exec) {
 updateTranslations.group = 'translation'
 updateTranslations.description = 'Update translations by executing the transifex tx utility'
 
-task showDifferences(type: JavaExec) {
-    main = "ch.poole.openinghoursparser.Diff"
+tasks.register('showDifferences', JavaExec) {
+    mainClass = "ch.poole.openinghoursparser.Diff"
     classpath = sourceSets.test.runtimeClasspath
     args('test-data/oh.txt-result', 'test-data/oh.txt-result-temp', 'test-data/oh.txt', 'test-data/diff.txt')
 }
 showDifferences.group = 'verification'
 showDifferences.description = "Extract differences between reference test results and current results"
 
-task showDifferencesStrict(type: JavaExec) {
-    main = "ch.poole.openinghoursparser.Diff"
+tasks.register('showDifferencesStrict', JavaExec) {
+    mainClass = "ch.poole.openinghoursparser.Diff"
     classpath = sourceSets.test.runtimeClasspath
     args('test-data/oh.txt-result-strict', 'test-data/oh.txt-result-strict-temp', 'test-data/oh.txt', 'test-data/diff-strict.txt')
 }
 showDifferencesStrict.group = 'verification'
 showDifferencesStrict.description = "Extract differences between reference test results and current results in strict mode"
 
-task individualTesting(type: JavaExec) {
-    main = "ch.poole.openinghoursparser.IndividualTest"
+tasks.register('individualTesting', JavaExec) {
+    mainClass = "ch.poole.openinghoursparser.IndividualTest"
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
     args('false')
@@ -119,8 +119,8 @@ task individualTesting(type: JavaExec) {
 individualTesting.group = 'verification'
 individualTesting.description = "Individually parsing input strings received directly from terminal for on-the-fly testing"
 
-task individualTestingStrict(type: JavaExec) {
-    main = "ch.poole.openinghoursparser.IndividualTest"
+tasks.register('individualTestingStrict', JavaExec) {
+    mainClass = "ch.poole.openinghoursparser.IndividualTest"
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
     args('true')
@@ -202,8 +202,8 @@ repositories {
 dependencies {
     // the annotations dependency is really compileOnly, but maven-publish can't be convinced to
     // use compileOnly in versionMapping
-    implementation 'org.jetbrains:annotations:19.0.0'
-    testCompileOnly 'org.jetbrains:annotations:19.0.0'
-    testCompile 'junit:junit:4.12'
+    implementation 'org.jetbrains:annotations:24.0.1'
+    testImplementation 'org.jetbrains:annotations:24.0.1'
+    testImplementation 'junit:junit:4.13.2'
 }
 
