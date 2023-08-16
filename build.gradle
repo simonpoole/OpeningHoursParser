@@ -65,6 +65,12 @@ jacocoTestReport {
     }
 }
 
+jar {
+    manifest {
+        attributes("Automatic-Module-Name": "ch.poole.openinghoursparser")
+    }
+}
+
 sonarqube {
     properties {
         property "sonar.java.source","1.8"
