@@ -650,6 +650,17 @@ public class UnitTest {
     public void dateRangeWithOccurance() {
         OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Jan 1-Mar Mo[1], Jun 1-Jul Tu[1]".getBytes()));
         try {
+            List<Rule> rules = parser.rules(false);
+            assertEquals(1, rules.size());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+    
+    @Test
+    public void dateRangeWithOccuranceStrict() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Jan 01-Mar Mo[1], Jun 01-Jul Tu[1]".getBytes()));
+        try {
             List<Rule> rules = parser.rules(true);
             assertEquals(1, rules.size());
         } catch (ParseException pex) {
@@ -763,8 +774,19 @@ public class UnitTest {
     }
 
     @Test
+    public void invalidDate() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun 1".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertEquals("1 is not a valid month day number at line 1, column 10", pex.getMessage());
+        }
+    }
+    
+    @Test
     public void dateRange() {
-        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun 1-2001 Jul 2".getBytes()));
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun 01-2001 Jul 02".getBytes()));
         try {
             List<Rule> rules = parser.rules(true);
             assertEquals(1, rules.size());
@@ -788,12 +810,12 @@ public class UnitTest {
 
     @Test
     public void invalidDateRange() {
-        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun 1+-2001 Jul 2".getBytes()));
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun 01+-2001 Jul 02".getBytes()));
         try {
             List<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
-            assertEquals("Encountered:  <HYPHEN> \"- \" at line 1, column 11" + System.lineSeparator() + "Was expecting: <EOF>", pex.getMessage());
+            assertEquals("Encountered:  <HYPHEN> \"- \" at line 1, column 12" + System.lineSeparator() + "Was expecting: <EOF>", pex.getMessage());
         }
     }
 
