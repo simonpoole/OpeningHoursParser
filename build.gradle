@@ -1,6 +1,17 @@
 /*
  */
 
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.breadmoirai:github-release:2.5.2"
+    }
+}
+
 plugins {
     id "ca.coglinc.javacc" version "2.4.0"
     id "org.sonarqube" version "4.0.0.2929"
@@ -13,8 +24,9 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: "jacoco"
+apply plugin: "com.github.breadmoirai.github-release"
 
-version = '0.27.1'
+version = '0.28.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -29,6 +41,7 @@ ext {
     javaccSource = file(javaccSourcePath)
     mainSource = file('src/main/java/')
     testSource = file('src/test/java/')
+    githubToken = System.getenv('GITHUB_TOKEN')
 }
 
 eclipse {
@@ -199,10 +212,25 @@ signing {
     sign publishing.publications.Release
 }
 
+githubRelease {
+    token project.ext.githubToken == null ? "" : project.ext.githubToken    
+    owner = "simonpoole"
+    tagName = project.version
+    releaseName = project.version
+    targetCommitish = "master" 
+    generateReleaseNotes = true 
+    overwrite = true
+}
+
+afterEvaluate {
+    publishReleasePublicationToSonatypeRepository.dependsOn githubRelease
+}
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
 }
+
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
