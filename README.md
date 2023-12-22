@@ -51,7 +51,7 @@ try {
 }
 ```
 
-Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.27.1).
+Detailed documentation can be found in the [JavaDoc](http://www.javadoc.io/doc/ch.poole/OpeningHoursParser/0.28.0).
 
 
 ## Including in your project
@@ -67,7 +67,7 @@ repositories {
 
 ``` groovy
 dependencies {
-    compile "ch.poole:OpeningHoursParser:0.27.1"
+    compile "ch.poole:OpeningHoursParser:0.28.0"
 }
 ```
 
