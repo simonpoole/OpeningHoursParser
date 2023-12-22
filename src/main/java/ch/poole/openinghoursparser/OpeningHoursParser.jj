@@ -964,6 +964,11 @@ int daynum() :
     n = < NUMBER >
   )
   {
+    if (strict && n.image.length() !=  2) {
+      ParseException pex = new OpeningHoursParseException(tr("invalid_month_day", n.image), token.next);
+      pex.currentToken = token;
+      throw pex;
+    } 
     return Integer.parseInt(n.image);
   }
 }

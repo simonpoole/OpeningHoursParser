@@ -107,7 +107,7 @@ public class DateWithOffset extends Element {
             if (year != YearRange.UNDEFINED_YEAR || month != null) {
                 b.append(" ");
             }
-            b.append(day);
+            b.append(String.format(Locale.US, "%02d",day));
         } else if (varDate != null) {
             if (year != YearRange.UNDEFINED_YEAR) {
                 b.append(" ");
