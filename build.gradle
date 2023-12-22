@@ -223,7 +223,7 @@ githubRelease {
 }
 
 afterEvaluate {
-    publishReleasePublicationToSonatypeRepository.dependsOn githubRelease
+    publishReleasePublicationToSonatypeRepository.dependsOn tasks.githubRelease
 }
 
 // In this section you declare where to find the dependencies of your project
