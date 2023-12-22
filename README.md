@@ -30,6 +30,7 @@ In non-strict mode the following further differences are allowed:
  * holidays in weekday range
  * superfluous ":" after weekday range
  * 24/7 rules with preceding selectors are corrected to 00:00-24:00 time spans
+ * single digit month day numbers (Jan 1 instead of Jan 01)
  * list of month days after months ( Jan 1,4,5 )
  * " to " and some translations of it in lieu of a hyphen for ranges
  * date ranges that do not have the month day specified are corrected (Jan - Feb 15 -> Jan 1 - Feb 15)
