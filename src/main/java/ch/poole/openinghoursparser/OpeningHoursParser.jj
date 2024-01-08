@@ -732,16 +732,15 @@ WeekDayRange weekday_range() :
     (
       (
         < BRACKET_LEFT > nth = nth()
+        {
+          wdr.add(nth);
+        }
         (
           < COMMA > nth1 = nth()
           {
             wdr.add(nth1);
           }
         )*
-        {
-          wdr.add(nth);
-          Collections.reverse(wdr.getNths());
-        }
         < BRACKET_RIGHT >
       )
       (
