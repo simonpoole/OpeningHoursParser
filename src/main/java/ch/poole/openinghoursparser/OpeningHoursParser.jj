@@ -655,16 +655,17 @@ List < TimeSpan > time_selector() :
 {
   (
     ts = timespan()
+    {
+        result.add(ts);
+    }
     (
       < COMMA > ts1 = timespan()
       {
-        result.add(0, ts1);
+        result.add(ts1);
       }
     )*
   )
   {
-    result.add(ts);
-    Collections.reverse(result);
     return result;
   }
 }
@@ -814,15 +815,16 @@ List < WeekDayRange > weekday_selector() :
 }
 {
   wdr = weekday_range()
+  {
+    result.add(wdr);
+  }
   (
     < COMMA > wdr1 = weekday_range()
     {
-      result.add(0, wdr1);
+      result.add(wdr1);
     }
   )*
   {
-    result.add(wdr);
-    Collections.reverse(result);
     return result;
   }
 }
@@ -867,15 +869,16 @@ List < Holiday > holiday_sequence() :
 }
 {
   h = holiday()
+  {
+    result.add(h);
+  }
   (
     < COMMA > h1 = holiday()
     {
-      result.add(0, h1);
+      result.add(h1);
     }
   )*
   {
-    result.add(h);
-    Collections.reverse(result);
     return result;
   }
 }
@@ -1119,6 +1122,9 @@ List < DateRange > date_selector() :
   	|| getToken(1).kind == MONTH || getToken(1).kind == VARDATE }) 
   (
     mdr = date_range()
+    {
+      result.add(mdr);
+    }
     (
       < COMMA > mdr1 = date_range()
       {
@@ -1149,12 +1155,10 @@ List < DateRange > date_selector() :
             lastMonth = dwo.getMonth();
           }
         }
-        result.add(0, mdr1);
+        result.add(mdr1);
       }
     )*
     {
-      result.add(mdr);
-      Collections.reverse(result);
       return result;
     }
   )
@@ -1211,15 +1215,16 @@ List < WeekRange > week_selector() :
 }
 {
   < WEEK > wr = week_range()
+  {
+    result.add(wr);
+  }
   (
     < COMMA > wr1 = week_range()
     {
-      result.add(0, wr1);
+      result.add(wr1);
     }
   )*
   {
-    result.add(wr);
-    Collections.reverse(result);
     return result;
   }
 }
@@ -1271,15 +1276,16 @@ List < YearRange > year_selector() :
   LOOKAHEAD({getToken(2).kind != MONTH  && getToken(2).kind != VARDATE})
     
   yr = year_range()
+  {
+    result.add(yr);
+  }
   (
     < COMMA > yr1 = year_range()
     {
-      result.add(0, yr1);
+      result.add(yr1);
     }
   )*
   {
-    result.add(yr);
-    Collections.reverse(result);
     return result;
   }
 }
@@ -1469,8 +1475,11 @@ private List < Rule > rules0(boolean strict, boolean strictTime) :
   try
   {
     (
-    r = rule()
+        r = rule()
     )
+    {
+      result.add(r);
+    }
   }
   catch (ParseException e)
   {
@@ -1487,7 +1496,7 @@ private List < Rule > rules0(boolean strict, boolean strictTime) :
           {
             r1.additive = true;
             r1.fallBack = false;
-            result.add(0, r1);
+            result.add(r1);
           }
         )
       | < SEMICOLON > 
@@ -1496,7 +1505,7 @@ private List < Rule > rules0(boolean strict, boolean strictTime) :
           {
             r1.additive = false;
             r1.fallBack = false;
-            result.add(0, r1);
+            result.add(r1);
           }
         )
       | < FALLBACKSEPERATOR > 
@@ -1505,7 +1514,7 @@ private List < Rule > rules0(boolean strict, boolean strictTime) :
           {
             r1.additive = false;
             r1.fallBack = true;
-            result.add(0, r1);
+            result.add(r1);
           }
         )
       )
@@ -1520,8 +1529,6 @@ private List < Rule > rules0(boolean strict, boolean strictTime) :
   {
     r.additive = false;
     r.fallBack = false;
-    result.add(r);
-    Collections.reverse(result);
     return result;
   }
 }
