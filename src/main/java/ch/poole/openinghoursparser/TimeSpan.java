@@ -70,9 +70,7 @@ public class TimeSpan extends Element {
         if (startEvent != null) {
             b.append(startEvent.toString());
         } else {
-            b.append(String.format(Locale.US, "%02d", start / 60));
-            b.append(":");
-            b.append(String.format(Locale.US, "%02d", start % 60));
+            appendTime(b, start);
         }
         if (endEvent != null) {
             b.append("-");
@@ -81,20 +79,29 @@ public class TimeSpan extends Element {
             b.append("-");
             // output as normal time if time span is less than 24 hours
             int tempEnd = start != UNDEFINED_TIME && (end - start) < HOURS_24 && end > HOURS_24 ? end - HOURS_24 : end;
-            b.append(String.format(Locale.US, "%02d", tempEnd / 60));
-            b.append(":");
-            b.append(String.format(Locale.US, "%02d", end % 60));
+            appendTime(b, tempEnd);
         }
         if (openEnded) {
             b.append("+");
         }
         if (interval != 0) { // output only the full format
             b.append("/");
-            b.append(String.format(Locale.US, "%02d", interval / 60));
-            b.append(":");
-            b.append(String.format(Locale.US, "%02d", interval % 60));
+            appendTime(b, interval);
+
         }
         return b.toString();
+    }
+
+    /**
+     * Append a minute value as a time to the StringBuilder
+     * 
+     * @param b the StringBuilder
+     * @param minutes the number of minutes
+     */
+    private void appendTime(@NotNull StringBuilder b, int minutes) {
+        b.append(String.format(Locale.US, "%02d", minutes / 60));
+        b.append(":");
+        b.append(String.format(Locale.US, "%02d", minutes % 60));
     }
 
     @Override
@@ -170,10 +177,20 @@ public class TimeSpan extends Element {
      * @param s the start value to set
      */
     public void setStart(int s) {
-        if (s != UNDEFINED_TIME && (s < MIN_TIME || s > MAX_EXTENDED_TIME)) {
+        if (invalidTime(s)) {
             throw new IllegalArgumentException(tr("invalid_time", s));
         }
         this.start = s;
+    }
+
+    /**
+     * Check if time is valid/invalid
+     * 
+     * @param t the time value
+     * @return true if invalid
+     */
+    private boolean invalidTime(int t) {
+        return t != UNDEFINED_TIME && (t < MIN_TIME || t > MAX_EXTENDED_TIME);
     }
 
     /**
@@ -189,7 +206,7 @@ public class TimeSpan extends Element {
      * @param e the end value to set
      */
     public void setEnd(int e) {
-        if (e != UNDEFINED_TIME && (e < MIN_TIME || e > MAX_EXTENDED_TIME)) {
+        if (invalidTime(e)) {
             throw new IllegalArgumentException(tr("invalid_time", e));
         }
         this.end = e;

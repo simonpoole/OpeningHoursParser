@@ -92,20 +92,21 @@ public final class Util {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for (Rule r : rules) {
-            if (!r.isEmpty()) {
-                if (!first) {
-                    if (r.isAdditive()) {
-                        result.append(", ");
-                    } else if (r.isFallBack()) {
-                        result.append(" || ");
-                    } else {
-                        result.append("; ");
-                    }
-                } else {
-                    first = false;
-                }
-                result.append(debug ? r.toDebugString() : r.toString());
+            if (r.isEmpty()) {
+                continue;
             }
+            if (!first) {
+                if (r.isAdditive()) {
+                    result.append(", ");
+                } else if (r.isFallBack()) {
+                    result.append(" || ");
+                } else {
+                    result.append("; ");
+                }
+            } else {
+                first = false;
+            }
+            result.append(debug ? r.toDebugString() : r.toString());
         }
         return result.toString();
     }
@@ -145,19 +146,19 @@ public final class Util {
     public static String deWeekDays2En(String s) {
         switch (s.toLowerCase(Locale.US)) {
         case "mo":
-            return "Mo";
+            return WeekDay.MO.toString();
         case "di":
-            return "Tu";
+            return WeekDay.TU.toString();
         case "mi":
-            return "We";
+            return WeekDay.WE.toString();
         case "do":
-            return "Th";
+            return WeekDay.TH.toString();
         case "fr":
-            return "Fr";
+            return WeekDay.FR.toString();
         case "sa":
-            return "Sa";
+            return WeekDay.SA.toString();
         case "so":
-            return "Su";
+            return WeekDay.SU.toString();
         default:
             return null;
         }
@@ -173,7 +174,7 @@ public final class Util {
     @SuppressWarnings("unchecked")
     static <T extends Copy<?>> List<T> copyList(List<T> l) {
         if (l == null) {
-            return null;
+            return null; // NOSONAR
         }
         List<T> r = new ArrayList<>(l.size());
         for (T o : l) {
@@ -216,8 +217,8 @@ public final class Util {
     }
 
     /**
-     * Returns {@code true} if the arguments are equal to each other
-     * and {@code false} otherwise.
+     * Returns {@code true} if the arguments are equal to each other and {@code false} otherwise.
+     * 
      * @param a the first object
      * @param b the second object
      * @return true if the arguments are equal
