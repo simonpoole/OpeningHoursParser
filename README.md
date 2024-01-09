@@ -29,7 +29,7 @@ In non-strict mode the following further differences are allowed:
  * AM and PM time specifications are allowed (plus A.M. and P.M.) 
  * holidays in weekday range
  * superfluous ":" after weekday range
- * 24/7 rules with preceding selectors are corrected to 00:00-24:00 time spans
+ * 24/7 rules with preceding year, week and date selectors are corrected to 00:00-24:00 time spans
  * single digit month day numbers (Jan 1 instead of Jan 01)
  * list of month days after months ( Jan 1,4,5 )
  * " to " and some translations of it in lieu of a hyphen for ranges
