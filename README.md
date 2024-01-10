@@ -13,6 +13,8 @@ Deviations from the grammar as of [this version of the opening hours specificati
  * leading 0s in times optional
  * unicode EN DASH (U+2013) EM DASH (U+2014) characters are allowed for hyphen
  * various unicode whitespace characters are ignored
+ * dates referring to specific weekdays are allowed (e.g. `Apr Fr[1,-1]` - first and last friday in April)
+ * date ranges referring each to a specific weekday are allowed (e.g. `Apr Fr[-1] - Jun Fr[1]` - last Friday in April to first Friday in June)
 
 In strict mode time ranges that have a nummerically earlier ending time than start and 
 do not use the _extended time_ format will cause a parse exception to be thrown, this 
