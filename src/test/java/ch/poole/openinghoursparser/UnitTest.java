@@ -68,6 +68,13 @@ public class UnitTest {
         }
         try {
             OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH,Mo 10:00-12:00".getBytes()));
+            List<Rule> rules = parser.rules(false);
+            assertEquals(1, rules.size());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+        try {
+            OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("Su,PH,Mo 10:00-12:00".getBytes()));
             List<Rule> rules = parser.rules(true);
             fail("this should have thrown an exception");
         } catch (ParseException pex) {
