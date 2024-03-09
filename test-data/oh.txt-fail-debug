@@ -25529,6 +25529,8 @@ Was expecting: <EOF>
 Was expecting: <EOF>
 156199	Tu-We 9:30-18:00; Th 9:30-20:00; Fr 9:30-18:00; Sa 9:00-last appointment	ch.poole.openinghoursparser.OpeningHoursParseException: Encountered:  <HYPHEN> "- " at line 1, column 54
 Was expecting: <EOF>
+156521	Tu,We,Th 08:30-10:30,15:00-18:00; Fr 08:30-10:30; SH Tu, SH Th 15:00-18:00; SH Fr 09:00-12:00	ch.poole.openinghoursparser.OpeningHoursParseException: Encountered:  <WEEKDAY> "Th " at line 1, column 58
+Was expecting: <EOF>
 156564	Tu,We,Th,Sa 15:00-19:00; Fr 10:00-19:00; Mo off; chiuso; Su[1] 15:00-19:00	ch.poole.openinghoursparser.OpeningHoursParseException: Encountered:  <UNEXPECTED_CHAR> "c " at line 1, column 48
 Was expecting: <EOF>
 156575	Tu-Wo 09:00-18:00;Th 09:00-21:00;Fr 09:00-18:00; Sa 09:00-17:00	ch.poole.openinghoursparser.OpeningHoursParseException: Encountered:  <HYPHEN> "- " at line 1, column 1

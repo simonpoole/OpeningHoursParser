@@ -28,7 +28,7 @@ options
 
   static = false;
 
-  LOOKAHEAD= 5;
+  LOOKAHEAD= 6;
   IGNORE_CASE = true;
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK = 2;
@@ -757,7 +757,7 @@ WeekDayRange weekday_range() :
           wdr.offset = Integer.parseInt(n.image);
           if (m != null)
           {
-            wdr.offset = wdr.offset * - 1;
+            wdr.offset = wdr.offset * -1;
           }
         }
       )?
@@ -851,7 +851,7 @@ Holiday holiday() :
       result.offset = Integer.parseInt(n.image);
       if (m != null)
       {
-        result.offset = result.offset * - 1;
+        result.offset = result.offset * -1;
       }
     }
   )?
@@ -1326,6 +1326,7 @@ Rule rule() :
   List < WeekRange > ws = null;
   List < DateRange > ms = null;
   List < Holiday > hs = null;
+  List < Holiday > hs2 = null;
   List < WeekDayRange > ds = null;
   List < WeekDayRange > ds2 = null;
   List < TimeSpan > ts = null;
@@ -1389,51 +1390,66 @@ Rule rule() :
   |
     (
       (
-        LOOKAHEAD(weekday_selector() < COMMA > holiday_sequence())
         (
-          ds = weekday_selector() 
-          < COMMA > 
           hs = holiday_sequence()
-          (
-            < COMMA >
-            ds2 = weekday_selector()
-          )?
-        )
-        {
-          if (ds2 != null) {
-            if (strict)
-            {
-              ParseException e = new OpeningHoursParseException(tr("holiday_in_weekday_range"), token.next);
-              e.currentToken = token;
-              throw e;
-            }
-            ds.addAll(ds2);
-          }
-          for (Holiday h:hs) {
-            h.setAfterWeekDays(true);  
-          }
-        }
-      |
+        )?
         (
-          (
-            hs = holiday_sequence()
-          )?
-          (
-            (
+          (            (
               < COMMA >
               ds = weekday_selector()
+              { 
+                if (hs != null) { 
+                  for (Holiday h:hs) {
+                    h.setUseAsWeekDay(true);  
+                  }
+                }
+              }
             )
           | 
             ds = weekday_selector()
             {
               if (hs != null) { 
                 for (Holiday h:hs) {
-                  h.setUseAsWeekDay(false);  
+                    h.setUseAsWeekDay(false);  
                 }
               }
             }
-          )?
-        )
+          )          
+          (   
+            < COMMA >
+            hs2 = holiday_sequence()
+            {              
+              if (hs2 != null) { 
+                for (Holiday h:hs2) {
+                  h.setUseAsWeekDay(true);
+                  h.setAfterWeekDays(true); 
+                }
+              }
+              if (hs != null) {
+                hs.addAll(hs2);
+              } else {
+                hs = hs2;
+              } 
+            }
+            (
+              < COMMA >
+              ds2 = weekday_selector()
+              {
+                if (strict && hs2 != null)
+                {
+                  ParseException e = new OpeningHoursParseException(tr("holiday_in_weekday_range"), token.next);
+                  e.currentToken = token;
+                  throw e;
+                }
+                if (ds != null) {
+                  ds.addAll(ds2);
+                } else {
+                  ds = ds2;
+                }
+              }
+            )*
+          )*
+        )?
       )
       // spec is not clear on this, however ":" is used in real life here a lot
       (
