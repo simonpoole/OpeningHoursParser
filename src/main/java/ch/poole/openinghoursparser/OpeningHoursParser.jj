@@ -1114,6 +1114,7 @@ List < DateRange > date_selector() :
 {
   DateRange mdr, mdr1;
   Month lastMonth = null;
+  int lastYear = YearRange.UNDEFINED_YEAR;
   List < DateRange > result = new ArrayList < DateRange > ();
 }
 {
@@ -1129,7 +1130,7 @@ List < DateRange > date_selector() :
       < COMMA > mdr1 = date_range()
       {
         DateWithOffset dwo = mdr1.getStartDate();
-        // if the month is missing in the start date patch it up here
+        // if the month and maybe the year is missing in the start date patch it up here
         // in strict mode we will never get to this point
         if (dwo.getVarDate() == null)
         { 
@@ -1142,6 +1143,7 @@ List < DateRange > date_selector() :
             {
               DateWithOffset first = mdr.getStartDate();
               lastMonth = first.getMonth();
+              lastYear = first.getYear();
               if (lastMonth == null)
               {
                 // fail, can't fudge the month
@@ -1149,10 +1151,12 @@ List < DateRange > date_selector() :
               }
             }
             dwo.setMonth(lastMonth);
+            dwo.setYear(lastYear);
           }
-          else if (dwo.getMonth() != null)
+          else 
           {
             lastMonth = dwo.getMonth();
+            lastYear = dwo.getYear();
           }
         }
         result.add(mdr1);
