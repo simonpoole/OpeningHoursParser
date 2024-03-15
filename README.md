@@ -7,6 +7,8 @@ in [Vespucci](https://github.com/MarcusWolschon/osmeditor4android). As the openi
 
 It parses 147'209 (91%) of 161'265 unique test strings in non-strict mode. The remaining 14'056 are likely valid errors, spot checking shows that they have obvious issues. In strict mode a further 15'993 fail (total 30'072).
 
+"in the wild" there are currently 3.4 million opening hour values in OSM, of these we successfully parse 99.1%, leaving 31'000 that fail (in non-strict mode). Parsing a single value successfully on a 15 year old PC (slower than a modern mobile phone for these kind of workloads) takes on average 0.05 ms, or put differently we can easily parse 20'000 values per second in a single thread. Parsing a non-compliant value takes 0.1 ms on average, this is somewhat slower as we restart parsing, potentially multiple times, to determine as many issues as possible in one go. This could certainly be sped up by not using a parser generator and manually coding, however given that it takes just 3 minutes to parse all above mentioned 3.4 million values, and in real life scenarios many other factors will dominate the run time, this would be a substantial waste of time.
+
 Deviations from the grammar as of [this version of the opening hours specification][opening-hours-grammar-specification] in all modes:
 
  * case-insensitive
@@ -14,7 +16,7 @@ Deviations from the grammar as of [this version of the opening hours specificati
  * unicode EN DASH (U+2013) EM DASH (U+2014) characters are allowed for hyphen
  * various unicode whitespace characters are ignored
 
-In strict mode time ranges that have a nummerically earlier ending time than start and 
+In strict mode time ranges that have a numerically earlier ending time than start and 
 do not use the _extended time_ format will cause a parse exception to be thrown, this 
 can be overridden when calling the parser.
 
