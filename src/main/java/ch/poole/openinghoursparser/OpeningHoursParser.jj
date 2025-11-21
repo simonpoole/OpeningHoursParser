@@ -917,24 +917,6 @@ DateRange date_range() :
     )
     (
       endDate = datewithoffset(startDate.undefinedDay())
-      {
-        if (strict && to != null) {
-          throw new OpeningHoursParseException(tr("to_instead_of_dash"), token != null ? token.next : null);
-        }
-        if ((startDate.undefinedDay() && !endDate.undefinedDay()) || (!startDate.undefinedDay() && endDate.undefinedDay())) {
-          if (strict) { 
-            throw new OpeningHoursParseException(tr("missing_day_in_range", startDate.toString(), endDate.toString()), token != null ? token.next : null);
-          } else {
-            // fix this
-            if (startDate.undefinedDay()) {
-              startDate.setDay(1);
-            } else {
-              endDate.setDay(Month.lastDay(endDate.getYear(), endDate.getMonth()));
-            }
-          } 
-        }
-        mdr.endDate = endDate;
-      }
       (
       	mdr.interval = interval()
       	{ 
@@ -943,6 +925,25 @@ DateRange date_range() :
       	  }
      	}
       )?
+      {
+        if (strict && to != null) {
+          throw new OpeningHoursParseException(tr("to_instead_of_dash"), token != null ? token.next : null);
+        }
+        if ((startDate.undefinedDay() || endDate.undefinedDay()) && mdr.interval == 0 && (!startDate.undefinedYear() || !endDate.undefinedYear())) {
+          if (strict) { 
+            throw new OpeningHoursParseException(tr("missing_day_in_range", startDate.toString(), endDate.toString()), token != null ? token.next : null);
+          } else {
+            // fix this up
+            if (startDate.undefinedDay()) {
+              startDate.setDay(1);
+            }
+            if (endDate.undefinedDay()) { 
+              endDate.setDay(Month.lastDay(endDate.getYear(), endDate.getMonth()));
+            }
+          } 
+        }
+        mdr.endDate = endDate;
+      }
     )
   |
     < PLUS >
