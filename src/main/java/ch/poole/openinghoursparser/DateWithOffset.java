@@ -82,16 +82,23 @@ public class DateWithOffset extends Element {
         return day == UNDEFINED_MONTH_DAY && nthWeekDay == null && weekDayOffset == null && varDate == null;
     }
 
+    /**
+     * Check for an undefined year value
+     * 
+     * @return true if the year is undefined
+     */
+    public boolean undefinedYear() {
+        return year == YearRange.UNDEFINED_YEAR;
+    }
+
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        if (year != YearRange.UNDEFINED_YEAR) {
+        if (!undefinedYear()) {
             b.append(year);
         }
         if (month != null) {
-            if (year != YearRange.UNDEFINED_YEAR) {
-                b.append(" ");
-            }
+            addSpaceIfYearisPresent(b);
             b.append(month);
         }
         if (nthWeekDay != null) {
@@ -104,14 +111,12 @@ public class DateWithOffset extends Element {
             b.append(']');
         }
         if (day != UNDEFINED_MONTH_DAY) {
-            if (year != YearRange.UNDEFINED_YEAR || month != null) {
+            if (!undefinedYear() || month != null) {
                 b.append(" ");
             }
-            b.append(String.format(Locale.US, "%02d",day));
+            b.append(String.format(Locale.US, "%02d", day));
         } else if (varDate != null) {
-            if (year != YearRange.UNDEFINED_YEAR) {
-                b.append(" ");
-            }
+            addSpaceIfYearisPresent(b);
             b.append(varDate);
         }
         // offsets
@@ -135,6 +140,17 @@ public class DateWithOffset extends Element {
             b.append("+");
         }
         return b.toString();
+    }
+
+    /**
+     * Add a space to separate a year value from the following data
+     * 
+     * @param b the StringBuilder
+     */
+    private void addSpaceIfYearisPresent(@NotNull StringBuilder b) {
+        if (!undefinedYear()) {
+            b.append(" ");
+        }
     }
 
     @Override

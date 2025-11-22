@@ -814,6 +814,63 @@ public class UnitTest {
             fail(pex.getMessage());
         }
     }
+    
+    @Test
+    public void dateRange2() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun -2001 Jul".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(false);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            assertEquals(1, r.dates.size());
+            DateRange range = r.dates.get(0);
+            DateWithOffset start = range.getStartDate();
+            assertNotNull(start);
+            assertEquals(1999, start.getYear());
+            assertEquals(Month.JUN, start.getMonth());
+            assertEquals(1, start.getDay());
+            DateWithOffset end = range.getEndDate();
+            assertNotNull(end);
+            assertEquals(2001, end.getYear());
+            assertEquals(Month.JUL, end.getMonth());
+            assertEquals(31, end.getDay());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
+    
+    @Test
+    public void dateRange3() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun -2001 Jul".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(true);
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            //
+        }
+    }
+    
+    @Test
+    public void dateRange4() {
+        OpeningHoursParser parser = new OpeningHoursParser(new ByteArrayInputStream("1999 Jun -2001 Jul/7".getBytes()));
+        try {
+            List<Rule> rules = parser.rules(false);
+            assertEquals(1, rules.size());
+            Rule r = rules.get(0);
+            assertEquals(1, r.dates.size());
+            DateRange range = r.dates.get(0);
+            DateWithOffset start = range.getStartDate();
+            assertNotNull(start);
+            assertEquals(1999, start.getYear());
+            assertEquals(Month.JUN, start.getMonth());
+            DateWithOffset end = range.getEndDate();
+            assertEquals(2001, end.getYear());
+            assertEquals(Month.JUL, end.getMonth());
+            assertEquals(7, range.getInterval());
+        } catch (ParseException pex) {
+            fail(pex.getMessage());
+        }
+    }
 
     @Test
     public void invalidDateRange() {
