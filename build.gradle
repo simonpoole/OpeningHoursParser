@@ -26,7 +26,7 @@ apply plugin: 'signing'
 apply plugin: "jacoco"
 apply plugin: "com.github.breadmoirai.github-release"
 
-version = '0.28.2'
+version = '0.29.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
