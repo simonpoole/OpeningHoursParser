@@ -273,8 +273,8 @@ TOKEN :
 
 TOKEN :
 {
-  < AM : "am" | ("a"< STOP >"m"< STOP >) >
-| < PM : "pm" | ("p"< STOP >"m"< STOP >) >
+  < AM : "am" | ("a"< STOP >"m"(< STOP >)?) >
+| < PM : "pm" | ("p"< STOP >"m"(< STOP >)?) >
 }
 
 TOKEN :
